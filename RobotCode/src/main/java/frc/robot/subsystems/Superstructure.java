@@ -47,6 +47,7 @@ public class Superstructure extends Subsystem {
         0, // INDEXER_THREE
         0 // INTAKE
     };
+    
     // TODO Move to constants once done debugging demands
     private double[] purgeDemands = new double[] {
         -1, // BLACK_WHEEL

@@ -66,11 +66,11 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(Arrays.asList(
             // register subsystems here
             PoseEstimator.getInstance(), 
-            Drive.getInstance(),
-            Shooter.getInstance(),
-            Climber.getInstance(),
-            Lights.getInstance(),
-            Superstructure.getInstance()),
+            Drive.getInstance()),
+            //Shooter.getInstance(),
+            //Climber.getInstance(),
+            //Lights.getInstance(),
+            //Superstructure.getInstance()),
              true);
 
         // create the master looper threads

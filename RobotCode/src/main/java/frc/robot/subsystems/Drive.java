@@ -65,7 +65,7 @@ public class Drive extends Subsystem {
                     if (Constants.ENABLE_MP_TEST_MODE && DriverStation.getInstance().isTest()) {
                         mDriveControlState = DriveControlState.PROFILING_TEST;
                     }
-                    if (!periodic.inverse) {
+                    if (periodic.inverse) {
                         periodic.operatorInput[1] *= -1;
                     }
                     switch (mDriveControlState) {
@@ -266,14 +266,14 @@ public class Drive extends Subsystem {
         driveFrontLeft.config_kI(0, Constants.DRIVE_LEFT_KI, 0);
         driveFrontLeft.config_kD(0, Constants.DRIVE_LEFT_KD, 0);
         driveFrontLeft.config_IntegralZone(0, 300);
-        driveFrontLeft.setInverted(false);
+        driveFrontLeft.setInverted(true);
         driveFrontLeft.setNeutralMode(NeutralMode.Brake);
         driveFrontLeft.configVoltageCompSaturation(Constants.DRIVE_VCOMP);
         driveFrontLeft.enableVoltageCompensation(true);
         driveFrontLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 0, 0.02));
         driveFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-        driveBackLeft.setInverted(false);
+        driveBackLeft.setInverted(true);
         driveBackLeft.setNeutralMode(NeutralMode.Brake);
         driveBackLeft.configVoltageCompSaturation(Constants.DRIVE_VCOMP);
         driveBackLeft.enableVoltageCompensation(true);
@@ -295,14 +295,14 @@ public class Drive extends Subsystem {
         driveFrontRight.config_kI(0, Constants.DRIVE_RIGHT_KI, 0);
         driveFrontRight.config_kD(0, Constants.DRIVE_RIGHT_KD, 0);
         driveFrontRight.config_IntegralZone(0, 300);
-        driveFrontRight.setInverted(true);
+        driveFrontRight.setInverted(false);
         driveFrontRight.setNeutralMode(NeutralMode.Brake);
         driveFrontRight.configVoltageCompSaturation(Constants.DRIVE_VCOMP);
         driveFrontRight.enableVoltageCompensation(true);
         driveFrontRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 0, 0.02));
         driveFrontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-        driveBackRight.setInverted(true);
+        driveBackRight.setInverted(false);
         driveBackRight.setNeutralMode(NeutralMode.Brake);
         driveBackRight.configVoltageCompSaturation(Constants.DRIVE_VCOMP);
         driveBackRight.enableVoltageCompensation(true);

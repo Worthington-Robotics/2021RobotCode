@@ -16,8 +16,8 @@ public class Constants {
     public static final int PIGION_ID = 0;
 
     //Talon SRX & FX IDs
-    public static final int DRIVE_FRONT_RIGHT_ID = 1;
-    public static final int DRIVE_BACK_RIGHT_ID = 2;
+    public static final int DRIVE_BACK_LEFT_ID = 1;
+    public static final int DRIVE_FRONT_LEFT_ID = 2;
     public static final int SHOOTER_FLYWHEEL_LEFT = 5;
     public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
 
@@ -28,8 +28,8 @@ public class Constants {
     public static final int ID_SUPER_INTAKE = 11;
 
     public static final int TURRET_CONTROL = 12;
-    public static final int DRIVE_BACK_LEFT_ID = 14;
-    public static final int DRIVE_FRONT_LEFT_ID = 15;
+    public static final int DRIVE_FRONT_RIGHT_ID = 14;
+    public static final int DRIVE_BACK_RIGHT_ID = 15;
 
     // TOF IDs
     public static final int ID_SUPER_TOF1 = 1;
@@ -59,8 +59,10 @@ public class Constants {
     //Joystick Constants
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
-    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0, 0.65, 0.65, 0.4, 2);
-    public static final HIDHelper.HIDConstants MASTER_STICK_SHIFTED = new HIDHelper.HIDConstants(MASTER, 0, 0.45, 0.65, 0.4, 2);
+    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0, 0.65, -0.65, 0.4, 2); 
+    //The reason for these negative signs on the Y-axis
+    // is because the sticks we use are designed for plane sims where pulling back on the stick sends you up
+    public static final HIDHelper.HIDConstants MASTER_STICK_SHIFTED = new HIDHelper.HIDConstants(MASTER, 0, 0.45, -0.65, 0.4, 2);
     public static final HIDHelper.HIDConstants SECOND_STICK = new HIDHelper.HIDConstants(SECOND, 0.01, -0.33, 0.99, 0.8, 2);    
 
     /* 

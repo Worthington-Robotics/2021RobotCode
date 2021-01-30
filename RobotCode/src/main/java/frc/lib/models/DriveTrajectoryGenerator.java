@@ -38,7 +38,31 @@ public class DriveTrajectoryGenerator {
     public Trajectory<TimedState<Pose2dWithCurvature>> getTwoMeters() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
-        Points.add(new Pose2d(2, 0, Rotation2d.fromDegrees(0)));
+        Points.add(new Pose2d(6, 0, Rotation2d.identity()));
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), 2.0, 2.0, 10.0);
+    }
+
+    public Trajectory<TimedState<Pose2dWithCurvature>> getThreeByThree() {
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
+    }
+
+    public Trajectory<TimedState<Pose2dWithCurvature>> getSnkCurve() {
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(6, -3, Rotation2d.fromDegrees(90)));
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
+    }
+
+    public Trajectory<TimedState<Pose2dWithCurvature>> getLoop() {
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(6, -3, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
         return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
     }
 }

@@ -184,7 +184,7 @@ public class Lights extends Subsystem {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Length of String", mLEDBuffer.getLength());
+        SmartDashboard.putNumber("Lights/Length of String", mLEDBuffer.getLength());
     }
 
     enum lightModes {

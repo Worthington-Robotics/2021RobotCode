@@ -46,7 +46,7 @@ public class Constants {
     public static final int UNFOLD_HIGH_ID = 3;
 
     public static final int CLIMB_LOW_ID = 2; //Do Not Change
-    public static final int CLIMB_HIGH_ID = 5; //Do Not ChangeS
+    public static final int CLIMB_HIGH_ID = 5; //Do Not Change
     
     public static final int INTAKE_LOW_ID = 6;
     public static final int INTAKE_HIGH_ID = 1;
@@ -106,12 +106,15 @@ public class Constants {
     public static final boolean ENABLE_MP_TEST_MODE = false;
     public static final double MP_TEST_SPEED = 72; //in/s
 
-    public static double LOOPER_DT = 0.01;    
+    public static double LOOPER_DT = 0.01;   
     
     //Physical Constants
-    public static final double DRIVE_WHEEL_TRACK_WIDTH_INCHES = 21.75;
-    public static final double DRIVE_WHEEL_DIAMETER_INCHES = 6.225; // 6
-    public static final double DRIVE_WHEEL_RADIUS_INCHES = DRIVE_WHEEL_DIAMETER_INCHES / 2.0;
+    public static final double DRIVE_WHEEL_TRACK_WIDTH = .55;
+    public static final double DRIVE_WHEEL_DIAMETER = 0.159; // m
+    public static final double ROBOT_LINEAR_INERTIA = 75;  // kg TODO tune
+    public static final double ROBOT_ANGULAR_INERTIA = 10.0;  // kg m^2 TODO tune
+    public static final double ROBOT_ANGULAR_DRAG = 12.0;  // N*m / (rad/sec) TODO tune
+    public static final double DRIVE_WHEEL_RADIUS = DRIVE_WHEEL_DIAMETER / 2.0;
     public static final double TRACK_SCRUB_FACTOR = 1.0;  // TODO tune
 
     //Path following Constants
@@ -120,10 +123,18 @@ public class Constants {
     public static final double PATH_FOLLOWING_LOOKAHEAD = 24;
     public static final double DRIVETRAIN_UPDATE_RATE = LOOPER_DT;
     public static final double PATH_FOLLOWING_MAX_ACCELERATION = 60;
+    public static final double ROBOT_MAX_VOLTAGE = 10.0; // V
+    public static final double Path_Kx = 4.0;  //
+    public static final double PATH_LOOK_AHEAD_TIME = 0.4;  // seconds to look ahead along the path for steering
+    public static final double PATH_MIN_LOOK_AHEAD_DISTANCE = 24.0;  // inches
 
     //Electrical Constants
     public static final double DRIVE_VCOMP = 10.0; //V
-    public static final double DRIVE_ENCODER_PPR = 33261.61; //Empir
+    public static final double DRIVE_ENCODER_PPR_HIGH_GEAR = 14200; //Empir through the magic of tape and wheel rotations HIGH GEAR
+    public static final double DRIVE_ENCODER_PPR = 31828; //Empir through the magic of tape and wheel rotations LOW GEAR
+    public static final double DRIVE_V_INTERCEPT = .621;  // V //1.6 for practice......................
+    public static final double DRIVE_Kv = 4.717;  // rad/s / V -.335
+    public static final double DRIVE_Ka = 0.0178;  // V per rad/s^2    0.0801
 
     //PID Constants
     public static final double ANGLE_KP = -0.024; // 0.065;

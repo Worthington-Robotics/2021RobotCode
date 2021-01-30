@@ -17,12 +17,8 @@ enum UserSelection {
     Auto2("SmrtDrive", 2),
     Auto3("SmartDrive", 3),
     Auto4("Personal 9", 4),
-    Auto5("Swerve Right", 5),
-    Auto6("Swerve Left", 6),
-
-    
     Auto7("Auto Test Protocol", 7),
-    Auto8("BigEasy", 8),
+    Auto9("BigApple", 9),
     Auto20("Remote Operation", 20);
 
     private String name;
@@ -101,16 +97,10 @@ public class AutoSelector {
             case Auto4:
                 return new get10Impossible();
 
-            case Auto5:
-                return new SkewRight();
-
-            case Auto6:
-                return new SkewLeft();
-
             case Auto7:
                 return new SystemsCheck();
-            case Auto8:
-                return new EightBallEasy();
+            case Auto9:
+                return new NoSkew();
 
 
             default:

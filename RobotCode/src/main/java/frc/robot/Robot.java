@@ -141,7 +141,6 @@ public class Robot extends TimedRobot {
 
         //pulls auto selector from labview DB
         String autoSelected = SmartDashboard.getString("Auto Selector", autoList[autoList.length - 1]);
-
         //schedule the state machine to run the selected autonomous
         StateMachine.getInstance().runMachine(AutoSelector.autoSelect(autoSelected));
     }

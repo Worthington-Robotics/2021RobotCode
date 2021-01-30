@@ -84,7 +84,7 @@ public class Superstructure extends Subsystem {
      * Initializes motors, sensors, and the intake's DoubleSolenoid arm. Also resets
      * IO, motors, and sensors to default functioning settings.
      */
-    public Superstructure() {
+    private Superstructure() {
         motors[BLACK_WHEEL] = new TalonSRX(Constants.ID_SUPER_DELIVERY_WHEEL);
         motors[INDEXER_ONE] = new TalonSRX(Constants.ID_SUPER_INDEX1);
         motors[INDEXER_TWO] = new TalonSRX(Constants.ID_SUPER_INDEX2);

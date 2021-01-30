@@ -3,7 +3,8 @@ package frc.lib.geometry;
 import frc.lib.util.Util;
 
 /**
- * Represents a 2d pose (rigid transform) containing translational and rotational elements.
+ * Represents a 2d pose (rigid transform) containing translational and
+ * rotational elements.
  * <p>
  * Inspired by Sophus (https://github.com/strasdat/Sophus/tree/master/sophus)
  */
@@ -50,30 +51,62 @@ public class Pose2d implements IPose2d<Pose2d> {
     /**
      * Obtain a new Pose2d from a (constant curvature) velocity.
      *
-     * @see https://github.com/strasdat/Sophus/blob/master/sophus/se2.hpp
-     */
-    public static Pose2d exp(final Twist2d delta) {
-        double sin_theta = Math.sin(delta.dtheta);
-        double cos_theta = Math.cos(delta.dtheta);
-        double s, c;
-        if (Math.abs(delta.dtheta) < kEps) {
-            s = 1.0 - 1.0 / 6.0 * delta.dtheta * delta.dtheta;
-            c = .5 * delta.dtheta;
+     * <p>
+     * See <a href="https://file.tavsys.net/control/state-space-guide.pdf"> Controls
+     * Engineering in the FIRST Robotics Competition</a> section on nonlinear pose
+     * estimation for derivation.
+     *
+     * <p>
+     * The twist is a change in pose in the robot's coordinate frame since the
+     * previous pose update. When the user runs exp() on the previous known
+     * field-relative pose with the argument being the twist, the user will receive
+     * the new field-relative pose.
+     *
+     * <p>
+     * "Exp" represents the pose exponential, which is solving a differential
+     * equation moving the pose forward in time.
+     *
+     * @param twist The change in pose in the robot's coordinate frame since the
+     *              previous pose update. For example, if a non-holonomic robot
+     *              moves forward 0.01 meters and changes angle by 0.5 degrees since
+     *              the previous pose update, the twist would be Twist2d{0.01, 0.0,
+     *              toRadians(0.5)}
+     * @return The new pose of the robot.
+     **/
+    public Pose2d exp(Twist2d twist) {
+        double dx = twist.dx;
+        double dy = twist.dy;
+        double dtheta = twist.dtheta;
+
+        double sinTheta = Math.sin(dtheta);
+        double cosTheta = Math.cos(dtheta);
+
+        double s;
+        double c;
+        if (Math.abs(dtheta) < 1E-9) {
+            s = 1.0 - 1.0 / 6.0 * dtheta * dtheta;
+            c = 0.5 * dtheta;
         } else {
-            s = sin_theta / delta.dtheta;
-            c = (1.0 - cos_theta) / delta.dtheta;
+            s = sinTheta / dtheta;
+            c = (1 - cosTheta) / dtheta;
         }
-        return new Pose2d(new Translation2d(delta.dx * s - delta.dy * c, delta.dx * c + delta.dy * s),
-                new Rotation2d(cos_theta, sin_theta, false));
+        Pose2d transform = new Pose2d(new Translation2d(dx * s - dy * c, dx * c + dy * s),
+                new Rotation2d(cosTheta, sinTheta, true));
+
+        return this.plus(transform);
     }
 
     /**
-     * Logical inverse of the above.
+     * Returns a Twist2d that maps this pose to the end pose. If c is the output of
+     * a.Log(b), then a.Exp(c) would yield b.
+     *
+     * @param end The end pose for the transformation.
+     * @return The twist that maps this to end.
      */
     public static Twist2d log(final Pose2d transform) {
-        //heading assigned to pose
+        // heading assigned to pose
         final double dtheta = transform.getRotation().getRadians();
-        //half of heading
+        // half of heading
         final double half_dtheta = 0.5 * dtheta;
 
         final double cos_minus_one = transform.getRotation().cos() - 1.0;
@@ -88,6 +121,28 @@ public class Pose2d implements IPose2d<Pose2d> {
         return new Twist2d(translation_part.x(), translation_part.y(), dtheta);
     }
 
+    /**
+     * Returns the other pose relative to the current pose.
+     *
+     * <p>
+     * This function can often be used for trajectory tracking or pose stabilization
+     * algorithms to get the error between the reference and the current pose.
+     *
+     * @param other The pose that is the origin of the new coordinate frame that the
+     *              current pose will be converted into.
+     * @return The current pose relative to the new origin pose.
+     */
+    public Pose2d relativeTo(Pose2d other) {
+        // We are rotating the difference between the translations
+        // using a clockwise rotation matrix. This transforms the global
+        // delta into a local delta (relative to the initial pose).
+        final Translation2d m_translation = getTranslation().minus(other.getTranslation())
+                .rotateBy(other.getRotation().unaryMinus());
+
+        final Rotation2d m_rotation = getRotation().minus(other.getRotation());
+        return new Pose2d(m_translation, m_rotation);
+    }
+
     @Override
     public Translation2d getTranslation() {
         return translation_;
@@ -99,8 +154,8 @@ public class Pose2d implements IPose2d<Pose2d> {
     }
 
     /**
-     * Transforming this RigidTransform2d means first translating by other.translation and then rotating by
-     * other.rotation
+     * Transforming this RigidTransform2d means first translating by
+     * other.translation and then rotating by other.rotation
      *
      * @param other The other transform.
      * @return This transform * other
@@ -112,7 +167,8 @@ public class Pose2d implements IPose2d<Pose2d> {
     }
 
     /**
-     * The inverse of this transform "undoes" the effect of translating by this transform.
+     * The inverse of this transform "undoes" the effect of translating by this
+     * transform.
      *
      * @return The opposite of this transform.
      */
@@ -126,8 +182,8 @@ public class Pose2d implements IPose2d<Pose2d> {
     }
 
     /**
-     * Finds the point where the heading of this pose intersects the heading of another. Returns (+INF, +INF) if
-     * parallel.
+     * Finds the point where the heading of this pose intersects the heading of
+     * another. Returns (+INF, +INF) if parallel.
      */
     public Translation2d intersection(final Pose2d other) {
         final Rotation2d other_rotation = other.getRotation();
@@ -146,11 +202,36 @@ public class Pose2d implements IPose2d<Pose2d> {
      * Return true if this pose is (nearly) colinear with the another.
      */
     public boolean isColinear(final Pose2d other) {
-        if (!getRotation().isParallel(other.getRotation())) {
+        if (!getRotation().isParallel(other.getRotation()))
             return false;
-        }
         final Twist2d twist = log(inverse().transformBy(other));
         return (Util.epsilonEquals(twist.dy, 0.0) && Util.epsilonEquals(twist.dtheta, 0.0));
+    }
+
+    /**
+     * Transforms the pose by the given transformation and returns the new
+     * transformed pose.
+     *
+     * <p>
+     * The matrix multiplication is as follows [x_new] [cos, -sin, 0][transform.x]
+     * [y_new] += [sin, cos, 0][transform.y] [t_new] [0, 0, 1][transform.t]
+     *
+     * @param other The transform to transform the pose by.
+     * @return The transformed pose.
+     */
+    public Pose2d plus(Pose2d other) {
+        return transformBy(other);
+    }
+
+    /**
+     * Returns the Transform2d that maps the one pose to another.
+     *
+     * @param other The initial pose of the transformation.
+     * @return The transform that maps the other pose to the current pose.
+     */
+    public Pose2d minus(Pose2d other) {
+        final Pose2d pose = this.relativeTo(other);
+        return new Pose2d(pose.getTranslation(), pose.getRotation());
     }
 
     public boolean epsilonEquals(final Pose2d other, double epsilon) {
@@ -165,8 +246,7 @@ public class Pose2d implements IPose2d<Pose2d> {
         final Translation2d b_t = b.getTranslation();
 
         final double tan_b = b_r.tan();
-        final double t = ((a_t.x() - b_t.x()) * tan_b + b_t.y() - a_t.y())
-                / (a_r.sin() - a_r.cos() * tan_b);
+        final double t = ((a_t.x() - b_t.x()) * tan_b + b_t.y() - a_t.y()) / (a_r.sin() - a_r.cos() * tan_b);
         if (Double.isNaN(t)) {
             return new Translation2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
@@ -184,7 +264,7 @@ public class Pose2d implements IPose2d<Pose2d> {
             return new Pose2d(other);
         }
         final Twist2d twist = Pose2d.log(inverse().transformBy(other));
-        return transformBy(Pose2d.exp(twist.scaled(x)));
+        return exp(twist.scaled(x));
     }
 
     @Override
@@ -209,9 +289,8 @@ public class Pose2d implements IPose2d<Pose2d> {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null || !(other instanceof Pose2d)) {
+        if (other == null || !(other instanceof Pose2d))
             return false;
-        }
         return epsilonEquals((Pose2d) other, Util.kEpsilon);
     }
 

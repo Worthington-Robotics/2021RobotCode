@@ -1,9 +1,9 @@
-package frc.lib.trajectory.timing;
+package frc.lib.trajectory.constraint;
 
-import frc.lib.geometry.ITranslation2d;
+import frc.lib.geometry.Pose2d;
 import frc.lib.geometry.Translation2d;
 
-public class VelocityLimitRegionConstraint<S extends ITranslation2d<S>> implements TimingConstraint<S> {
+public class VelocityLimitRegionConstraint implements TrajectoryConstraint {
     protected final Translation2d min_corner_;
     protected final Translation2d max_corner_;
     protected final double velocity_limit_;
@@ -15,8 +15,8 @@ public class VelocityLimitRegionConstraint<S extends ITranslation2d<S>> implemen
     }
 
     @Override
-    public double getMaxVelocity(S state) {
-        final Translation2d translation = state.getTranslation();
+    public double getMaxVelocity(Pose2d pose, double curvature, double velocity) {
+        final Translation2d translation = pose.getTranslation();
         if (translation.x() <= max_corner_.x() && translation.x() >= min_corner_.x() &&
                 translation.y() <= max_corner_.y() && translation.y() >= min_corner_.y()) {
             return velocity_limit_;
@@ -25,9 +25,8 @@ public class VelocityLimitRegionConstraint<S extends ITranslation2d<S>> implemen
     }
 
     @Override
-    public TimingConstraint.MinMaxAcceleration getMinMaxAcceleration(S state,
-                                                                     double velocity) {
-        return MinMaxAcceleration.kNoLimits;
+    public MinMax getMinMaxAcceleration(Pose2d pose, double curvature, double velocity){
+        return new MinMax();
     }
 
 }

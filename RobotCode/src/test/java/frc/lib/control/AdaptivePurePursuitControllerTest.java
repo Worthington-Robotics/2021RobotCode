@@ -59,7 +59,7 @@ public class AdaptivePurePursuitControllerTest {
              friction_factor, update.dtheta * turn_factor);
 
             //update the pose with the specified transform
-            pose = pose.transformBy(Pose2d.exp(update));
+            pose = pose.exp(update);
 
             //print the data to the console to see what is going on
             System.out.println(fmt.format(t) + ", " + pose.toString() + ", " + update.toString());

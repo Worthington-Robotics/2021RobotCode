@@ -6,9 +6,9 @@ import java.text.DecimalFormat;
 
 import static frc.lib.util.Util.kEpsilon;
 
-
 /**
- * A rotation in a 2d coordinate frame represented a point on the unit circle (cosine and sine).
+ * A rotation in a 2d coordinate frame represented a point on the unit circle
+ * (cosine and sine).
  * <p>
  * Inspired by Sophus (https://github.com/strasdat/Sophus/tree/master/sophus)
  */
@@ -28,7 +28,8 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
 
     public Rotation2d(double x, double y, boolean normalize) {
         if (normalize) {
-            // From trig, we know that sin^2 + cos^2 == 1, but as we do math on this object we might accumulate rounding errors.
+            // From trig, we know that sin^2 + cos^2 == 1, but as we do math on this object
+            // we might accumulate rounding errors.
             // Normalizing forces us to re-scale the sin and cos to reset rounding errors.
             double magnitude = Math.hypot(x, y);
             if (magnitude > kEpsilon) {
@@ -89,9 +90,11 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
     }
 
     /**
-     * We can rotate this Rotation2d by adding together the effects of it and another rotation.
+     * We can rotate this Rotation2d by adding together the effects of it and
+     * another rotation.
      *
-     * @param other The other rotation. See: https://en.wikipedia.org/wiki/Rotation_matrix
+     * @param other The other rotation. See:
+     *              https://en.wikipedia.org/wiki/Rotation_matrix
      * @return This rotation rotated by other.
      */
     public Rotation2d rotateBy(final Rotation2d other) {
@@ -110,6 +113,46 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
      */
     public Rotation2d inverse() {
         return new Rotation2d(cos_angle_, -sin_angle_, false);
+    }
+
+    /**
+     * Adds two rotations together, with the result being bounded between -pi and
+     * pi.
+     *
+     * <p>
+     * For example, Rotation2d.fromDegrees(30) + Rotation2d.fromDegrees(60) =
+     * Rotation2d{-pi/2}
+     *
+     * @param other The rotation to add.
+     * @return The sum of the two rotations.
+     */
+    public Rotation2d plus(Rotation2d other) {
+        return rotateBy(other);
+    }
+
+    /**
+     * Subtracts the new rotation from the current rotation and returns the new
+     * rotation.
+     *
+     * <p>
+     * For example, Rotation2d.fromDegrees(10) - Rotation2d.fromDegrees(100) =
+     * Rotation2d{-pi/2}
+     *
+     * @param other The rotation to subtract.
+     * @return The difference between the two rotations.
+     */
+    public Rotation2d minus(Rotation2d other) {
+        return rotateBy(other.unaryMinus());
+    }
+
+    /**
+     * Takes the inverse of the current rotation. This is simply the negative of the
+     * current angular value.
+     *
+     * @return The inverse of the current rotation.
+     */
+    public Rotation2d unaryMinus() {
+        return new Rotation2d(-cos_angle_, -sin_angle_, false);
     }
 
     public boolean isParallel(final Rotation2d other) {
@@ -155,9 +198,8 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null || !(other instanceof Rotation2d)) {
+        if (other == null || !(other instanceof Rotation2d))
             return false;
-        }
         return distance((Rotation2d) other) < Util.kEpsilon;
     }
 

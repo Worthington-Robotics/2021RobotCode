@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SplineGenerator {
-    private static final double kMaxDX = 2.0; //inches
-    private static final double kMaxDY = 0.05; //inches
-    private static final double kMaxDTheta = 0.1; //radians!
+    private static final double kMaxDX = 0.127; //m
+    private static final double kMaxDY = 0.000127; //m
+    private static final double kMaxDTheta = 0.0872; //radians
     private static final int kMinSampleSize = 1;
 
     /**

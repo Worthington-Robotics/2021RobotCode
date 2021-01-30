@@ -1,12 +1,10 @@
 package frc.lib.models;
 
 import frc.lib.geometry.Pose2d;
-import frc.lib.geometry.Pose2dWithCurvature;
 import frc.lib.geometry.Rotation2d;
-import frc.lib.trajectory.Trajectory;
-import frc.lib.trajectory.timing.CentripetalAccelerationConstraint;
-import frc.lib.trajectory.timing.TimedState;
-import frc.lib.trajectory.timing.TimingConstraint;
+import frc.lib.trajectory.*;
+import frc.lib.trajectory.constraint.CentripetalAccelerationConstraint;
+import frc.lib.trajectory.constraint.TrajectoryConstraint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,31 +23,31 @@ public class DriveTrajectoryGenerator {
         return m_instance;
     }
 
-    public Trajectory<TimedState<Pose2dWithCurvature>> generateTrajectory(
+    public Trajectory generateTrajectory(
             boolean reversed,
             final List<Pose2d> waypoints,
-            final List<TimingConstraint<Pose2dWithCurvature>> constraints,
+            final List<TrajectoryConstraint> constraints,
             double max_vel,  // m/s
             double max_accel,  // m/s^2
             double max_voltage) {
         return DMP.generateTrajectory(reversed, waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);
     }
 
-    public Trajectory<TimedState<Pose2dWithCurvature>> getTwoMeters() {
+    public Trajectory getTwoMeters() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(6, 0, Rotation2d.identity()));
         return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), 2.0, 2.0, 10.0);
     }
 
-    public Trajectory<TimedState<Pose2dWithCurvature>> getThreeByThree() {
+    public Trajectory getThreeByThree() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
         return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
     }
 
-    public Trajectory<TimedState<Pose2dWithCurvature>> getSnkCurve() {
+    public Trajectory getSnkCurve() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
@@ -57,7 +55,7 @@ public class DriveTrajectoryGenerator {
         return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
     }
 
-    public Trajectory<TimedState<Pose2dWithCurvature>> getLoop() {
+    public Trajectory getLoop() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));

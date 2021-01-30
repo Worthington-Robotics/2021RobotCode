@@ -16,13 +16,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.drivers.PIDF;
 import frc.lib.geometry.Pose2d;
-import frc.lib.geometry.Pose2dWithCurvature;
 import frc.lib.geometry.Rotation2d;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.models.DriveMotionPlanner;
-import frc.lib.trajectory.TrajectoryIterator;
-import frc.lib.trajectory.timing.TimedState;
+import frc.lib.trajectory.*;
 import frc.lib.util.DriveSignal;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
@@ -236,7 +234,7 @@ public class Drive extends Subsystem {
 
     public void reset() {
         mMotionPlanner.reset();
-        mMotionPlanner.setFollowerType(DriveMotionPlanner.FollowerType.NONLINEAR_FEEDBACK);
+        mMotionPlanner.setFollowerType(DriveMotionPlanner.FollowerType.FEEDFORWARD_ONLY);
         mOverrideTrajectory = false;
         periodic = new DriveIO();
         setHeading(Rotation2d.fromDegrees(0));
@@ -399,7 +397,7 @@ public class Drive extends Subsystem {
         periodic.right_demand = signal.getRight();
     }
 
-    public synchronized void setTrajectory(TrajectoryIterator<TimedState<Pose2dWithCurvature>> trajectory) {
+    public synchronized void setTrajectory(Trajectory trajectory) {
         if (mMotionPlanner != null) {
             mOverrideTrajectory = false;
             mMotionPlanner.reset();
@@ -460,7 +458,7 @@ public class Drive extends Subsystem {
     }
 
     public class DriveIO extends PeriodicIO {
-        public TimedState<Pose2dWithCurvature> path_setpoint;
+        public TimedState path_setpoint;
         // INPUTS
         public double left_pos_ticks = 0;
         // public double left_error = 0;

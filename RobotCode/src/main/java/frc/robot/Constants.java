@@ -117,7 +117,7 @@ public class Constants {
     public static final double ROBOT_ANGULAR_INERTIA = 10.0;  // kg m^2 TODO tune
     public static final double ROBOT_ANGULAR_DRAG = 12.0;  // N*m / (rad/sec) TODO tune
     public static final double DRIVE_WHEEL_RADIUS = DRIVE_WHEEL_DIAMETER / 2.0;
-    public static final double TRACK_SCRUB_FACTOR = 1.0;  // TODO tune
+    public static final double TRACK_SCRUB_FACTOR = 1.2;  //fudge factor for turning
 
     //Path following Constants
     public static final double ROBOT_MAX_VELOCITY = 120.0; // in/s

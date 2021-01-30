@@ -5,7 +5,8 @@ import frc.lib.util.Util;
 import java.text.DecimalFormat;
 
 /**
- * A translation in a 2d coordinate frame. Translations are simply shifts in an (x, y) plane.
+ * A translation in a 2d coordinate frame. Translations are simply shifts in an
+ * (x, y) plane.
  */
 public class Translation2d implements ITranslation2d<Translation2d> {
     protected static final Translation2d kIdentity = new Translation2d();
@@ -59,23 +60,78 @@ public class Translation2d implements ITranslation2d<Translation2d> {
     }
 
     /**
-     * We can compose Translation2d's by adding together the x and y shifts.
+     * Adds two translations in 2d space and returns the sum. This is similar to
+     * vector addition.
      *
-     * @param other The other translation to add.
-     * @return The combined effect of translating by this object and the other.
+     * <p>
+     * For example, Translation2d{1.0, 2.5} + Translation2d{2.0, 5.5} =
+     * Translation2d{3.0, 8.0}
+     *
+     * @param other The translation to add.
+     * @return The sum of the translations.
      */
     public Translation2d translateBy(final Translation2d other) {
         return new Translation2d(x_ + other.x_, y_ + other.y_);
     }
 
     /**
-     * We can also rotate Translation2d's. See: https://en.wikipedia.org/wiki/Rotation_matrix
+     * Applies a rotation to the translation in 2d space.
      *
-     * @param rotation The rotation to apply.
-     * @return This translation rotated by rotation.
+     * <p>
+     * This multiplies the translation vector by a counterclockwise rotation matrix
+     * of the given angle. [x_new] [other.cos, -other.sin][x] [y_new] = [other.sin,
+     * other.cos][y]
+     *
+     * <p>
+     * For example, rotating a Translation2d of {2, 0} by 90 degrees will return a
+     * Translation2d of {0, 2}.
+     *
+     * @param other The rotation to rotate the translation by.
+     * @return The new rotated translation.
      */
     public Translation2d rotateBy(final Rotation2d rotation) {
         return new Translation2d(x_ * rotation.cos() - y_ * rotation.sin(), x_ * rotation.sin() + y_ * rotation.cos());
+    }
+
+    /**
+     * Adds two translations in 2d space and returns the sum. This is similar to
+     * vector addition.
+     *
+     * <p>
+     * For example, Translation2d{1.0, 2.5} + Translation2d{2.0, 5.5} =
+     * Translation2d{3.0, 8.0}
+     *
+     * @param other The translation to add.
+     * @return The sum of the translations.
+     */
+    public Translation2d plus(Translation2d other) {
+        return new Translation2d(x_ + other.x_, y_ + other.y_);
+    }
+
+    /**
+     * Subtracts the other translation from the other translation and returns the
+     * difference.
+     *
+     * <p>
+     * For example, Translation2d{5.0, 4.0} - Translation2d{1.0, 2.0} =
+     * Translation2d{4.0, 2.0}
+     *
+     * @param other The translation to subtract.
+     * @return The difference between the two translations.
+     */
+    public Translation2d minus(Translation2d other) {
+        return new Translation2d(x_ - other.x_, y_ - other.y_);
+    }
+
+    /**
+     * Returns the inverse of the current translation. This is equivalent to
+     * rotating by 180 degrees, flipping the point over both axes, or simply
+     * negating both components of the translation.
+     *
+     * @return The inverse of the current translation.
+     */
+    public Translation2d unaryMinus() {
+        return new Translation2d(-x_, -y_);
     }
 
     public Rotation2d direction() {
@@ -126,7 +182,7 @@ public class Translation2d implements ITranslation2d<Translation2d> {
     }
 
     @Override
-    public int getNumFields() {
+    public int getNumFields(){
         return 2;
     }
 
@@ -153,9 +209,8 @@ public class Translation2d implements ITranslation2d<Translation2d> {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null || !(other instanceof Translation2d)) {
+        if (other == null || !(other instanceof Translation2d))
             return false;
-        }
         return distance((Translation2d) other) < Util.kEpsilon;
     }
 

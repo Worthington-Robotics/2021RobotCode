@@ -96,7 +96,7 @@ public class AutoSelector {
                 return new ThreeBallAnywhere();
 
             case Auto3:
-                return new get10hard();
+                //return new get10hard();
 
             case Auto4:
                 return new get10Impossible();
@@ -110,7 +110,7 @@ public class AutoSelector {
             case Auto7:
                 return new SystemsCheck();
             case Auto8:
-                return new EightBallEasy();
+                //return new EightBallEasy();
 
 
             default:

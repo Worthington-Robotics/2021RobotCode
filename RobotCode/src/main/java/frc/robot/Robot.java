@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
         enabledLooper.stop();
 
         StateMachine.getInstance().assertStop();
-        Superstructure.getInstance().setInit();
+        Superstructure.getInstance().reset();
         Shooter.getInstance().setRampUp();
 
         disabledLooper.start();
@@ -207,11 +207,10 @@ public class Robot extends TimedRobot {
         shiftButton.whileHeld(Action.toCommand(new Shift()));
         gyrPovTrigger.whileHeld(Action.toCommand(new GyroLock()));
         shootOne.whenPressed(Action.toCommand(new ShootBallAction()));
-        intake.whileHeld(Action.toCommand(new IntakeAction()));
+        //intake.whileHeld(Action.toCommand(new IntakeAction()));
         folder.toggleWhenPressed(Action.toCommand(new FolderToggleAction()));
         climber.toggleWhenPressed(Action.toCommand(new ClimberToggleAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
-        intakeUP.toggleWhenPressed(Action.toCommand(new ArmAction()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));
         VersionData.WriteBuildInfoToDashboard();
 

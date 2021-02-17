@@ -61,7 +61,8 @@ public class SubsystemManager implements ILooper, Logable {
             logger = new ReflectingLogger<>(logData);
         } catch (final Exception e) {
             // show logger failed to init
-            DriverStation.reportError("Logger unable to start", e.getStackTrace());
+            DriverStation.reportError("Logger unable to start because of " + e.getMessage(), e.getStackTrace());
+            
 
             //throw the runtime error only if turned on via argument
             if (!mIgnoreLogger) {

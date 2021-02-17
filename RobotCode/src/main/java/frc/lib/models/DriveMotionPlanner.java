@@ -94,7 +94,16 @@ public class DriveMotionPlanner implements CSVWritable {
             final List<TrajectoryConstraint> constraints, double max_vel, 
             double max_accel, 
             double max_voltage) {
-        return generateTrajectory(reversed, waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);
+                Trajectory tra;
+                if(reversed)
+                {
+                    tra = generateRevTrajectory(waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);
+                }
+                else
+                {
+                    tra = generateTrajectory(waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);
+                }
+        return tra;
     }
 
     /**
@@ -109,31 +118,12 @@ public class DriveMotionPlanner implements CSVWritable {
      * @param max_voltage the maximum allowable voltage the robot can use
      * @return a complete trajectory, ready for execution
      */
-    public Trajectory generateTrajectory(boolean reversed, final List<Pose2d> waypoints,
+    public Trajectory generateTrajectory(final List<Pose2d> waypoints,
             final List<TrajectoryConstraint> constraints, double start_vel, double end_vel, double max_vel, // inches/s
             double max_accel, 
             double max_voltage) {
-        List<Pose2d> waypoints_maybe_flipped = waypoints;
-        final Pose2d flip = Pose2d.fromRotation(new Rotation2d(-1, 0, false));
-        
-        if (reversed) {
-            waypoints_maybe_flipped = new ArrayList<>(waypoints.size());
-            for (int i = 0; i < waypoints.size(); ++i) {
-                waypoints_maybe_flipped.add(waypoints.get(i).transformBy(flip));
-            }
-        }
-        
         // Create a trajectory from splines.
         List<Pose2dWithCurvature> path = SplineUtil.pathFromSplineWaypoints(waypoints, kMaxDx, kMaxDy, kMaxDTheta);
-
-        if (reversed) {
-            List<Pose2dWithCurvature> flipped = new ArrayList<>(path.size());
-            for (int i = 0; i < path.size(); ++i) {
-                flipped.add(new Pose2dWithCurvature(path.get(i).getPose().transformBy(flip),
-                        -path.get(i).getCurvature(), path.get(i).getDCurvatureDs()));
-            }
-            path = new ArrayList<>(flipped);
-        }
         // Create the constraint that the robot must be able to traverse the trajectory
         // without ever applying more
         // than the specified voltage.
@@ -145,8 +135,54 @@ public class DriveMotionPlanner implements CSVWritable {
             all_constraints.addAll(constraints);
         }
         // Generate the timed trajectory.
-        Trajectory timed_trajectory = TrajectoryParameterizer.timeParameterizeTrajectory(path, constraints, start_vel,
-                end_vel, max_vel, max_accel, reversed);
+        Trajectory timed_trajectory = TrajectoryParameterizer.timeParameterizeTrajectory(path, all_constraints, start_vel,
+                end_vel, max_vel, max_accel, false);
+        return timed_trajectory;
+    }
+
+     /**
+     * hooks the trajectory generator to create a trajectory with pre-imposed limits
+     * @param reversed whether the robot should run this trajectory backwards
+     * @param waypoints the list of pose2ds the robot should path through
+     * @param constraints any addtional contraints the trajectory generator should follow
+     * @param start_vel the starting velocity of the robot (m / s)
+     * @param end_vel the ending velocity of the robot (m / s)
+     * @param max_vel the maximum allowable velocity the robot can travel (m / s)
+     * @param max_accel the maximum allowable acceleration the robot can experince (m / s^2)
+     * @param max_voltage the maximum allowable voltage the robot can use
+     * @return a complete trajectory, ready for execution
+     */
+    public Trajectory generateRevTrajectory(final List<Pose2d> waypoints,
+            final List<TrajectoryConstraint> constraints, double start_vel, double end_vel, double max_vel, // inches/s
+            double max_accel, 
+            double max_voltage) {
+        
+        final Pose2d flip = Pose2d.fromRotation(new Rotation2d(-1, 0, false));
+            ArrayList<Pose2d> waypointsFlipped = new ArrayList<>(waypoints.size());
+            for (int i = 0; i < waypoints.size(); ++i) {
+                waypointsFlipped.add(waypoints.get(i).transformBy(flip));
+            }
+        // Create a trajectory from splines.
+            List<Pose2dWithCurvature> path = SplineUtil.pathFromSplineWaypoints(waypointsFlipped, kMaxDx, kMaxDy, kMaxDTheta);
+            List<Pose2dWithCurvature> flipped = new ArrayList<>(path.size());
+            for (int i = 0; i < path.size(); ++i) {
+                flipped.add(new Pose2dWithCurvature(path.get(i).getPose().transformBy(flip),
+                        path.get(i).getCurvature(), path.get(i).getDCurvatureDs()));
+            }
+            path = new ArrayList<>(flipped);
+        // Create the constraint that the robot must be able to traverse the trajectory
+        // without ever applying more
+        // than the specified voltage.
+        final DifferentialDriveDynamicsConstraint drive_constraints = new DifferentialDriveDynamicsConstraint(mModel,
+                max_voltage);
+        List<TrajectoryConstraint> all_constraints = new ArrayList<>();
+        all_constraints.add(drive_constraints);
+        if (constraints != null) {
+            all_constraints.addAll(constraints);
+        }
+        // Generate the timed trajectory.
+        Trajectory timed_trajectory = TrajectoryParameterizer.timeParameterizeTrajectory(path, all_constraints, start_vel,
+                end_vel, max_vel, max_accel, true);
         return timed_trajectory;
     }
 

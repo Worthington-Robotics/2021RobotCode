@@ -2,21 +2,22 @@ package frc.lib.models;
 
 import frc.lib.geometry.Pose2d;
 import frc.lib.geometry.Rotation2d;
-import frc.lib.trajectory.*;
+import frc.lib.geometry.Translation2d;
+import frc.lib.trajectory.Trajectory;
 import frc.lib.trajectory.constraint.CentripetalAccelerationConstraint;
 import frc.lib.trajectory.constraint.TrajectoryConstraint;
+import frc.lib.trajectory.constraint.VelocityLimitRegionConstraint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class DriveTrajectoryGenerator {
     private static final DriveTrajectoryGenerator m_instance = new DriveTrajectoryGenerator();
     private final DriveMotionPlanner DMP;
-    public final Pose2d HabStart;
     private DriveTrajectoryGenerator() {
         DMP           = new DriveMotionPlanner();
-        HabStart      = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     }
 
     public static DriveTrajectoryGenerator getInstance() {
@@ -30,14 +31,19 @@ public class DriveTrajectoryGenerator {
             double max_vel,  // m/s
             double max_accel,  // m/s^2
             double max_voltage) {
-        return DMP.generateTrajectory(reversed, waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);
+                Trajectory tra;
+                if(!reversed)
+                {tra = DMP.generateTrajectory(waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);}
+                else
+                {tra = DMP.generateRevTrajectory(waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);}
+        return tra;
     }
 
     public Trajectory getTwoMeters() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(6, 0, Rotation2d.identity()));
-        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), 2.0, 2.0, 10.0);
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)),1.75, 2.0, 2.0);
     }
 
     public Trajectory getThreeByThree() {
@@ -61,6 +67,72 @@ public class DriveTrajectoryGenerator {
         Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
         Points.add(new Pose2d(6, -3, Rotation2d.fromDegrees(90)));
         Points.add(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
-        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(10)), .5, 2.0, 10.0);
+    }
+
+    public Trajectory getSki(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(1.95, -2.4, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(-0.25, -4.6, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(2.4, -6.6, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(-.1, -6.6, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(2.25, -4.6, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(-.1, -2.4, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(1.4, 0, Rotation2d.fromDegrees(0)));
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(10)), 1.75, 3.0, 10.0);
+    }
+
+    public Trajectory getBar(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(3.7, -1.2, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(2.3, -1.2, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(5.3, -.6, Rotation2d.fromDegrees(10)));
+        Points.add(new Pose2d(5.3, 1.4, Rotation2d.fromDegrees(180)));
+        Points.add(new Pose2d(5.3, -.5, Rotation2d.fromDegrees(301)));
+        Points.add(new Pose2d(6.9, -2.2, Rotation2d.fromDegrees(0.1)));
+        Points.add(new Pose2d(6.9, -.4, Rotation2d.fromDegrees(180)));
+        Points.add(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(10)), 1.75, 4.0, 10.0);
+    }
+
+    // public Trajectory getBounceA(){
+    //     List<Pose2d> Points = new ArrayList<>();
+    //     Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+    //     Points.add(new Pose2d(1.4, 1.1, Rotation2d.fromDegrees(90)));
+    //     return generateTrajectory(false, Points, null, 1.6, 4.0, 10.0);
+    // }
+
+    public Trajectory getBounceA(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(6, 0, Rotation2d.identity()));
+        return generateTrajectory(false, Points, null, 2, 8, 10.0);
+    }
+
+    public Trajectory getBounceB(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(1.4, 1.1, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(1.4, -0.9, Rotation2d.fromDegrees(89.9)));
+        //Points.add(new Pose2d(1.4, 1.1, Rotation2d.fromDegrees(90)));
+        //Points.add(new Pose2d(2.35, -2.75, Rotation2d.fromDegrees(180)));
+        //Points.add(new Pose2d(3.85, 1.1, Rotation2d.fromDegrees(270)));
+        return generateTrajectory(true, Points, null, 1.6, 3.5, 10.0);
+    }
+
+    public Trajectory getBounceC(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(3.85, 1.1, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(4.9, -2.75, Rotation2d.fromDegrees(0)));
+        Points.add(new Pose2d(6.1, 1.1, Rotation2d.fromDegrees(90)));
+        return generateTrajectory(false, Points, null, 1.6, 3.5, 10.0);
+    }
+
+    public Trajectory getBounceD(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(6.1, 1.1, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(7, -0.6, Rotation2d.fromDegrees(180)));
+        return generateTrajectory(true, Points, null, 1.6, 4.0, 10.0);
     }
 }

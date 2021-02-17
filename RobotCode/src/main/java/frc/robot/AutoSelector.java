@@ -13,12 +13,10 @@ import frc.robot.autoactiongroups.*;
  */
 enum UserSelection {
 
-    Auto1("DummyDrive", 1),
-    Auto2("SmrtDrive", 2),
-    Auto3("SmartDrive", 3),
-    Auto4("Personal 9", 4),
-    Auto7("Auto Test Protocol", 7),
-    Auto9("BigApple", 9),
+    Auto8("BounceB", 8),
+    Auto9("Ski", 9),
+    Auto10("Barrel",10),
+    Auto11("Bounce",11),
     Auto20("Remote Operation", 20);
 
     private String name;
@@ -84,25 +82,14 @@ public class AutoSelector {
         UserSelection usrAuto = getSelFromStr(selection);
         SmartDashboard.putString("Final Auto Choice", usrAuto.toString());
         switch (usrAuto) {
-
-            case Auto1:
-                return new get10easy();
-
-            case Auto2:
-                return new ThreeBallAnywhere();
-
-            case Auto3:
-                return new get10hard();
-
-            case Auto4:
-                return new get10Impossible();
-
-            case Auto7:
-                return new SystemsCheck();
+            case Auto8:
+                return new NoSkew();
             case Auto9:
                 return new NoSkew();
-
-
+            case Auto10:
+                return new Barrel();
+            case Auto11:
+                return new BoingBoing();
             default:
                 return null;
         }

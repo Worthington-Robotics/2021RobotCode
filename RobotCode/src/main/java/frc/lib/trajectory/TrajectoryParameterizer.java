@@ -51,6 +51,9 @@ package frc.lib.trajectory;
 import frc.lib.geometry.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.management.RuntimeErrorException;
+
 import frc.lib.trajectory.constraint.TrajectoryConstraint;
 import frc.lib.trajectory.constraint.TrajectoryConstraint.MinMax;
 
@@ -118,8 +121,8 @@ public final class TrajectoryParameterizer{
                 constrainedState.maxVelocity = Math.min(maxVelocityMetersPerSecond,
                     Math.sqrt(predecessor.maxVelocity
                         * predecessor.maxVelocity
-                        + predecessor.maxAcceleration * ds * 2.0)
-                );
+                        + predecessor.maxAcceleration * ds * 2.0
+                ));
                 if (Double.isNaN(constrainedState.maxVelocity)) {
                     throw new RuntimeException();
                 }
@@ -237,18 +240,19 @@ public final class TrajectoryParameterizer{
       
             // Calculate dt
             double dt = 0.0;
-            if (i > 0) {
-              states.get(i - 1).acceleration = reversed ? -accel : accel;
-              if (Math.abs(accel) > 1E-6) {
-                // v_f = v_0 + a * t
-                dt = (state.maxVelocity - velocityMetersPerSecond) / accel;
-              } else if (Math.abs(velocityMetersPerSecond) > 1E-6) {
-                // delta_x = v * t
-                dt = ds / velocityMetersPerSecond;
-              } else {
-                throw new RuntimeException("Something went wrong");
-              }
-            }
+      if (i > 0) {
+        states.get(i - 1).acceleration = reversed ? -accel : accel;
+        if (Math.abs(accel) > 1E-6) {
+          // v_f = v_0 + a * t
+          dt = (state.maxVelocity - velocityMetersPerSecond) / accel;
+        } else if (Math.abs(velocityMetersPerSecond) > 1E-6) {
+          // delta_x = v * t
+          dt = ds / velocityMetersPerSecond;
+        } else {
+          throw new RuntimeException(
+              "Something went wrong at iteration " + i + " of time parameterization.");
+        }
+      }
       
             velocityMetersPerSecond = state.maxVelocity;
             distanceMeters = state.distance;

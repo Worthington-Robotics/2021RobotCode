@@ -72,13 +72,13 @@ public class Drive extends Subsystem {
                         break;
                     case PROFILING_TEST:
                         if (Constants.RAMPUP) {
-                            periodic.left_demand = periodic.ramp_Up_Counter * .0025 + .01;
-                            periodic.right_demand = periodic.ramp_Up_Counter * .0025 + .01;
-                            periodic.ramp_Up_Counter++;
+                            periodic.leftDemand = periodic.rampUpCounter * .0025 + .01;
+                            periodic.rightDemand = periodic.rampUpCounter * .0025 + .01;
+                            periodic.rampUpCounter++;
                         } else if (DriverStation.getInstance().isTest()) {
-                            periodic.left_demand = radiansPerSecondToTicksPer100ms(
+                            periodic.leftDemand = radiansPerSecondToTicksPer100ms(
                                     metersPerSecondToRadiansPerSecond(Constants.MP_TEST_SPEED));
-                            periodic.right_demand = radiansPerSecondToTicksPer100ms(
+                            periodic.rightDemand = radiansPerSecondToTicksPer100ms(
                                     metersPerSecondToRadiansPerSecond(Constants.MP_TEST_SPEED));
                         }
                         break;
@@ -88,10 +88,10 @@ public class Drive extends Subsystem {
                         }
                         break;
                     case ANGLE_PID:
-                        periodic.PIDOutput = anglePID.update(periodic.gyro_heading.getDegrees());
+                        periodic.PIDOutput = anglePID.update(periodic.gyroHeading.getDegrees());
                         DriveSignal drivesignal = arcadeDrive(periodic.operatorInput[1], /*periodic.PIDOutput*/0);
-                        periodic.right_demand = drivesignal.getRight();
-                        periodic.left_demand = drivesignal.getLeft();
+                        periodic.rightDemand = drivesignal.getRight();
+                        periodic.leftDemand = drivesignal.getLeft();
                         break;
                     default:
                         System.out.println("You fool, unexpected control state");
@@ -126,11 +126,11 @@ public class Drive extends Subsystem {
         }
 
         periodic.AnglePIDError = anglePID.getError();
-        periodic.gyro_heading = Rotation2d.fromDegrees(pigeonIMU.getFusedHeading()).rotateBy(periodic.gyro_offset);
-        periodic.left_velocity_ticks_per_100ms = driveFrontLeft.getSelectedSensorVelocity();
-        periodic.right_velocity_ticks_per_100ms = driveFrontRight.getSelectedSensorVelocity();
-        periodic.left_pos_ticks = driveFrontLeft.getSelectedSensorPosition();
-        periodic.right_pos_ticks = driveFrontRight.getSelectedSensorPosition();
+        periodic.gyroHeading = Rotation2d.fromDegrees(pigeonIMU.getFusedHeading()).rotateBy(periodic.gyroOffset);
+        periodic.leftVelocityTicksPer100ms = driveFrontLeft.getSelectedSensorVelocity();
+        periodic.rightVelocityTicksPer100ms = driveFrontRight.getSelectedSensorVelocity();
+        periodic.leftPosTicks = driveFrontLeft.getSelectedSensorPosition();
+        periodic.rightPosTicks = driveFrontRight.getSelectedSensorPosition();
         periodic.rightCurrent = driveFrontRight.getSupplyCurrent();
         periodic.leftCurrent = driveFrontLeft.getSupplyCurrent();
 
@@ -140,11 +140,11 @@ public class Drive extends Subsystem {
     public synchronized void writePeriodicOutputs() {
         // System.out.println(mDriveControlState);
         if (mDriveControlState == DriveControlState.OPEN_LOOP || mDriveControlState == DriveControlState.ANGLE_PID || (mDriveControlState == DriveControlState.PROFILING_TEST && Constants.RAMPUP)) {
-            driveFrontLeft.set(ControlMode.PercentOutput, periodic.left_demand);
-            driveFrontRight.set(ControlMode.PercentOutput, periodic.right_demand);
+            driveFrontLeft.set(ControlMode.PercentOutput, periodic.leftDemand);
+            driveFrontRight.set(ControlMode.PercentOutput, periodic.rightDemand);
         } else {
-            driveFrontLeft.set(ControlMode.Velocity, periodic.left_demand, DemandType.ArbitraryFeedForward, (periodic.left_feedforward + Constants.DRIVE_LEFT_KD * periodic.left_accl / 1023.0));
-            driveFrontRight.set(ControlMode.Velocity, periodic.right_demand, DemandType.ArbitraryFeedForward, (periodic.right_feedforward + Constants.DRIVE_RIGHT_KD * periodic.right_accl / 1023.0));
+            driveFrontLeft.set(ControlMode.Velocity, periodic.leftDemand, DemandType.ArbitraryFeedForward, (periodic.leftFeedforward + Constants.DRIVE_LEFT_KD * periodic.leftAccl / 1023.0));
+            driveFrontRight.set(ControlMode.Velocity, periodic.rightDemand, DemandType.ArbitraryFeedForward, (periodic.rightFeedforward + Constants.DRIVE_RIGHT_KD * periodic.rightAccl / 1023.0));
         }
         trans.set(periodic.TransState ? Value.kForward : Value.kReverse);
     }
@@ -178,14 +178,14 @@ public class Drive extends Subsystem {
     }
 
     public synchronized Rotation2d getHeading() {
-        return periodic.gyro_heading;
+        return periodic.gyroHeading;
     }
 
     public synchronized void setHeading(Rotation2d heading) {
         System.out.println("SET HEADING: " + heading.getDegrees());
-        periodic.gyro_offset = heading.rotateBy(Rotation2d.fromDegrees(pigeonIMU.getFusedHeading()).inverse());
-        System.out.println("Gyro offset: " + periodic.gyro_offset.getDegrees());
-        periodic.gyro_heading = heading;
+        periodic.gyroOffset = heading.rotateBy(Rotation2d.fromDegrees(pigeonIMU.getFusedHeading()).inverse());
+        System.out.println("Gyro offset: " + periodic.gyroOffset.getDegrees());
+        periodic.gyroHeading = heading;
     }
 
     public void updateDrivePID(double P, double I, double D, double F) {
@@ -201,11 +201,11 @@ public class Drive extends Subsystem {
     }
 
     public double getLeftEncoderRotations() {
-        return periodic.left_pos_ticks / Constants.DRIVE_ENCODER_PPR;
+        return periodic.leftPosTicks / Constants.DRIVE_ENCODER_PPR;
     }
 
     public double getRightEncoderRotations() {
-        return periodic.right_pos_ticks / Constants.DRIVE_ENCODER_PPR;
+        return periodic.rightPosTicks / Constants.DRIVE_ENCODER_PPR;
     }
 
     public double getLeftEncoderDistance() {
@@ -217,11 +217,11 @@ public class Drive extends Subsystem {
     }
 
     public double getLeftVelocityNativeUnits() {
-        return periodic.left_velocity_ticks_per_100ms;
+        return periodic.leftVelocityTicksPer100ms;
     }
 
     public double getRightVelocityNativeUnits() {
-        return periodic.right_velocity_ticks_per_100ms;
+        return periodic.rightVelocityTicksPer100ms;
     }
 
     public double getLeftLinearVelocity() {
@@ -234,7 +234,7 @@ public class Drive extends Subsystem {
 
     public void reset() {
         mMotionPlanner.reset();
-        mMotionPlanner.setFollowerType(DriveMotionPlanner.FollowerType.FEEDFORWARD_ONLY);
+        mMotionPlanner.setFollowerType(DriveMotionPlanner.FollowerType.NONLINEAR_FEEDBACK);
         mOverrideTrajectory = false;
         periodic = new DriveIO();
         setHeading(Rotation2d.fromDegrees(0));
@@ -322,15 +322,15 @@ public class Drive extends Subsystem {
             DriveMotionPlanner.Output output = mMotionPlanner.update(now, PoseEstimator.getInstance().getFieldToVehicle(now));
 
             periodic.error = mMotionPlanner.error();
-            periodic.path_setpoint = mMotionPlanner.setpoint();
+            periodic.pathSetpoint = mMotionPlanner.setpoint();
 
             if (!mOverrideTrajectory) {
                 DriveSignal signal = new DriveSignal(radiansPerSecondToTicksPer100ms(output.left_velocity),
                         radiansPerSecondToTicksPer100ms(output.right_velocity));
 
                 setVelocity(signal, new DriveSignal(output.left_feedforward_voltage / 12, output.right_feedforward_voltage / 12));
-                periodic.left_accl = radiansPerSecondToTicksPer100ms(output.left_accel) / 1000; //TODO why 1000
-                periodic.right_accl = radiansPerSecondToTicksPer100ms(output.right_accel) / 1000; //TODO why 1000
+                periodic.leftAccl = radiansPerSecondToTicksPer100ms(output.left_accel) / 1000; //TODO why 1000
+                periodic.rightAccl = radiansPerSecondToTicksPer100ms(output.right_accel) / 1000; //TODO why 1000
 
             } else {
                 setVelocity(DriveSignal.BRAKE, DriveSignal.BRAKE);
@@ -355,8 +355,8 @@ public class Drive extends Subsystem {
             driveFrontRight.set(ControlMode.PercentOutput, 0);
             mDriveControlState = DriveControlState.OPEN_LOOP;
         }
-        periodic.left_demand = signal.getLeft();
-        periodic.right_demand = signal.getRight();
+        periodic.leftDemand = signal.getLeft();
+        periodic.rightDemand = signal.getRight();
     }
 
     /**
@@ -370,9 +370,9 @@ public class Drive extends Subsystem {
             mDriveControlState = DriveControlState.ANGLE_PID;
         }
         anglePID.setPoint(angle);
-        periodic.gyro_pid_angle = angle;
-        periodic.left_demand = signal.getLeft();
-        periodic.right_demand = signal.getRight();
+        periodic.gyroPidAngle = angle;
+        periodic.leftDemand = signal.getLeft();
+        periodic.rightDemand = signal.getRight();
     }
 
     public boolean getPIDOnTarget() {
@@ -393,8 +393,8 @@ public class Drive extends Subsystem {
             driveFrontRight.set(ControlMode.Velocity, 0);
             mDriveControlState = DriveControlState.PATH_FOLLOWING;
         }
-        periodic.left_demand = signal.getLeft();
-        periodic.right_demand = signal.getRight();
+        periodic.leftDemand = signal.getLeft();
+        periodic.rightDemand = signal.getRight();
     }
 
     public synchronized void setTrajectory(Trajectory trajectory) {
@@ -417,7 +417,7 @@ public class Drive extends Subsystem {
         double[] PIDData = anglePID.getPID();
         SmartDashboard.putBoolean("isInverse", periodic.inverse);
 
-        SmartDashboard.putNumber("Drive/AnglePID/Set Point", periodic.gyro_pid_angle);
+        SmartDashboard.putNumber("Drive/AnglePID/Set Point", periodic.gyroPidAngle);
         SmartDashboard.putNumber("Drive/AnglePID/Error", periodic.AnglePIDError);
 
         SmartDashboard.putString("Drive/Drive State", mDriveControlState.toString());
@@ -428,20 +428,20 @@ public class Drive extends Subsystem {
         SmartDashboard.putNumber("Drive/Error/Theta", periodic.error.getRotation().getDegrees());
 
         SmartDashboard.putNumber("Drive/Left/Current", periodic.leftCurrent);
-        SmartDashboard.putNumber("Drive/Left/Demand", periodic.left_demand);
-        SmartDashboard.putNumber("Drive/Left/Talon Velocity", periodic.left_velocity_ticks_per_100ms);
+        SmartDashboard.putNumber("Drive/Left/Demand", periodic.leftDemand);
+        SmartDashboard.putNumber("Drive/Left/Talon Velocity", periodic.leftVelocityTicksPer100ms);
         // SmartDashboard.putNumber("Drive/Left/Talon Error", periodic.left_error);
         // SmartDashboard.putNumber("Drive/Left/Talon Voltage Out",
         // driveFrontLeft.getMotorOutputVoltage());
-        SmartDashboard.putNumber("Drive/Left/Encoder Counts", periodic.left_pos_ticks);
+        SmartDashboard.putNumber("Drive/Left/Encoder Counts", periodic.leftPosTicks);
 
         SmartDashboard.putNumber("Drive/Right/Current", periodic.rightCurrent);
-        SmartDashboard.putNumber("Drive/Right/Demand", periodic.right_demand);
-        SmartDashboard.putNumber("Drive/Right/Talon Velocity", periodic.right_velocity_ticks_per_100ms);
+        SmartDashboard.putNumber("Drive/Right/Demand", periodic.rightDemand);
+        SmartDashboard.putNumber("Drive/Right/Talon Velocity", periodic.rightVelocityTicksPer100ms);
         // SmartDashboard.putNumber("Drive/Right/Talon Error", periodic.right_error);
         // SmartDashboard.putNumber("Drive/Right/Talon Voltage Out",
         // driveFrontRight.getMotorOutputVoltage());
-        SmartDashboard.putNumber("Drive/Right/Encoder Counts", periodic.right_pos_ticks);
+        SmartDashboard.putNumber("Drive/Right/Encoder Counts", periodic.rightPosTicks);
 
         if (Constants.DEBUG) {
             SmartDashboard.putNumber("Drive/AnglePID/P", PIDData[0]);
@@ -458,21 +458,19 @@ public class Drive extends Subsystem {
     }
 
     public class DriveIO extends PeriodicIO {
-        public TimedState path_setpoint;
+        public TimedState pathSetpoint = new TimedState();
         // INPUTS
-        public double left_pos_ticks = 0;
-        // public double left_error = 0;
-        public double left_velocity_ticks_per_100ms = 0;
+        public double leftPosTicks = 0;
+        public double leftVelocityTicksPer100ms = 0;
         public double leftCurrent = 0;
 
-        public double right_pos_ticks = 0;
-        // public double right_error = 0;
-        public double right_velocity_ticks_per_100ms = 0;
+        public double rightPosTicks = 0;
+        public double rightVelocityTicksPer100ms = 0;
         public double rightCurrent = 0;
 
-        public Rotation2d gyro_heading = Rotation2d.identity();
-        public Rotation2d gyro_offset = Rotation2d.identity();
-        public double gyro_pid_angle = 0;
+        public Rotation2d gyroHeading = Rotation2d.identity();
+        public Rotation2d gyroOffset = Rotation2d.identity();
+        public double gyroPidAngle = 0;
         public double AnglePIDError = 0;
 
         public Pose2d error = new Pose2d(0, 0, Rotation2d.identity());
@@ -486,18 +484,18 @@ public class Drive extends Subsystem {
         private boolean savePIDSettings = false;
 
         // OUTPUTS
-        public double ramp_Up_Counter = 0;
+        public double rampUpCounter = 0;
         public boolean TransState = false;
         
-        double left_accl = 0.0;
-        double left_demand = 0.0;
-        double left_distance = 0.0;
-        double left_feedforward = 0.0;
+        public double leftAccl = 0.0;
+        public double leftDemand = 0.0;
+        public double leftDistance = 0.0;
+        public double leftFeedforward = 0.0;
 
-        double right_accl = 0.0;
-        double right_demand = 0.0;
-        double right_distance = 0.0;
-        double right_feedforward = 0.0;
+        public double rightAccl = 0.0;
+        public double rightDemand = 0.0;
+        public double rightDistance = 0.0;
+        public double rightFeedforward = 0.0;
 
     }
 

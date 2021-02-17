@@ -89,7 +89,7 @@ public class Drive extends Subsystem {
                         break;
                     case ANGLE_PID:
                         periodic.PIDOutput = anglePID.update(periodic.gyro_heading.getDegrees());
-                        DriveSignal drivesignal = arcadeDrive(periodic.operatorInput[1], /*periodic.PIDOutput*/0);
+                        DriveSignal drivesignal = arcadeDrive(periodic.operatorInput[1], periodic.PIDOutput);
                         periodic.right_demand = drivesignal.getRight();
                         periodic.left_demand = drivesignal.getLeft();
                         break;
@@ -133,6 +133,7 @@ public class Drive extends Subsystem {
         periodic.right_pos_ticks = driveFrontRight.getSelectedSensorPosition();
         periodic.rightCurrent = driveFrontRight.getSupplyCurrent();
         periodic.leftCurrent = driveFrontLeft.getSupplyCurrent();
+        periodic.AnglePIDOnTarget = getPIDOnTarget();
 
     }
 
@@ -427,6 +428,9 @@ public class Drive extends Subsystem {
         SmartDashboard.putNumber("Drive/Error/Y", periodic.error.getTranslation().y());
         SmartDashboard.putNumber("Drive/Error/Theta", periodic.error.getRotation().getDegrees());
 
+        SmartDashboard.putNumber("Drive/Angle", periodic.gyro_pid_angle);
+        SmartDashboard.putBoolean("Drive/PIDonTarget", periodic.AnglePIDOnTarget);
+
         SmartDashboard.putNumber("Drive/Left/Current", periodic.leftCurrent);
         SmartDashboard.putNumber("Drive/Left/Demand", periodic.left_demand);
         SmartDashboard.putNumber("Drive/Left/Talon Velocity", periodic.left_velocity_ticks_per_100ms);
@@ -474,6 +478,7 @@ public class Drive extends Subsystem {
         public Rotation2d gyro_offset = Rotation2d.identity();
         public double gyro_pid_angle = 0;
         public double AnglePIDError = 0;
+        public boolean AnglePIDOnTarget = false;
 
         public Pose2d error = new Pose2d(0, 0, Rotation2d.identity());
         public double[] operatorInput = { 0, 0, 0 };

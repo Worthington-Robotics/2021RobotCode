@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DriveMotionPlanner implements CSVWritable {
-    private static final double kMaxDx = 0.1; // meters
-    private static final double kMaxDy = 0.1; // meters
-    private static final double kMaxDTheta = Math.toRadians(5.0);
+    private static final double kMaxDx = 0.02; // meters
+    private static final double kMaxDy = 0.02; // meters
+    private static final double kMaxDTheta = Math.toRadians(2.0);
 
     public enum FollowerType {
         FEEDFORWARD_ONLY, 
@@ -52,9 +52,9 @@ public class DriveMotionPlanner implements CSVWritable {
         //speed per volt: rad/s per volt 
         //torque per volt: m*m*kg*rad/s^2 /2 V
         //friction voltage: V
-        final DCMotorTransmission transmission = new DCMotorTransmission(1.0 / Constants.DRIVE_Kv,
-         Constants.DRIVE_WHEEL_RADIUS * Constants.DRIVE_WHEEL_RADIUS * Constants.ROBOT_LINEAR_INERTIA / 
-         (2.0 * Constants.DRIVE_Ka), Constants.DRIVE_V_INTERCEPT);
+        final DCMotorTransmission transmission = new DCMotorTransmission(Constants.DRIVE_Kv,
+         Constants.DRIVE_WHEEL_RADIUS * Constants.DRIVE_WHEEL_RADIUS * Constants.ROBOT_LINEAR_INERTIA * Constants.DRIVE_Ka/ 
+         2.0, Constants.DRIVE_V_INTERCEPT);
         mModel = new DifferentialDrive(Constants.ROBOT_LINEAR_INERTIA, Constants.ROBOT_ANGULAR_INERTIA,
                 Constants.ROBOT_ANGULAR_DRAG, Constants.DRIVE_WHEEL_RADIUS, Constants.DRIVE_WHEEL_TRACK_WIDTH / 2.0 * 
                 Constants.TRACK_SCRUB_FACTOR, transmission, transmission);

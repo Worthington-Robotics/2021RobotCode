@@ -25,7 +25,7 @@ public class DifferentialDriveDynamicsConstraint implements TrajectoryConstraint
 
     @Override
     public MinMax getMinMaxAcceleration(Pose2d pose, double curvature, double velocity) {
-        // NOTE: units cancel on angular velocity.
+        //NOTE: units cancel on angular velocity.
         DifferentialDrive.MinMax min_max = drive_.getMinMaxAcceleration(
                 new DifferentialDrive.ChassisState(velocity, curvature * velocity)
                 ,curvature, abs_voltage_limit_);

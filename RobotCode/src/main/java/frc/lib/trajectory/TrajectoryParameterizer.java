@@ -134,6 +134,7 @@ public final class TrajectoryParameterizer{
                 // At this point, the constrained state is fully constructed apart from
                 // all the custom-defined user constraints.
                 for (final TrajectoryConstraint constraint : constraints) {
+                    //TODO all points are constrained to super small values .15ish that is wrong
                     constrainedState.maxVelocity = Math.min(
                         constrainedState.maxVelocity,
                         constraint.getMaxVelocity(
@@ -255,6 +256,7 @@ public final class TrajectoryParameterizer{
       }
       
             velocityMetersPerSecond = state.maxVelocity;
+            System.out.print(velocityMetersPerSecond);
             distanceMeters = state.distance;
       
             timeSeconds += dt;

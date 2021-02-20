@@ -256,7 +256,6 @@ public final class TrajectoryParameterizer{
       }
       
             velocityMetersPerSecond = state.maxVelocity;
-            System.out.print(velocityMetersPerSecond);
             distanceMeters = state.distance;
       
             timeSeconds += dt;

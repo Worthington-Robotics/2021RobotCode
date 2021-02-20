@@ -77,21 +77,23 @@ public class Drive extends Subsystem {
                             periodic.rampUpCounter++;
                         } else if (DriverStation.getInstance().isTest()) {
                             periodic.leftDemand = radiansPerSecondToTicksPer100ms(
-                                    metersPerSecondToRadiansPerSecond(Constants.MP_TEST_SPEED));
+                                    metersToRadians(Constants.MP_TEST_SPEED));
                             periodic.rightDemand = radiansPerSecondToTicksPer100ms(
-                                    metersPerSecondToRadiansPerSecond(Constants.MP_TEST_SPEED));
+                                    metersToRadians(Constants.MP_TEST_SPEED));
                         }
                         break;
                     case OPEN_LOOP:
                         if (!DriverStation.getInstance().isAutonomous()) {
                             setOpenLoop(arcadeDrive(periodic.operatorInput[1], periodic.operatorInput[0]));
+                            automaticShifter();
                         }
                         break;
                     case ANGLE_PID:
                         periodic.PIDOutput = anglePID.update(periodic.gyroHeading.getDegrees());
-                        DriveSignal drivesignal = arcadeDrive(periodic.operatorInput[1], /*periodic.PIDOutput*/0);
+                        DriveSignal drivesignal = arcadeDrive(periodic.operatorInput[1], periodic.PIDOutput);
                         periodic.rightDemand = drivesignal.getRight();
                         periodic.leftDemand = drivesignal.getLeft();
+                        automaticShifter();
                         break;
                     default:
                         System.out.println("You fool, unexpected control state");
@@ -138,7 +140,6 @@ public class Drive extends Subsystem {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        // System.out.println(mDriveControlState);
         if (mDriveControlState == DriveControlState.OPEN_LOOP || mDriveControlState == DriveControlState.ANGLE_PID || (mDriveControlState == DriveControlState.PROFILING_TEST && Constants.RAMPUP)) {
             driveFrontLeft.set(ControlMode.PercentOutput, periodic.leftDemand);
             driveFrontRight.set(ControlMode.PercentOutput, periodic.rightDemand);
@@ -167,6 +168,18 @@ public class Drive extends Subsystem {
         configTalons();
         reset();
 
+    }
+    /**
+     * Method that returns whether the robot should shift or not based on the 
+     * absolute value of the average linear velocity
+     */
+    public void automaticShifter()
+    {
+        double linearVelocity = Math.abs(getLeftLinearVelocity() + getRightLinearVelocity() / 2);
+        if(periodic.TransState && linearVelocity < 2.5 || !periodic.TransState && linearVelocity > 2.25)
+        {
+            periodic.TransState = !periodic.TransState;
+        }
     }
 
     public PIDF getAnglePID() {
@@ -225,11 +238,29 @@ public class Drive extends Subsystem {
     }
 
     public double getLeftLinearVelocity() {
-        return rotationsToMeters(getLeftVelocityNativeUnits() * 10.0 / Constants.DRIVE_ENCODER_PPR);
+        double leftLinearVelocity = rotationsToMeters(getLeftVelocityNativeUnits() * 10.0);
+        if(!periodic.TransState)
+        {
+            leftLinearVelocity /= Constants.DRIVE_ENCODER_PPR;
+        }
+        else
+        {
+            leftLinearVelocity /= Constants.DRIVE_ENCODER_PPR_HIGH_GEAR;
+        }
+        return leftLinearVelocity;
     }
 
     public double getRightLinearVelocity() {
-        return rotationsToMeters(getRightVelocityNativeUnits() * 10.0 / Constants.DRIVE_ENCODER_PPR);
+        double rightLinearVelocity = rotationsToMeters(getRightVelocityNativeUnits() * 10.0);
+        if(!periodic.TransState)
+        {
+            rightLinearVelocity /= Constants.DRIVE_ENCODER_PPR;
+        }
+        else
+        {
+            rightLinearVelocity /= Constants.DRIVE_ENCODER_PPR_HIGH_GEAR;
+        }
+        return rightLinearVelocity;
     }
 
     public void reset() {
@@ -327,10 +358,9 @@ public class Drive extends Subsystem {
             if (!mOverrideTrajectory) {
                 DriveSignal signal = new DriveSignal(radiansPerSecondToTicksPer100ms(output.left_velocity),
                         radiansPerSecondToTicksPer100ms(output.right_velocity));
-
-                setVelocity(signal, new DriveSignal(output.left_feedforward_voltage / 12, output.right_feedforward_voltage / 12));
-                periodic.leftAccl = radiansPerSecondToTicksPer100ms(output.left_accel) / 1000; //TODO why 1000
-                periodic.rightAccl = radiansPerSecondToTicksPer100ms(output.right_accel) / 1000; //TODO why 1000
+                setVelocity(signal, new DriveSignal(output.left_feedforward_voltage / 10, output.right_feedforward_voltage / 10));
+                periodic.leftAccl = radiansPerSecondToTicksPer100ms(output.left_accel) / 1000; 
+                periodic.rightAccl = radiansPerSecondToTicksPer100ms(output.right_accel) / 1000; 
 
             } else {
                 setVelocity(DriveSignal.BRAKE, DriveSignal.BRAKE);
@@ -430,17 +460,11 @@ public class Drive extends Subsystem {
         SmartDashboard.putNumber("Drive/Left/Current", periodic.leftCurrent);
         SmartDashboard.putNumber("Drive/Left/Demand", periodic.leftDemand);
         SmartDashboard.putNumber("Drive/Left/Talon Velocity", periodic.leftVelocityTicksPer100ms);
-        // SmartDashboard.putNumber("Drive/Left/Talon Error", periodic.left_error);
-        // SmartDashboard.putNumber("Drive/Left/Talon Voltage Out",
-        // driveFrontLeft.getMotorOutputVoltage());
         SmartDashboard.putNumber("Drive/Left/Encoder Counts", periodic.leftPosTicks);
 
         SmartDashboard.putNumber("Drive/Right/Current", periodic.rightCurrent);
         SmartDashboard.putNumber("Drive/Right/Demand", periodic.rightDemand);
         SmartDashboard.putNumber("Drive/Right/Talon Velocity", periodic.rightVelocityTicksPer100ms);
-        // SmartDashboard.putNumber("Drive/Right/Talon Error", periodic.right_error);
-        // SmartDashboard.putNumber("Drive/Right/Talon Voltage Out",
-        // driveFrontRight.getMotorOutputVoltage());
         SmartDashboard.putNumber("Drive/Right/Encoder Counts", periodic.rightPosTicks);
 
         if (Constants.DEBUG) {
@@ -510,11 +534,16 @@ public class Drive extends Subsystem {
     private static double rotationsToMeters(double rotations) {
         return rotations * Math.PI * Constants.DRIVE_WHEEL_DIAMETER;
     }
+
+    private static double metersToRotations(double meters) {
+        return meters / Math.PI / Constants.DRIVE_WHEEL_DIAMETER;
+    }
+
     private static double radiansPerSecondToTicksPer100ms(double rad_s) {
         return rad_s / (Math.PI * 2.0) * Constants.DRIVE_ENCODER_PPR / 10.0;
     }
 
-    private static double metersPerSecondToRadiansPerSecond(double m_sec) {
+    private static double metersToRadians(double m_sec) {
         return m_sec / (Constants.DRIVE_WHEEL_DIAMETER * Math.PI) * 2 * Math.PI;
     }
 

@@ -25,12 +25,16 @@ def headerBlacklistFilter(item: str):
 # read in the file argument to the script
 if len(sys.argv) < 2:
     print("Missing path to log file as CLI argument")
+    print("Usage:")
+    print("python plot.py <path_to_file> <Optional specific header to plot>")
     exit(-1)
 filename = str(sys.argv[1])
 if not os.path.isfile(filename):
     print("Specifed file could not be found")
     print(filename)
     exit(-2)
+
+
 
 #open the file and read it into memory
 print("opening ", filename)
@@ -48,8 +52,19 @@ filteredHeaders = [re.sub("_[0-9]","", item) for item in headers]
 filteredHeaders = list(set(filteredHeaders))
 filteredHeaders.remove("time_double")
 filteredHeaders = list(filter(headerBlacklistFilter, filteredHeaders))
+
+
+#read in optional argument for specific plot
+if(len(sys.argv) == 3):
+    if(not sys.argv[3] in filteredHeaders):
+        print("Header {0} not foundor not valid".format(sys.argv[3]))
+    else: 
+        filteredHeaders = list(sys.argv[3])
+
+#confirm final headers to plot
 filteredHeaders.sort()
 print("got headers:", filteredHeaders)
+    
 
 #generate the specific subplots
 width = height = 0

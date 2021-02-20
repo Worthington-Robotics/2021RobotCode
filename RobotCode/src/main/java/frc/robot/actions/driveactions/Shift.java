@@ -9,6 +9,7 @@ public class Shift extends Action {
     public void onStart() {
         //System.out.print("Shift Engaged");
         Drive.getInstance().setTrans(true);
+        Drive.getInstance().manualShifterOverride(true);
     }
 
     @Override
@@ -23,5 +24,6 @@ public class Shift extends Action {
     @Override
     public void onStop() {
         Drive.getInstance().setTrans(false);
+        Drive.getInstance().manualShifterOverride(false);
     }
 }

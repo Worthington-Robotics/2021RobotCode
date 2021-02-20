@@ -175,11 +175,16 @@ public class Drive extends Subsystem {
      */
     public void automaticShifter()
     {
-        double linearVelocity = Math.abs(getLeftLinearVelocity() + getRightLinearVelocity() / 2);
-        if(periodic.TransState && linearVelocity < 2.5 || !periodic.TransState && linearVelocity > 2.25)
+        periodic.linearVelocity = Math.abs(getLeftLinearVelocity() + getRightLinearVelocity() / 2);
+        if((periodic.TransState && periodic.linearVelocity < 2.5 || !periodic.TransState && periodic.linearVelocity > 2.25) && !periodic.manualShifterOverride)
         {
             periodic.TransState = !periodic.TransState;
         }
+    }
+
+    public void manualShifterOverride(boolean override)
+    {
+        periodic.manualShifterOverride = override;
     }
 
     public PIDF getAnglePID() {
@@ -453,6 +458,7 @@ public class Drive extends Subsystem {
         SmartDashboard.putString("Drive/Drive State", mDriveControlState.toString());
         SmartDashboard.putNumberArray("Drive/Stick", periodic.operatorInput);
         SmartDashboard.putBoolean("Drive/Shift", periodic.TransState);
+        SmartDashboard.putBoolean("Drive/ShiftOverride", periodic.manualShifterOverride);
         SmartDashboard.putNumber("Drive/Error/X", periodic.error.getTranslation().x());
         SmartDashboard.putNumber("Drive/Error/Y", periodic.error.getTranslation().y());
         SmartDashboard.putNumber("Drive/Error/Theta", periodic.error.getRotation().getDegrees());
@@ -509,7 +515,9 @@ public class Drive extends Subsystem {
 
         // OUTPUTS
         public double rampUpCounter = 0;
+        public double linearVelocity = 0;
         public boolean TransState = false;
+        public boolean manualShifterOverride = false;
         
         public double leftAccl = 0.0;
         public double leftDemand = 0.0;
@@ -533,10 +541,6 @@ public class Drive extends Subsystem {
 
     private static double rotationsToMeters(double rotations) {
         return rotations * Math.PI * Constants.DRIVE_WHEEL_DIAMETER;
-    }
-
-    private static double metersToRotations(double meters) {
-        return meters / Math.PI / Constants.DRIVE_WHEEL_DIAMETER;
     }
 
     private static double radiansPerSecondToTicksPer100ms(double rad_s) {

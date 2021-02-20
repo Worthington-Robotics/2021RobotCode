@@ -12,7 +12,7 @@ markerStyle = "o"
 lineSize = 1
 lineStyle = "dashed"
 borders = [0.05, 0.98, 0.05, 0.95] #L R B T
-blacklistTypes = ["String", "char", "TimedState", "list", "double[]", "Rotation2D", "AtomicBoolean", "boolean"]
+blacklistTypes = ["String", "char", "TimedState", "list", "double[]", "AtomicBoolean", "boolean"]
 
 def headerBlacklistFilter(item: str):
     for blackListed in blacklistTypes:
@@ -128,6 +128,13 @@ for index in range(len(filteredHeaders)):
     elif "_double[]" in headerGroup:
         print("plotting numeric array")
         #TODO add array type support
+    elif "_Rotation2d" in headerGroup:
+        print("plotting rotation with time")
+        x = [float(item[headers.index("time_double")]) for item in rows]
+        y = [float(item[headers.index(headerGroup + "_0")]) for item in rows]
+        axes[index].plot(x, y, color="blue", marker=markerStyle, markersize=markerSize, linestyle=lineStyle, linewidth=lineSize)
+        minYVal = min(y)
+        maxYVal = max(y) + 1
     else:
         print("plotting numeric value with time", headerGroup)
         x = [float(item[headers.index("time_double")]) for item in rows]
@@ -141,6 +148,7 @@ for index in range(len(filteredHeaders)):
     axes[index].set_xticks(np.arange(minXVal, maxXVal, (maxXVal - minXVal) / 10))
     axes[index].set_yticks(np.arange(minYVal, maxYVal, (maxYVal - minYVal) / 10))
     axes[index].set_title(headerGroup.replace("_", " "))
+    axes[index].grid(True)
 
 plt.subplots_adjust(left=borders[0], bottom=borders[2], right=borders[1], top=borders[3])
 plt.show()

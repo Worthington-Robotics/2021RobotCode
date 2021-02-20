@@ -11,7 +11,7 @@ public class CentripetalAccelerationConstraint implements TrajectoryConstraint {
 
     @Override
     public double getMaxVelocity(Pose2d pose, double curvature, double velocity) {
-        return Math.sqrt(Math.abs(mMaxCentripetalAccel / curvature));
+        return Math.sqrt(mMaxCentripetalAccel / Math.abs(curvature));
     }
 
     @Override

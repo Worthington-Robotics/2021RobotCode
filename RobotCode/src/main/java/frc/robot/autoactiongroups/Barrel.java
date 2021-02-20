@@ -4,8 +4,8 @@ import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.actions.driveactions.*;
 import frc.lib.models.DriveTrajectoryGenerator;
 
-public class NoSkew extends StateMachineDescriptor {
-    public NoSkew() {
-        addSequential(new DriveTra(DriveTrajectoryGenerator.getInstance().getSki(), false), 1000);
+public class Barrel extends StateMachineDescriptor {
+    public Barrel() {
+        addSequential(new DriveTra(DriveTrajectoryGenerator.getInstance().getBar(), false), 1000);
     }
 }

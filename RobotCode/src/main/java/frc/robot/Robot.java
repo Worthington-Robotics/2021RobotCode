@@ -22,7 +22,6 @@ import frc.lib.util.VersionData;
 import frc.robot.subsystems.*;
 import frc.robot.actions.driveactions.*;
 import frc.robot.actions.climberactions.*;
-import frc.robot.subsystems.Climber;
 import frc.robot.actions.shooteraction.*;
 import frc.robot.actions.superaction.*;
 
@@ -66,11 +65,11 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(Arrays.asList(
             // register subsystems here
             PoseEstimator.getInstance(), 
-            Drive.getInstance()),
-            //Shooter.getInstance(),
-            //Climber.getInstance(),
-            //Lights.getInstance(),
-            //Superstructure.getInstance()),
+            Drive.getInstance(),
+            Shooter.getInstance(),
+            Climber.getInstance(),
+            Lights.getInstance(),
+            Superstructure.getInstance()),
              true);
 
         // create the master looper threads

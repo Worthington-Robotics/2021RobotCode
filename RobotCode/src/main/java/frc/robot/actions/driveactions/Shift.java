@@ -1,6 +1,5 @@
 package frc.robot.actions.driveactions;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Drive;
 

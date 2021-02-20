@@ -1,6 +1,7 @@
 package frc.robot.actions.driveactions;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.lib.geometry.Pose2d;
 import frc.lib.statemachine.Action;
 import frc.lib.trajectory.*;
 import frc.robot.subsystems.Drive;
@@ -28,7 +29,7 @@ public class DriveTra extends Action {
     public void onStart() {
         System.out.println("Starting Tra");
         if (mResetPose) {
-            mRobotState.reset(Timer.getFPGATimestamp(), mTra.sample(0).pose);
+            mRobotState.reset(Timer.getFPGATimestamp(), Pose2d.identity());
         }
         mDrive.setTrajectory(mTra);
     }

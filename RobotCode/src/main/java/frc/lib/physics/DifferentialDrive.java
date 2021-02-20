@@ -90,7 +90,12 @@ public class DifferentialDrive {
         return chassis_motion;
     }
 
-    // Input/output could be either velocity or acceleration...the math is the same.
+    /**
+     * A method that converts a linear and angular velocity combined into a ChassisState into a left and right wheel motion
+     * state in the form of a WheelState. Works for both acceleration and velocity (unitless)
+     * @param chassis_motion the current state of the robot in Lin Ang form
+     * @return the current state of the robot in Left Right form
+     */
     public WheelState solveInverseKinematics(final ChassisState chassis_motion) {
         WheelState wheel_motion = new WheelState();
         wheel_motion.left = (chassis_motion.linear - effective_wheelbase_radius_ * chassis_motion.angular) /

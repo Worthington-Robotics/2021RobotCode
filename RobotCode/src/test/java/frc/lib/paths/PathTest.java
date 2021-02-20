@@ -111,8 +111,6 @@ public class PathTest {
     public static class TestData extends LogData {
         public Pose2d expectedPose = new Pose2d();
         public double angle = 0.0;
-        public double colesShittyWorkAround = 0.0;
-        public double colesShittyWorkAround2 = 0.0;
 
         public void setPoseGuess(Pose2d pose)
         {

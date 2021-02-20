@@ -52,32 +52,50 @@ filteredHeaders = [re.sub("_[0-9]","", item) for item in headers]
 filteredHeaders = list(set(filteredHeaders))
 filteredHeaders.remove("time_double")
 filteredHeaders = list(filter(headerBlacklistFilter, filteredHeaders))
-
+print("got headers:", filteredHeaders)
 
 #read in optional argument for specific plot
 if(len(sys.argv) == 3):
-    if(not sys.argv[3] in filteredHeaders):
-        print("Header {0} not foundor not valid".format(sys.argv[3]))
+    toFind = " " + sys.argv[2] 
+    if(not toFind in filteredHeaders):
+        print("Header '{0}' not found or not valid".format(toFind))
+        exit(-4)
     else: 
-        filteredHeaders = list(sys.argv[3])
+        filteredHeaders = [toFind]
 
 #confirm final headers to plot
 filteredHeaders.sort()
-print("got headers:", filteredHeaders)
-    
 
 #generate the specific subplots
 width = height = 0
 width = math.ceil(math.sqrt(len(filteredHeaders)))
 if width * (width - 1) >= len(filteredHeaders):
+    #print("not square {0} {1} using range {2}".format(width, width - 1, list(range(width - 1, 1, -1))))
+    if(width - 1 == 1): 
+        #print("using height of 1")
+        height = 1
     for heightGuess in range(width - 1, 1, -1):
+        #print("guessing {0} {1}".format(width, heightGuess))
         if width * heightGuess >= len(filteredHeaders):
             height = heightGuess
         else: break
 else: height = width 
+
+#create the plot matrix
 print("Creating {0} by {1} plot matrix".format(width, height))
 fig, axesMat = plt.subplots(height, width)
-axes = [item for sublist in axesMat for item in sublist]
+if(not type(axesMat) is np.ndarray):
+    axes = []
+    axes.append(axesMat)
+elif(type(axesMat[0]) is np.ndarray):
+    #plot grid is a matrix
+    axes = [item for sublist in axesMat for item in sublist]
+else:
+    #plot grid is not a matrix
+    axes = [item for item in axesMat]
+
+#print(axes)
+
 
 #plot the values
 for index in range(len(filteredHeaders)):

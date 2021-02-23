@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.util.Color;
-import com.revrobotics.ColorMatch;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.lib.util.HIDHelper;
 
@@ -168,12 +167,7 @@ public class Constants {
     public static final double COLOR_WHEEL_KP = 0.0;
     public static final double COLOR_WHEEL_KI = 0.0;
     public static final double COLOR_WHEEL_KD = 0.0;
-    public static final double COLOR_WHEEL_VCOMP = 0.0;
-
-    public static final Color kBlueTarget = ColorMatch.makeColor(0.128, 0.413, 0.459);
-    public static final Color kGreenTarget = ColorMatch.makeColor(0.172, 0.564, 0.264);
-    public static final Color kRedTarget = ColorMatch.makeColor(0.498, 0.352, 0.150);
-    public static final Color kYellowTarget = ColorMatch.makeColor(0.315, 0.553, 0.132);    
+    public static final double COLOR_WHEEL_VCOMP = 0.0;    
 
     //Limelight Constants
     public static final double LIMELIGHT_DEG_FOV = 0.0; //TODO CALCULATE FOV

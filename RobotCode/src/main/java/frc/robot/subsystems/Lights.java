@@ -3,23 +3,21 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.lib.loops.ILooper;
-import frc.lib.loops.Loop;
 import frc.robot.Constants;
 
 public class Lights extends Subsystem {
     private AddressableLED mled;
     private AddressableLEDBuffer mLEDBuffer;
     private int numberOfBalls;
-    private boolean targeted, intakeDown, enabled, FMSOn;
-    private Color allianceColor, colorWheelColor;
+    private boolean targeted, enabled, RobotConnectedToFMS;
+    private Color allianceColor;
     private int state = 0;
-    private lightModes currentLightMode = lightModes.beforeStart;
+    private lightModes currentLightMode = lightModes.rainbow;
     private Color testColor;
+    private int rainbowint = 0;
 
     private Lights() {
         mled = new AddressableLED(Constants.LED_PORT);
@@ -35,8 +33,7 @@ public class Lights extends Subsystem {
 
     @Override
     public void readPeriodicInputs() {
-        // intakeState = Superstructure.getInstance().intakeDown();
-        FMSOn = DriverStation.getInstance().isFMSAttached();
+        RobotConnectedToFMS = DriverStation.getInstance().isFMSAttached();
         enabled = DriverStation.getInstance().isEnabled();
         numberOfBalls = Superstructure.getInstance().getNumberOfBalls();
         targeted = Shooter.getInstance().onTarget();
@@ -45,14 +42,15 @@ public class Lights extends Subsystem {
         //currentLightMode = lightModes.targeting;
         //targeted = SmartDashboard.getBoolean("Lights/targetedTest", true);
         //testColor = Color.kBlue;
-        //numberOfBalls = 5;
-
-        /*if (intakeState == Value.kForward) {
-            intakeDown = true;
-        } else {
-            intakeDown = false;
-        }*/
         
+        if (DriverStation.getInstance().getAlliance() == Alliance.Blue) {
+            allianceColor = Color.kFirstBlue;
+        } else if (DriverStation.getInstance().getAlliance() == Alliance.Red) {
+            allianceColor = Color.kDarkRed;
+        } else {
+            allianceColor = Color.kChocolate;
+        }
+
         if (enabled) {
             if (numberOfBalls == -2 || numberOfBalls == 5) {
                 currentLightMode = lightModes.targeting;
@@ -60,19 +58,16 @@ public class Lights extends Subsystem {
                 currentLightMode = lightModes.indexNum;
             }
         } else {
-            if (FMSOn == true) {
+            if (RobotConnectedToFMS) {
                 currentLightMode = lightModes.allianceColor;
-                if (DriverStation.getInstance().getAlliance() == Alliance.Blue) {
-                    allianceColor = Color.kFirstBlue;
-                } else if (DriverStation.getInstance().getAlliance() == Alliance.Red) {
-                    allianceColor = Color.kDarkRed;
-                } else {
-                    allianceColor = Color.kChocolate;
-                } 
+             
             } else {
-                currentLightMode = lightModes.beforeStart;
+                currentLightMode = lightModes.rainbow;
             }
         } 
+        
+        //currentLightMode = lightModes.rainbow;
+        //if (Constants.DEBUG) {currentLightMode = lightModes.allianceColor;}
 
         //Assigning the  LEDs
         switch (currentLightMode) {
@@ -102,7 +97,7 @@ public class Lights extends Subsystem {
                     }
                 } else {
                     for (var i = 0; i < (mLEDBuffer.getLength() * (.2 * numberOfBalls)); i++) {
-                        mLEDBuffer.setHSV(i, i * (239 / mLEDBuffer.getLength()), 226, 62);
+                        mLEDBuffer.setHSV(i, i * (300 / mLEDBuffer.getLength()), 226, 62);
                     }
                 }
                 // System.out.println("Lights Set");
@@ -113,10 +108,12 @@ public class Lights extends Subsystem {
                 }
                 // System.out.println("Lights Set");
                 break;
-            case beforeStart:
-                for (var i = 0; i < (mLEDBuffer.getLength() * (.2 * numberOfBalls)); i++) {
-                    mLEDBuffer.setHSV(i, i * ((239 / mLEDBuffer.getLength())), 150, 75);
+            case rainbow:
+                int ledlen = mLEDBuffer.getLength();
+                for (var i = 0; i < (ledlen); i++) {
+                    mLEDBuffer.setHSV((i + rainbowint) % ledlen, i * ((180 / ledlen)), 255, 200);
                 }
+                rainbowint++;
                 break;
             default:
                 for (var i = 0; i < mLEDBuffer.getLength(); i++) {
@@ -155,7 +152,7 @@ public class Lights extends Subsystem {
     }
 
     enum lightModes {
-        targeting, indexNum, allianceColor, beforeStart, Testing;
+        targeting, indexNum, allianceColor, rainbow, Testing;
     }
 
 }

@@ -12,7 +12,7 @@ public class Lights extends Subsystem {
     private AddressableLED mled;
     private AddressableLEDBuffer mLEDBuffer;
     private int numberOfBalls;
-    private boolean targeted, enabled, RobotConnectedToFMS;
+    private boolean targeted, targeting, enabled, RobotConnectedToFMS;
     private Color allianceColor;
     private int state = 0;
     private lightModes currentLightMode = lightModes.rainbow;
@@ -36,6 +36,7 @@ public class Lights extends Subsystem {
         RobotConnectedToFMS = DriverStation.getInstance().isFMSAttached();
         enabled = DriverStation.getInstance().isEnabled();
         numberOfBalls = Superstructure.getInstance().getNumberOfBalls();
+        targeting = Shooter.getInstance().getUsingLimelight();
         targeted = Shooter.getInstance().onTarget();
         
         // Testing
@@ -52,10 +53,14 @@ public class Lights extends Subsystem {
         }
 
         if (enabled) {
-            if (numberOfBalls == -2 || numberOfBalls == 5) {
+            if (targeting) {
                 currentLightMode = lightModes.targeting;
             } else {
-                currentLightMode = lightModes.indexNum;
+                if (numberOfBalls == 5 || numberOfBalls == 0 || numberOfBalls == -1) {
+                    currentLightMode = lightModes.rainbow;
+                } else {
+                    currentLightMode = lightModes.indexNum;
+                }
             }
         } else {
             if (RobotConnectedToFMS) {

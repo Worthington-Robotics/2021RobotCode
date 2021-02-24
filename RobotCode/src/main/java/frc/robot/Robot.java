@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.Looper;
 import frc.lib.statemachine.Action;
 import frc.lib.statemachine.StateMachine;
+import frc.lib.util.AxisAction;
 import frc.lib.util.DebouncedJoystickButton;
 import frc.lib.util.DriveSignal;
 import frc.lib.util.POVTrigger;
@@ -24,6 +25,7 @@ import frc.robot.actions.driveactions.*;
 import frc.robot.actions.climberactions.*;
 import frc.robot.actions.shooteraction.*;
 import frc.robot.actions.superaction.*;
+import frc.robot.actions.waitactions.SoutAction;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,7 +39,9 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
     
     //Master joystick buttons
-    private POVTrigger gyrPovTrigger = new POVTrigger(Constants.MASTER);
+    private JoystickButton gyrPovTrigger = new JoystickButton(Constants.MASTER, 10);
+    //private JoystickButton turnLockout = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton DownshiftTrigger = new JoystickButton(Constants.MASTER, 9);
     private JoystickButton shiftButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton inverse = new JoystickButton(Constants.MASTER, 2);
     private DebouncedJoystickButton folder = new DebouncedJoystickButton(Constants.MASTER, 5);
@@ -55,6 +59,13 @@ public class Robot extends TimedRobot {
     private JoystickButton OffsetUp = new JoystickButton(Constants.SECOND, 10);
     private JoystickButton intake = new JoystickButton(Constants.SECOND, 11);
     private JoystickButton OffsetDown = new JoystickButton(Constants.SECOND, 12);
+
+    
+    //Wheel buttons
+    private AxisAction reverse = new AxisAction(Constants.WHEEL, 3, .5, false);
+    private JoystickButton shiftUp = new JoystickButton(Constants.WHEEL, 5);
+    private JoystickButton shiftDown = new JoystickButton(Constants.WHEEL, 6);
+    private JoystickButton gyroLock = new JoystickButton(Constants.WHEEL, 2);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -194,6 +205,12 @@ public class Robot extends TimedRobot {
 
     public void initButtons(){
         // create buttons and register actions
+        // reverse.whileHeld(Action.toCommand(new Inverse()));
+        // shiftUp.whileHeld(Action.toCommand(new Shift()));
+        // shiftDown.whileHeld(Action.toCommand(new DownShift()));
+        // gyroLock.whileHeld(Action.toCommand(new GyroLock()));
+        // turnLockout.whileHeld(Action.toCommand(new TurnLockout(true)));
+        DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));
         OffsetUp.whenPressed(Action.toCommand(new OffsetIncrease()));
         OffsetDown.whenPressed(Action.toCommand(new OffsetDecrease()));
         recenter.whileHeld(Action.toCommand(new Recenter(0)));

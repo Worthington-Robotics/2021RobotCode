@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.drivers.PIDF;
 import frc.lib.geometry.Pose2d;
 import frc.lib.geometry.Rotation2d;
+import frc.lib.geometry.Twist2d;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.models.DriveMotionPlanner;
@@ -24,6 +25,7 @@ import frc.lib.trajectory.*;
 import frc.lib.util.DriveSignal;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
+import frc.robot.Kinematics;
 
 public class Drive extends Subsystem {
 
@@ -90,11 +92,28 @@ public class Drive extends Subsystem {
                         break;
                     case ANGLE_PID:
                         periodic.PIDOutput = anglePID.update(periodic.gyroHeading.getDegrees());
-                        DriveSignal drivesignal = arcadeDrive(periodic.operatorInput[1], periodic.PIDOutput);
-                        periodic.rightDemand = drivesignal.getRight();
-                        periodic.leftDemand = drivesignal.getLeft();
+                        DriveSignal angleSignal = arcadeDrive(periodic.operatorInput[1], periodic.PIDOutput);
+                        periodic.rightDemand = angleSignal.getRight();
+                        periodic.leftDemand = angleSignal.getLeft();
                         automaticShifter();
                         break;
+                    // case TURN_LOCKOUT:
+                    // //turn radius of .7
+                    //     Twist2d radius;
+                    //     if(periodic.turnLockoutCCW)
+                    //     {
+                    //     radius = new Twist2d(periodic.turnLockoutRadius, periodic.turnLockoutRadius, 90);
+                    //     }
+                    //     else
+                    //     {
+                    //     radius = new Twist2d(periodic.turnLockoutRadius, -periodic.turnLockoutRadius, -90);
+                    //     }
+                    //     radius.scaled(periodic.operatorInput[1] * .25);
+                    //     DriveSignal drivesignal = Kinematics.inverseKinematics(radius);
+                    //     periodic.rightDemand = drivesignal.getRight();
+                    //     periodic.leftDemand = drivesignal.getLeft();
+                    //     automaticShifter();
+                    //     break;
                     default:
                         System.out.println("You fool, unexpected control state");
 
@@ -121,10 +140,18 @@ public class Drive extends Subsystem {
             updateDrivePID(SmartDashboard.getNumber("Drive/PID/P", 0), SmartDashboard.getNumber("Drive/PID/I", 0),
                     SmartDashboard.getNumber("Drive/PID/D", 0), SmartDashboard.getNumber("Drive/PID//F", 0));
         }
-        if (periodic.TransState) {
-            periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK_SHIFTED);
+        if(!Constants.WHEELS)
+        {
+            if (periodic.TransState) {
+                periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK_SHIFTED);
+            } else {
+                periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
+            }
         } else {
-            periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
+        periodic.operatorInput = HIDHelper.getAdjStick(Constants.WHEEL_STICK);
+        periodic.operatorInput[1] = HIDHelper.getAxisMapped(periodic.operatorInput[1], 1, 0);
+        periodic.operatorInput[2] = HIDHelper.getAxisMapped(periodic.operatorInput[2], 1, 0);
+        periodic.operatorInput[3] = HIDHelper.getAxisMapped(periodic.operatorInput[3], 1, 0);
         }
 
         periodic.AnglePIDError = anglePID.getError();
@@ -394,6 +421,15 @@ public class Drive extends Subsystem {
         periodic.rightDemand = signal.getRight();
     }
 
+    public synchronized void setTurnLockout(boolean ccw, double radius) {
+        if (mDriveControlState != DriveControlState.TURN_LOCKOUT) {
+            System.out.println("Switching to angle control");
+            driveFrontLeft.set(ControlMode.PercentOutput, 0);
+            driveFrontRight.set(ControlMode.PercentOutput, 0);
+            mDriveControlState = DriveControlState.TURN_LOCKOUT;
+        }
+    }
+
     /**
      * Configure for Angle PID control
      */
@@ -480,7 +516,7 @@ public class Drive extends Subsystem {
     }
 
     enum DriveControlState {
-        OPEN_LOOP, PATH_FOLLOWING, PROFILING_TEST, GYRO_LOCK, ANGLE_PID;
+        OPEN_LOOP, PATH_FOLLOWING, PROFILING_TEST, GYRO_LOCK, ANGLE_PID, TURN_LOCKOUT;
 
         public String toString() {
             return name().charAt(0) + name().substring(1).toLowerCase();
@@ -504,7 +540,7 @@ public class Drive extends Subsystem {
         public double AnglePIDError = 0;
 
         public Pose2d error = new Pose2d(0, 0, Rotation2d.identity());
-        public double[] operatorInput = { 0, 0, 0 };
+        public double[] operatorInput = { 0, 0, 0, 0};
         public boolean inverse = false;
         public double PIDOutput = 0;
 
@@ -529,6 +565,8 @@ public class Drive extends Subsystem {
         public double rightDistance = 0.0;
         public double rightFeedforward = 0.0;
 
+        public boolean turnLockoutCCW = false;     
+        public double turnLockoutRadius = .7;
     }
 
     public LogData logData() {

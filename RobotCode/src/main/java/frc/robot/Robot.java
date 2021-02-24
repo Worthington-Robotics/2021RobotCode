@@ -79,8 +79,8 @@ public class Robot extends TimedRobot {
             Drive.getInstance(),
             //Shooter.getInstance(),
             //Climber.getInstance(),
-            Lights.getInstance(),
-            Superstructure.getInstance()),
+            Lights.getInstance()),
+            //Superstructure.getInstance()),
              true);
 
         // create the master looper threads
@@ -205,10 +205,13 @@ public class Robot extends TimedRobot {
 
     public void initButtons(){
         // create buttons and register actions
-        // reverse.whileHeld(Action.toCommand(new Inverse()));
-        // shiftUp.whileHeld(Action.toCommand(new Shift()));
-        // shiftDown.whileHeld(Action.toCommand(new DownShift()));
-        // gyroLock.whileHeld(Action.toCommand(new GyroLock()));
+        if(Constants.WHEELS)
+        {
+        reverse.whileHeld(Action.toCommand(new Inverse()));
+        shiftUp.whileHeld(Action.toCommand(new Shift()));
+        shiftDown.whileHeld(Action.toCommand(new DownShift()));
+        gyroLock.whileHeld(Action.toCommand(new GyroLock()));
+    }
         // turnLockout.whileHeld(Action.toCommand(new TurnLockout(true)));
         DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));
         OffsetUp.whenPressed(Action.toCommand(new OffsetIncrease()));

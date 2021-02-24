@@ -202,7 +202,7 @@ public class Drive extends Subsystem {
      */
     public void automaticShifter()
     {
-        periodic.linearVelocity = Math.abs(getLeftLinearVelocity() + getRightLinearVelocity() / 2);
+        periodic.linearVelocity = Math.abs(getLinearVelocity());
         if((periodic.TransState && periodic.linearVelocity < 2.5 || !periodic.TransState && periodic.linearVelocity > 2.25) && !periodic.manualShifterOverride)
         {
             periodic.TransState = !periodic.TransState;
@@ -293,6 +293,11 @@ public class Drive extends Subsystem {
             rightLinearVelocity /= Constants.DRIVE_ENCODER_PPR_HIGH_GEAR;
         }
         return rightLinearVelocity;
+    }
+
+    public double getLinearVelocity()
+    {
+        return (getLeftLinearVelocity() + getRightLinearVelocity()) / 2;
     }
 
     public void reset() {
@@ -493,6 +498,7 @@ public class Drive extends Subsystem {
 
         SmartDashboard.putString("Drive/Drive State", mDriveControlState.toString());
         SmartDashboard.putNumberArray("Drive/Stick", periodic.operatorInput);
+        SmartDashboard.putNumber("Drive/LinearVelocity", getLinearVelocity());
         SmartDashboard.putBoolean("Drive/Shift", periodic.TransState);
         SmartDashboard.putBoolean("Drive/ShiftOverride", periodic.manualShifterOverride);
         SmartDashboard.putNumber("Drive/Error/X", periodic.error.getTranslation().x());

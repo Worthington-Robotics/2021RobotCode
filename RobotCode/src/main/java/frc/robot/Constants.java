@@ -105,7 +105,7 @@ public class Constants {
      */
 
     //DEBUG AND TESTING flags
-    public static final boolean WHEELS = false;
+    public static final boolean WHEELS = true;
     public static final boolean RAMPUP = false;
     public static final boolean ENABLE_MP_TEST_MODE = false;
     public static final double MP_TEST_SPEED = 72; //in/s

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -17,7 +18,7 @@ public class Lights extends Subsystem {
     private int state = 0;
     private lightModes currentLightMode = lightModes.rainbow;
     private Color testColor;
-    private int rainbowint = 0;
+    private double rainbowint = 0;
 
     private Lights() {
         mled = new AddressableLED(Constants.LED_PORT);
@@ -57,7 +58,7 @@ public class Lights extends Subsystem {
                 currentLightMode = lightModes.targeting;
             } else {
                 if (numberOfBalls == 5 || numberOfBalls == 0 || numberOfBalls == -1) {
-                    currentLightMode = lightModes.rainbow;
+                    currentLightMode = lightModes.battery;
                 } else {
                     currentLightMode = lightModes.indexNum;
                 }
@@ -67,7 +68,7 @@ public class Lights extends Subsystem {
                 currentLightMode = lightModes.allianceColor;
              
             } else {
-                currentLightMode = lightModes.rainbow;
+                currentLightMode = lightModes.battery;
             }
         } 
         
@@ -77,16 +78,16 @@ public class Lights extends Subsystem {
         //Assigning the  LEDs
         switch (currentLightMode) {
             case Testing:
-                for (var i = 0; i < (int)(mLEDBuffer.getLength() * (state / 7)); i++) {
+                for (int i = 0; i < (int)(mLEDBuffer.getLength() * (state / 7)); i++) {
                 mLEDBuffer.setLED(i, testColor);
             }
             case targeting:
                 if (targeted) {
-                    for (var i = 0; i < mLEDBuffer.getLength(); i++) {
+                    for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                         mLEDBuffer.setRGB(i, 0, 150, 0);
                     }
                 } else {
-                    for (var i = 0; i < mLEDBuffer.getLength(); i++) {
+                    for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                         mLEDBuffer.setRGB(i, 150, 0, 0);
                     }
                 }
@@ -94,32 +95,41 @@ public class Lights extends Subsystem {
                 break;
             case indexNum:
                 if (numberOfBalls >= 0 && numberOfBalls <= 4) {
-                    for (var i = 0; i < mLEDBuffer.getLength(); i++) {
+                    for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                         mLEDBuffer.setLED(i, Color.kBlack);
                     }
-                    for (var i = 0; i < (mLEDBuffer.getLength() * (.2 * numberOfBalls)); i++) {
+                    for (int i = 0; i < (mLEDBuffer.getLength() * (.2 * numberOfBalls)); i++) {
                         mLEDBuffer.setLED(i, Color.kYellow);
                     }
                 } else {
-                    for (var i = 0; i < (mLEDBuffer.getLength() * (.2 * numberOfBalls)); i++) {
+                    for (int i = 0; i < (mLEDBuffer.getLength() * (.2 * numberOfBalls)); i++) {
                         mLEDBuffer.setHSV(i, i * (300 / mLEDBuffer.getLength()), 226, 62);
                     }
                 }
                 // System.out.println("Lights Set");
                 break;
             case allianceColor:
-                for (var i = 0; i < mLEDBuffer.getLength(); i++) {
+                for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                     mLEDBuffer.setLED(i, allianceColor);
                 }
                 // System.out.println("Lights Set");
                 break;
             case rainbow:
                 int ledlen = mLEDBuffer.getLength();
-                for (var i = 0; i < (ledlen); i++) {
-                    mLEDBuffer.setHSV((i + rainbowint) % ledlen, i * ((180 / ledlen)), 255, 200);
+                for (int i = 0; i < (ledlen); i ++) {
+                    mLEDBuffer.setHSV((i + (int)(rainbowint)) % ledlen, i * ((180 / ledlen)), 255, 200);
                 }
-                rainbowint++;
+                rainbowint += Math.abs(Drive.getInstance().getLinearVelocity()*.7);
                 break;
+            case battery:
+                for (int i = 0; i < Math.min(mLEDBuffer.getLength(), (mLEDBuffer.getLength() * ((RobotController.getBatteryVoltage()-10)/3))); i++) {
+                    mLEDBuffer.setHSV(i, (int)(60 * ((RobotController.getBatteryVoltage()-10)/3)), 255, 200);
+                }
+                for (int i = Math.max((int)(mLEDBuffer.getLength() * ((RobotController.getBatteryVoltage()-10)/3)), 0); i < mLEDBuffer.getLength(); i++) {
+                    mLEDBuffer.setLED(i, new Color(0,0,0));
+                }
+
+                break;                
             default:
                 for (var i = 0; i < mLEDBuffer.getLength(); i++) {
                     mLEDBuffer.setLED(i, Color.kPurple);
@@ -157,7 +167,7 @@ public class Lights extends Subsystem {
     }
 
     enum lightModes {
-        targeting, indexNum, allianceColor, rainbow, Testing;
+        targeting, indexNum, allianceColor, rainbow, Testing, battery;
     }
 
 }

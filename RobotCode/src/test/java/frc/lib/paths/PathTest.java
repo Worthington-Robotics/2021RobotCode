@@ -3,6 +3,7 @@ package frc.lib.paths;
 import org.junit.Test;
 
 import frc.lib.geometry.Pose2d;
+import frc.lib.geometry.Rotation2d;
 import frc.lib.trajectory.Trajectory;
 import frc.lib.util.TestLogger;
 import frc.lib.util.Logable.LogData;
@@ -110,12 +111,12 @@ public class PathTest {
 
     public static class TestData extends LogData {
         public Pose2d expectedPose = new Pose2d();
-        public double angle = 0.0;
+        public Rotation2d angle = Rotation2d.fromDegrees(0);
 
         public void setPoseGuess(Pose2d pose)
         {
             this.expectedPose = pose;
-            this.angle = (pose.getRotation().getDegrees() + 180) % 360;
+            this.angle = pose.getRotation();
         }
 }
 }

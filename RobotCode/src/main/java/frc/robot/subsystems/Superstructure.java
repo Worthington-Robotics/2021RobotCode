@@ -268,6 +268,20 @@ public class Superstructure extends Subsystem {
         return true;
     }
 
+    public int getNumberOfBalls() {
+        switch(periodic.state) {
+            case INIT: return 0;
+            case ONE_BALL: return 1;
+            case TWO_BALLS: return 2;
+            case THREE_BALLS: return 3;
+            case FOUR_BALLS: return 4;
+            case FULL_SYSTEM: return 5;
+            case SHOOT:
+            case SHOOT_ALL: return -2;
+            default: return -1;
+        }
+    }
+
     public boolean sensorDetected(int id) {
         return sensors[id].getRange() != 0 && sensors[id].getRange() < threshold[id];
     }

@@ -407,6 +407,10 @@ public class Shooter extends Subsystem {
         periodic.turretDemand = newDemand;
     }
 
+    public boolean getUsingLimelight() {
+        return turretMode == MotorControlMode.LIMELIGHT_MODE;
+    }
+
     public boolean getRPMOnTarget() {
         return periodic.RPMOnTarget;
     }

@@ -33,7 +33,6 @@ import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.ColorShim;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -279,7 +278,7 @@ public class ColorSensorV3 {
         double g = (double)getGreen();
         double b = (double)getBlue();
         double mag = r + g + b;
-        return new ColorShim(r / mag, g / mag, b / mag);
+        return new Color(r / mag, g / mag, b / mag);
     }
 
     /**

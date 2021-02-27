@@ -156,6 +156,7 @@ public class Superstructure extends Subsystem {
                 switch (periodic.state) {
                 case INIT:
                     if (!(sysMismanaged() || periodic.intaking)) {
+                        //Moves the contents in stopDemands starting at black wheel to motorDemands starting at black wheel and ending at intake + 1
                         System.arraycopy(stopDemands, BLACK_WHEEL, periodic.motorDemands, BLACK_WHEEL, INTAKE + 1);
                         break;
                     }

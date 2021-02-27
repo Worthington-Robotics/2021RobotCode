@@ -269,6 +269,11 @@ public class Drive extends Subsystem {
         return periodic.rightVelocityTicksPer100ms;
     }
 
+    public double getTemperature()
+    {
+        return driveFrontLeft.getTemperature();
+    }
+
     public double getLeftLinearVelocity() {
         double leftLinearVelocity = rotationsToMeters(getLeftVelocityNativeUnits() * 10.0);
         if(!periodic.TransState)
@@ -504,6 +509,7 @@ public class Drive extends Subsystem {
         SmartDashboard.putNumber("Drive/Error/X", periodic.error.getTranslation().x());
         SmartDashboard.putNumber("Drive/Error/Y", periodic.error.getTranslation().y());
         SmartDashboard.putNumber("Drive/Error/Theta", periodic.error.getRotation().getDegrees());
+        SmartDashboard.putNumber("Drive/Temp", driveFrontLeft.getTemperature());
 
         SmartDashboard.putNumber("Drive/Left/Current", periodic.leftCurrent);
         SmartDashboard.putNumber("Drive/Left/Demand", periodic.leftDemand);

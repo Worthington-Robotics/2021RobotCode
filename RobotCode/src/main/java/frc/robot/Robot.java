@@ -23,6 +23,7 @@ import frc.lib.util.VersionData;
 import frc.robot.subsystems.*;
 import frc.robot.actions.driveactions.*;
 import frc.robot.actions.climberactions.*;
+import frc.robot.actions.colorwheelactions.nextLight;
 import frc.robot.actions.shooteraction.*;
 import frc.robot.actions.superaction.*;
 import frc.robot.actions.waitactions.SoutAction;
@@ -63,6 +64,7 @@ public class Robot extends TimedRobot {
     
     //Wheel buttons
     private AxisAction reverse = new AxisAction(Constants.WHEEL, 3, .5, false);
+    private AxisAction nextLight = new AxisAction(Constants.WHEEL, 2, .8, false);
     private JoystickButton shiftUp = new JoystickButton(Constants.WHEEL, 5);
     private JoystickButton shiftDown = new JoystickButton(Constants.WHEEL, 6);
     private JoystickButton gyroLock = new JoystickButton(Constants.WHEEL, 2);
@@ -211,6 +213,7 @@ public class Robot extends TimedRobot {
         shiftUp.whileHeld(Action.toCommand(new Shift()));
         shiftDown.whileHeld(Action.toCommand(new DownShift()));
         gyroLock.whileHeld(Action.toCommand(new GyroLock()));
+        nextLight.whenPressed(Action.toCommand(new nextLight()));
     }
         // turnLockout.whileHeld(Action.toCommand(new TurnLockout(true)));
         DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));

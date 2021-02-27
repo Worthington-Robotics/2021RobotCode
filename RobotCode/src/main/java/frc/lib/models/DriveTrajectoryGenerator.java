@@ -73,14 +73,15 @@ public class DriveTrajectoryGenerator {
     public Trajectory getSki(){
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
-        Points.add(new Pose2d(1.95, -2.4, Rotation2d.fromDegrees(270)));
-        Points.add(new Pose2d(-0.25, -4.7, Rotation2d.fromDegrees(270)));
-        Points.add(new Pose2d(2.45, -6.6, Rotation2d.fromDegrees(270)));
-        Points.add(new Pose2d(-.1, -6.6, Rotation2d.fromDegrees(90)));
-        Points.add(new Pose2d(2.25, -4.6, Rotation2d.fromDegrees(90)));
-        Points.add(new Pose2d(-.1, -2.4, Rotation2d.fromDegrees(90)));
-        Points.add(new Pose2d(1.4, 0, Rotation2d.fromDegrees(0)));
-        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(10)), 1.75, 3.0, 10.0);
+        Points.add(new Pose2d(1.2, 1.07, Rotation2d.fromDegrees(89)));
+        //Points.add(new Pose2d(3.5, 2.85, Rotation2d.fromDegrees(0)));
+        Points.add(new Pose2d(6.1, 1.2, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(7.8, 1.1, Rotation2d.fromDegrees(89)));
+        Points.add(new Pose2d(6, 1.2, Rotation2d.fromDegrees(270)));
+        //Points.add(new Pose2d(3.3, -.6, Rotation2d.fromDegrees(180)));
+        Points.add(new Pose2d(1.17, 1.07, Rotation2d.fromDegrees(115)));
+        Points.add(new Pose2d(.5, 2.3, Rotation2d.fromDegrees(125)));
+        return generateTrajectory(false, Points, null, 1.75, 4.0, 10.0);
     }
 
     public Trajectory getBar(){

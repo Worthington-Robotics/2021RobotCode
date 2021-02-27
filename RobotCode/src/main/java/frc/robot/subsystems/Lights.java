@@ -19,6 +19,7 @@ public class Lights extends Subsystem {
     private lightModes currentLightMode = lightModes.rainbow;
     private Color testColor;
     private double rainbowint = 0;
+    private int lightMode = 0;
 
     private Lights() {
         mled = new AddressableLED(Constants.LED_PORT);
@@ -44,7 +45,6 @@ public class Lights extends Subsystem {
         //currentLightMode = lightModes.targeting;
         //targeted = SmartDashboard.getBoolean("Lights/targetedTest", true);
         //testColor = Color.kBlue;
-        
         if (DriverStation.getInstance().getAlliance() == Alliance.Blue) {
             allianceColor = Color.kFirstBlue;
         } else if (DriverStation.getInstance().getAlliance() == Alliance.Red) {
@@ -53,24 +53,31 @@ public class Lights extends Subsystem {
             allianceColor = Color.kChocolate;
         }
 
-        if (enabled) {
-            if (targeting) {
-                currentLightMode = lightModes.targeting;
-            } else {
-                if (numberOfBalls == 5 || numberOfBalls == 0 || numberOfBalls == -1) {
-                    currentLightMode = lightModes.battery;
-                } else {
-                    currentLightMode = lightModes.indexNum;
-                }
-            }
+        if(lightMode == 1) {
+            currentLightMode = lightModes.battery;
+        } else if(lightMode == 2){
+            currentLightMode = lightModes.temp;
         } else {
-            if (RobotConnectedToFMS) {
-                currentLightMode = lightModes.allianceColor;
-             
+               
+            if (enabled) {
+                if (targeting) {
+                    currentLightMode = lightModes.targeting;
+                } else {
+                    if (numberOfBalls == 5 || numberOfBalls == 0 || numberOfBalls == -1) {
+                        currentLightMode = lightModes.rainbow;
+                    } else {
+                        currentLightMode = lightModes.indexNum;
+                    }
+                }
             } else {
-                currentLightMode = lightModes.battery;
-            }
-        } 
+                if (RobotConnectedToFMS) {
+                    currentLightMode = lightModes.allianceColor;
+                    
+                } else {
+                    currentLightMode = lightModes.rainbow;
+                }
+            } 
+        }
         
         //currentLightMode = lightModes.rainbow;
         //if (Constants.DEBUG) {currentLightMode = lightModes.allianceColor;}
@@ -123,9 +130,17 @@ public class Lights extends Subsystem {
                 break;
             case battery:
                 for (int i = 0; i < Math.min(mLEDBuffer.getLength(), (mLEDBuffer.getLength() * ((RobotController.getBatteryVoltage()-10)/3))); i++) {
-                    mLEDBuffer.setHSV(i, (int)(60 * ((RobotController.getBatteryVoltage()-10)/3)), 255, 200);
+                    mLEDBuffer.setHSV(i, (int)(70 * ((RobotController.getBatteryVoltage()-10)/3) + 165) % 180, 255, 200);
                 }
                 for (int i = Math.max((int)(mLEDBuffer.getLength() * ((RobotController.getBatteryVoltage()-10)/3)), 0); i < mLEDBuffer.getLength(); i++) {
+                    mLEDBuffer.setLED(i, new Color(0,0,0));
+                }  
+                break;
+            case temp:
+                for (int i = 0; i < Math.min(mLEDBuffer.getLength(), (mLEDBuffer.getLength() * ((Drive.getInstance().getTemperature()-30)/40))); i++) {
+                    mLEDBuffer.setHSV(i, (int)(90 + 110 * ((Drive.getInstance().getTemperature()-30)/40)) % 180, 255, 200);
+                }
+                for (int i = Math.max((int)(mLEDBuffer.getLength() * ((Drive.getInstance().getTemperature()-30)/40)), 0); i < mLEDBuffer.getLength(); i++) {
                     mLEDBuffer.setLED(i, new Color(0,0,0));
                 }
 
@@ -137,6 +152,11 @@ public class Lights extends Subsystem {
                 // System.out.println("Lights Set");
                 break;
             }
+    }
+
+    public void nextLight() {
+        lightMode ++;
+        lightMode %= 3;
     }
 
     @Override
@@ -164,10 +184,11 @@ public class Lights extends Subsystem {
     public void outputTelemetry() {
         SmartDashboard.putNumber("Lights/Length of String", mLEDBuffer.getLength());
         SmartDashboard.putString("Lights/LightMode", currentLightMode.toString());
+        SmartDashboard.putNumber("Lights/LightNum", lightMode);
     }
 
     enum lightModes {
-        targeting, indexNum, allianceColor, rainbow, Testing, battery;
+        targeting, indexNum, allianceColor, rainbow, Testing, battery, temp;
     }
 
 }

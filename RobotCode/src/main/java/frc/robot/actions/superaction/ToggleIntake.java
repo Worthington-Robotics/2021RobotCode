@@ -1,19 +1,17 @@
 package frc.robot.actions.superaction;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.lib.statemachine.Action;
-import frc.robot.Constants;
 import frc.robot.subsystems.Superstructure;
 
-public class ArmAction extends Action {
+public class ToggleIntake extends Action {
     private Superstructure superstructure;
 
-    public ArmAction() {
+    public ToggleIntake() {
         superstructure = Superstructure.getInstance();
     }
 
     @Override public void onStart() {
-        superstructure.setArmExtension(true);
+        superstructure.setIntakeState(false);
     }
 
     @Override public void onLoop() {}
@@ -23,7 +21,7 @@ public class ArmAction extends Action {
     }
 
     @Override public void onStop() {
-        superstructure.setArmExtension(false);
+        superstructure.setIntakeState(true);
 
     }
 }

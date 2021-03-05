@@ -71,13 +71,13 @@ public class Constants {
     */
     public static final double LIMELIGHT_HIGHT = 23;
     public static final double LIMELIGHT_PITCH = 31;
-    public static final double TURRET_MAX_SPEED = .145;
-    public static final double TURRET_ANGLE_KP = .8; // SAFE .3
-    public static final double TURRET_ANGLE_KI = 0.003; // SAFE .001
-    public static final double TURRET_ANGLE_KD = 50; // SAFE 12
-    public static final double TURRET_OFFSET = 1.25; //1.25 VISION FINE TUNING 25ft
+    public static final double TURRET_MAX_SPEED = .1;
+    public static final double TURRET_ANGLE_KP = .45; // SAFE .3
+    public static final double TURRET_ANGLE_KI = 0.001; // SAFE .001
+    public static final double TURRET_ANGLE_KD = 20; // SAFE 12
+    public static final double TURRET_OFFSET = 1; //1.25 VISION FINE TUNING 25ft
     public static final double TURRET_DEGREES_TO_TICKS = 85.26;
-    public static final double TURRET_LOCKON_DELTA = 1.5;
+    public static final double TURRET_LOCKON_DELTA = .5;
 
     public static double TURRET_LEFT_FLY_KP = 0.08; //0.08
     public static double TURRET_LEFT_FLY_KD = 0.0; //0.00
@@ -86,11 +86,11 @@ public class Constants {
     public static double VOLTAGE_COMP_FLYWHEEL = 10;
     public static final double FLYWHEEL_DELTA_AMPS = 2.5;
 
-    public static final double FLYWHEEL_RPM_PER_IN = 5; //4.4
-    public static final double FLYWHEEL_BASE_RPM = 4350; //4000
-    public static final double FLYWHEEL_SPINUP_TIME = 100; //10 ms 
-    public static final double FLYWHEEL_IDLE_RPM = 5500; //RPM
-    public static final double FLYWHEEL_MAX_RPM = 5900; //RPM
+    public static final double FLYWHEEL_RPM_PER_IN = 5.2; //4.4
+    public static final double FLYWHEEL_BASE_RPM = 4450; //4000
+    public static final double FLYWHEEL_SPINUP_TIME = 50; //10 ms 
+    public static final double FLYWHEEL_IDLE_RPM = 5000; //RPM
+    public static final double FLYWHEEL_MAX_RPM = 6400; //RPM
     public static final int FLYWHEEL_MIN_RPM_OFFSET = -200;
     public static final int FLYWHEEL_MAX_RPM_OFFSET = 600;
     public static final int FLYWHEEL_OFFSET_RPM_INCREMENT = 100;

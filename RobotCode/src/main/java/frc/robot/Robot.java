@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
     private JoystickButton inverse = new JoystickButton(Constants.MASTER, 2);
     private DebouncedJoystickButton folder = new DebouncedJoystickButton(Constants.MASTER, 5);
     private DebouncedJoystickButton climber = new DebouncedJoystickButton(Constants.MASTER, 6);
+    
 
     //Co-pilot joystick buttons
     private POVTrigger recenter = new POVTrigger(Constants.SECOND);
@@ -65,9 +66,14 @@ public class Robot extends TimedRobot {
     //Wheel buttons
     private AxisAction reverse = new AxisAction(Constants.WHEEL, 3, .5, false);
     private AxisAction nextLight = new AxisAction(Constants.WHEEL, 2, .8, false);
+    private JoystickButton flywheelManual = new JoystickButton(Constants.WHEEL, 1);
     private JoystickButton shiftUp = new JoystickButton(Constants.WHEEL, 5);
     private JoystickButton shiftDown = new JoystickButton(Constants.WHEEL, 6);
     private JoystickButton gyroLock = new JoystickButton(Constants.WHEEL, 2);
+    private JoystickButton shootAll = new JoystickButton(Constants.WHEEL, 3);
+    private JoystickButton wheelIntake = new JoystickButton(Constants.WHEEL, 4);
+    private JoystickButton wheelTargeting = new JoystickButton(Constants.WHEEL, 10);
+    private JoystickButton wheelIntakeArm = new JoystickButton(Constants.WHEEL, 8);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -79,10 +85,9 @@ public class Robot extends TimedRobot {
             // register subsystems here
             PoseEstimator.getInstance(), 
             Drive.getInstance(),
-            //Shooter.getInstance(),
-            //Climber.getInstance(),
-            Lights.getInstance()),
-            //Superstructure.getInstance()),
+            Shooter.getInstance(),
+            Lights.getInstance(),
+            Superstructure.getInstance()),
              true);
 
         // create the master looper threads
@@ -212,8 +217,13 @@ public class Robot extends TimedRobot {
         reverse.whileHeld(Action.toCommand(new Inverse()));
         shiftUp.whileHeld(Action.toCommand(new Shift()));
         shiftDown.whileHeld(Action.toCommand(new DownShift()));
+        shootAll.whileHeld(Action.toCommand(new ShootAllAction()));
+        wheelIntake.whileHeld(Action.toCommand(new IntakeAction()));
         gyroLock.whileHeld(Action.toCommand(new GyroLock()));
         nextLight.whenPressed(Action.toCommand(new nextLight()));
+        flywheelManual.whenPressed(Action.toCommand(new SetManualFlywheel()));
+        wheelTargeting.whileHeld(Action.toCommand(new TurretPIDControl()));
+        wheelIntakeArm.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
     }
         // turnLockout.whileHeld(Action.toCommand(new TurnLockout(true)));
         DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));
@@ -232,7 +242,7 @@ public class Robot extends TimedRobot {
         folder.toggleWhenPressed(Action.toCommand(new FolderToggleAction()));
         climber.toggleWhenPressed(Action.toCommand(new ClimberToggleAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
-        intakeUP.toggleWhenPressed(Action.toCommand(new ArmAction()));
+        intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));
         VersionData.WriteBuildInfoToDashboard();
 

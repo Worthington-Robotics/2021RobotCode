@@ -33,9 +33,9 @@ public class Superstructure extends Subsystem {
     // TODO Move to constants once done debugging demands
     private double[] defaultMotorDemands = new double[] {
         1, // BLACK_WHEEL -
-        .85, // INDEXER_ONE .88
-        .7, // INDEXER_TWO .75
-        .62, // INDEXER_THREE .7
+        .8, // INDEXER_ONE .88
+        .67, // INDEXER_TWO .75
+        .57, // INDEXER_THREE .7
         1 // INTAKE
     };
 
@@ -132,9 +132,16 @@ public class Superstructure extends Subsystem {
     @Override
     public void writePeriodicOutputs() {
         for (int n = BLACK_WHEEL; n <= INTAKE; n++) {
+            if(periodic.intakeEnable)
+        {
             motors[n].set(ControlMode.PercentOutput, periodic.motorDemands[n]);
         }
-        extensionArm.set(periodic.armExtension);
+        else
+        {
+            motors[n].set(ControlMode.PercentOutput, stopDemands[n]);
+        }
+        }
+        
     }
 
     /**
@@ -302,8 +309,8 @@ public class Superstructure extends Subsystem {
      * 
      * @param armExtension if the intake arm is extended
      */
-    public void setArmExtension(boolean armExtension) {
-        periodic.armExtension = armExtension ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse;
+    public void setIntakeState(boolean armExtension) {
+        periodic.intakeEnable = armExtension;
     }
 
     public void setInit() {
@@ -346,7 +353,7 @@ public class Superstructure extends Subsystem {
     public class SuperIO extends Subsystem.PeriodicIO {
         public boolean[] sensorsDetected = new boolean[5];
         public double[] motorDemands = new double[5];
-        public DoubleSolenoid.Value armExtension = DoubleSolenoid.Value.kReverse;
+        public boolean intakeEnable = true;
         public boolean intaking = false;
 
         public SuperState state = SuperState.DISABLED;

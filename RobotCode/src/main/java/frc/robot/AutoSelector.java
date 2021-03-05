@@ -12,7 +12,7 @@ import frc.robot.autoactiongroups.*;
  * from 1 to n.
  */
 enum UserSelection {
-
+    Auto1("ShootyAuto", 1),
     Auto8("BounceB", 8),
     Auto9("Ski", 9),
     Auto10("Barrel",10),
@@ -82,6 +82,8 @@ public class AutoSelector {
         UserSelection usrAuto = getSelFromStr(selection);
         SmartDashboard.putString("Final Auto Choice", usrAuto.toString());
         switch (usrAuto) {
+            case Auto1:
+                return new EightBallAuto();
             case Auto8:
                 return new NoSkew();
             case Auto9:

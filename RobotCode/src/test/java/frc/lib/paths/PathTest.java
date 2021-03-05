@@ -78,6 +78,45 @@ public class PathTest {
                     
                 }
     }
+    
+    @Test
+    public void BallPathTest() {
+        Trajectory trajectoryA = DriveTrajectoryGenerator.getInstance().getBounceA();
+        Trajectory trajectoryB = DriveTrajectoryGenerator.getInstance().getBounceB();
+        Trajectory trajectoryC = DriveTrajectoryGenerator.getInstance().getBounceC();
+        Trajectory trajectoryD = DriveTrajectoryGenerator.getInstance().getBounceD();
+        TestData data = new TestData();
+        TestLogger<TestData> logger = new TestLogger<TestData>(data, "bonPathTest");
+        Pose2d pose = new Pose2d();
+                for(int i = 0; i < trajectoryA.getStates().size(); i++)
+                {
+                    pose = trajectoryA.getStates().get(i).getPose();
+                    data.setPoseGuess(pose);
+                    logger.update(data, i);
+                    
+                }
+                for(int i = 0; i < trajectoryB.getStates().size(); i++)
+                {
+                    pose = trajectoryB.getStates().get(i).getPose();
+                    data.setPoseGuess(pose);
+                    logger.update(data, i);
+                    
+                }
+                for(int i = 0; i < trajectoryC.getStates().size(); i++)
+                {
+                    pose = trajectoryC.getStates().get(i).getPose();
+                    data.setPoseGuess(pose);
+                    logger.update(data, i);
+                    
+                }
+                for(int i = 0; i < trajectoryD.getStates().size(); i++)
+                {
+                    pose = trajectoryD.getStates().get(i).getPose();
+                    data.setPoseGuess(pose);
+                    logger.update(data, i);
+                    
+                }
+    }
 
     @Test
     public void bonBPathTest() {

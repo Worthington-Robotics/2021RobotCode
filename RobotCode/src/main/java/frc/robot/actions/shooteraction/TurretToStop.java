@@ -16,7 +16,7 @@ public class TurretToStop extends Action {
      */
     @Override
     public void onStart() {
-        Shooter.getInstance().setTurretDemand(.2);
+        Shooter.getInstance().setTurretDemand(.1);
     }
 
     /**
@@ -26,7 +26,7 @@ public class TurretToStop extends Action {
      */
     @Override
     public void onLoop() {
-        Shooter.getInstance().setTurretDemand(.2);
+        Shooter.getInstance().setTurretDemand(.1);
     }
 
     /**

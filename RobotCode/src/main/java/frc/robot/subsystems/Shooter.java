@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -111,7 +113,15 @@ public class Shooter extends Subsystem {
                 switch (flywheelMode) {
                 case OPEN_LOOP:
                     periodic.flywheelDemand = periodic.operatorFlywheelInput;
+                    if(!Constants.WHEELS)
+                    {
                     periodic.flywheelRPMDemand = periodic.operatorFlywheelInput * Constants.FLYWHEEL_MAX_RPM;
+                    }
+                    else
+                    {
+                        periodic.flywheelDemand = 0;
+                        periodic.flywheelRPMDemand = periodic.flywheelDemand;
+                    }
                     break;
                 case PID_MODE:
                     periodic.flywheelRPMDemand = periodic.operatorFlywheelInput * Constants.FLYWHEEL_MAX_RPM;
@@ -132,11 +142,11 @@ public class Shooter extends Subsystem {
                 case LIMELIGHT_MODE:
                     if (periodic.limelight_distance > 60 && periodic.limelight_distance < 700) {
                         periodic.RPMGoal = (limelightRanging() * Constants.FLYWHEEL_RPM_PER_IN)
-                        + Constants.FLYWHEEL_BASE_RPM + periodic.FlywheelBaseRPMOffset + periodic.limelightDelta * 0;
+                        + Constants.FLYWHEEL_BASE_RPM + periodic.FlywheelBaseRPMOffset;
                         periodic.flywheelRPMDemand = Math.min(periodic.RPMGoal,
                                 Constants.FLYWHEEL_MAX_RPM);
                         periodic.flywheelRPMDemand = Math.max(
-                                periodic.RPMGoal,
+                                periodic.flywheelRPMDemand,
                                 Constants.FLYWHEEL_IDLE_RPM + periodic.FlywheelBaseRPMOffset);
                     } else {
                         periodic.flywheelRPMDemand = Constants.FLYWHEEL_IDLE_RPM + periodic.FlywheelBaseRPMOffset;
@@ -284,6 +294,7 @@ public class Shooter extends Subsystem {
         turretControl.setSensorPhase(true);
         turretControl.configMotionAcceleration((int) degreesToTicks(90));
         turretControl.configMotionCruiseVelocity((int) degreesToTicks(90));
+        turretControl.setIntegralAccumulator(300);
 
         rightFlywheelFalcon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         rightFlywheelFalcon.setNeutralMode(NeutralMode.Coast);

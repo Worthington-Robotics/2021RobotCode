@@ -43,15 +43,17 @@ public class JetsonAILink extends Subsystem {
                 points.clear();
 
                 // Parse data
-                String data = socketData.getString("balls", null);
+                String data = socketData.getString("balls", "");
 
                 // Un-serialize data....
-                for (String point : data.split(";")) {
-                    String[] split = point.split(",");
-                    double x = Double.parseDouble(split[0]);
-                    double y = Double.parseDouble(split[1]);
+                if (!data.isEmpty()) {
+                    for (String point : data.split(";")) {
+                        String[] split = point.split(",");
+                        double x = Double.parseDouble(split[0]);
+                        double y = Double.parseDouble(split[1]);
 
-                    points.add(new Pose2d(x, y, Rotation2d.fromDegrees(Math.atan2(y, x))));
+                        points.add(new Pose2d(x, y, Rotation2d.fromDegrees(Math.atan2(y, x))));
+                    }
                 }
 
                 // Sort list
@@ -92,7 +94,8 @@ public class JetsonAILink extends Subsystem {
     }
 
     public Pose2d getFirst() {
-        return points.get(0);
+        // Return default if nothing detected on action run
+        return points.isEmpty() ? new Pose2d(0, 0, Rotation2d.fromDegrees(0)) : points.get(0);
     }
 
     public LogData getLogger() {

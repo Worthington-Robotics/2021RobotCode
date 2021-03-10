@@ -14,15 +14,15 @@ Description:   	SocketTables provide a socket based communication protocol
 ----------------------------------------------------------------------------
 */
 
+import frc.lib.socket.table.util.MessageParser;
+import frc.lib.socket.table.util.RequestType;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Map;
-
-import socket.table.util.MessageParser;
-import socket.table.util.RequestType;
 
 public class SocketTableMessageHandler implements Runnable {
 

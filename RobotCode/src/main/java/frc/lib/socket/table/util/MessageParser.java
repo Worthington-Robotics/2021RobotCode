@@ -1,4 +1,4 @@
-package socket.table.util;
+package frc.lib.socket.table.util;
 
 /*
 ----------------------------------------------------------------------------

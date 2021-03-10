@@ -86,8 +86,8 @@ public class Robot extends TimedRobot {
             PoseEstimator.getInstance(), 
             Drive.getInstance(),
             Shooter.getInstance(),
-            Lights.getInstance(),
-            Superstructure.getInstance()),
+            Lights.getInstance()),
+            //Superstructure.getInstance()),
              true);
 
         // create the master looper threads
@@ -176,7 +176,8 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         Drive.getInstance().setOpenLoop(DriveSignal.NEUTRAL);
-        
+        Constants.WHEELS = SmartDashboard.getBoolean("inputKeyHere", Constants.WHEELS);
+        initButtons();
         enabledLooper.start();
         
     }

@@ -87,7 +87,8 @@ public class Robot extends TimedRobot {
             Drive.getInstance(),
             Shooter.getInstance(),
             Lights.getInstance(),
-            Superstructure.getInstance()),
+            Superstructure.getInstance(),
+            JetsonAILink.getInstance()),
              true);
 
         // create the master looper threads

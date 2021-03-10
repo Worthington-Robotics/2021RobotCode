@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
             Drive.getInstance(),
             Shooter.getInstance(),
             Lights.getInstance(),
-            Superstructure.getInstance(),
+            // Superstructure.getInstance(),
             JetsonAILink.getInstance()),
              true);
 
@@ -177,7 +177,8 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         Drive.getInstance().setOpenLoop(DriveSignal.NEUTRAL);
-        
+        Constants.WHEELS = SmartDashboard.getBoolean("inputKeyHere", Constants.WHEELS);
+        initButtons();
         enabledLooper.start();
         
     }

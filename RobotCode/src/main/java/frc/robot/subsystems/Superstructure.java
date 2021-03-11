@@ -24,23 +24,23 @@ import frc.robot.Constants;
  * @author Kayla
  */
 public class Superstructure extends Subsystem {
-        // TalonSRX mtr1;
-        // TalonSRX mtr2;
-        // TalonSRX mtr3;
-        // TalonSRX mtr4;
-        // TalonSRX mtr5;
-        TalonSRX[] mtrArray;
+    // TalonSRX mtr1;
+    // TalonSRX mtr2;
+    // TalonSRX mtr3;
+    // TalonSRX mtr4;
+    // TalonSRX mtr5;
+    TalonSRX[] mtrArray;
 
-        SimTimeOfFlight[] sensorArray;
-        // SimTimeOfFlight sen1;
-        // SimTimeOfFlight sen2;
-        // SimTimeOfFlight sen3;
-        // SimTimeOfFlight sen4;
-        // SimTimeOfFlight sen5;
+    SimTimeOfFlight[] sensorArray;
+    // SimTimeOfFlight sen1;
+    // SimTimeOfFlight sen2;
+    // SimTimeOfFlight sen3;
+    // SimTimeOfFlight sen4;
+    // SimTimeOfFlight sen5;
 
-        double[] sensorThresholds = {75, 60, 60, 75, 75};
+    double[] sensorThresholds = { 75, 60, 60, 75, 75 };
 
-        SuperStructureIO periodicIO;
+    SuperStructureIO periodicIO;
 
     private static Superstructure instance = new Superstructure();
 
@@ -93,7 +93,7 @@ public class Superstructure extends Subsystem {
         // periodicIO.sensorDistances[3] = sen4.getRange();
         // periodicIO.sensorDistances[4] = sen5.getRange();
 
-        for(int i = 0; i < periodicIO.sensorDistances.length; i++){
+        for (int i = 0; i < periodicIO.sensorDistances.length; i++) {
             periodicIO.sensorDistances[i] = sensorArray[i].getRange();
         }
 
@@ -104,15 +104,15 @@ public class Superstructure extends Subsystem {
      */
     @Override
     public void writePeriodicOutputs() {
-    //    mtr1.set(ControlMode.PercentOutput, periodicIO.motorDemands[0]); 
-    //    mtr2.set(ControlMode.PercentOutput, periodicIO.motorDemands[1]);
-    //    mtr3.set(ControlMode.PercentOutput, periodicIO.motorDemands[2]);
-    //    mtr4.set(ControlMode.PercentOutput, periodicIO.motorDemands[3]);
-    //    mtr5.set(ControlMode.PercentOutput, periodicIO.motorDemands[4]);
+        // mtr1.set(ControlMode.PercentOutput, periodicIO.motorDemands[0]);
+        // mtr2.set(ControlMode.PercentOutput, periodicIO.motorDemands[1]);
+        // mtr3.set(ControlMode.PercentOutput, periodicIO.motorDemands[2]);
+        // mtr4.set(ControlMode.PercentOutput, periodicIO.motorDemands[3]);
+        // mtr5.set(ControlMode.PercentOutput, periodicIO.motorDemands[4]);
 
-       for(int i = 0; i < mtrArray.length; i++){
-           mtrArray[i].set(ControlMode.PercentOutput, periodicIO.motorDemands[i]);
-       }
+        for (int i = 0; i < mtrArray.length; i++) {
+            mtrArray[i].set(ControlMode.PercentOutput, periodicIO.motorDemands[i]);
+        }
     }
 
     /**
@@ -125,83 +125,110 @@ public class Superstructure extends Subsystem {
         enabledLooper.register(new Loop() {
             @Override
             public void onLoop(double timestamp) {
-              for(int i = 0; i < periodicIO.sensorDistances.length; i++){
-                  periodicIO.ballPresent[i] = isBallPresent(i);
-              }  
-                switch(periodicIO.state){
-                    case MTR_1_TO_5_FORWARD: 
-                    for(int i = 0; i < periodicIO.motorDemands.length; i++){
-                        periodicIO.motorDemands[i] = 1;
-                    }
-                    if(periodicIO.ballPresent[0]){
-                        periodicIO.state = IndexerState.MTR_2_TO_5_FORWARD;
-                    }
-                    break;
+                setIntaking(true);
+                for (int i = 0; i < periodicIO.sensorDistances.length; i++) {
+                    periodicIO.ballPresent[i] = isBallPresent(i);
+                }
+                if (periodicIO.robotWantDump) {
+                    periodicIO.state = IndexerState.DUMP_STATE;
+                } else if (periodicIO.shooterWantBall) {
+                    periodicIO.state = IndexerState.SHOOT_STATE;
+                    periodicIO.shooterWantBall = false;
+                }
+                switch (periodicIO.state) {
+                    case MTR_1_TO_4_FORWARD:
+                        for (int i = 0; i < periodicIO.motorDemands.length - 1; i++) {
+                            periodicIO.motorDemands[i] = 1;
+                        }
+                        if (periodicIO.ballPresent[0]) {
+                            periodicIO.state = IndexerState.MTR_2_TO_4_FORWARD;
+                        }
+                        break;
 
-                    case MTR_2_TO_5_FORWARD:
-                    periodicIO.motorDemands[0] = 0;
-                    for(int i = 1; i < periodicIO.motorDemands.length; i++){
-                        periodicIO.motorDemands[i] = 1;
-                    }
-                    if(periodicIO.ballPresent[1]){
-                        periodicIO.state = IndexerState.MTR_3_TO_5_FORWARD;
-                    } else{
-                        enterSixAndSeven();
-                    }
-                    break;
+                    case MTR_2_TO_4_FORWARD:
+                        periodicIO.motorDemands[0] = 0;
+                        for (int i = 1; i < periodicIO.motorDemands.length - 1; i++) {
+                            periodicIO.motorDemands[i] = 1;
+                        }
+                        if (periodicIO.ballPresent[1]) {
+                            periodicIO.state = IndexerState.MTR_3_TO_4_FORWARD;
+                        }
+                        if (!periodicIO.ballPresent[0]) {
+                            periodicIO.state = IndexerState.MTR_1_TO_4_FORWARD;
+                        }
+                        break;
 
-                    case MTR_3_TO_5_FORWARD:
-                    for(int i = 0; i < 2; i++){
-                        //periodicIO.
-                    }
-                    for(int i = 2; i < periodicIO.motorDemands.length; i++){
-                        periodicIO.motorDemands[i] = 1;
-                    }
-                    if(periodicIO.ballPresent[2]){
-                        periodicIO.state = IndexerState.MTR_4_TO_5_FORWARD;
-                    } else{
-                        enterSixAndSeven();
-                    }
-                    break;
+                    case MTR_3_TO_4_FORWARD:
+                        for (int i = 0; i < 2; i++) {
+                            periodicIO.motorDemands[i] = 0;
+                        }
+                        for (int i = 2; i < periodicIO.motorDemands.length - 1; i++) {
+                            periodicIO.motorDemands[i] = 1;
+                        }
+                        if (periodicIO.ballPresent[2]) {
+                            periodicIO.state = IndexerState.MTR_4_FORWARD;
+                        }
+                        if (!periodicIO.ballPresent[1]) {
+                            periodicIO.state = IndexerState.MTR_2_TO_4_FORWARD;
+                        }
+                        break;
 
-                    case MTR_4_TO_5_FORWARD:
-                    for(int i = 3; i < periodicIO.motorDemands.length; i++){
-                        periodicIO.motorDemands[i] = 1;
-                    }
-                    if(periodicIO.ballPresent[3]){
-                        periodicIO.state = IndexerState.MTR_5_FORWARD;
-                    } else {
-                        enterSixAndSeven();
-                    }
-                    break;
+                    case MTR_4_FORWARD:
+                        for (int i = 0; i < 3; i++) {
+                            periodicIO.motorDemands[i] = 0;
+                        }
+                        for (int i = 3; i < periodicIO.motorDemands.length - 1; i++) {
+                            periodicIO.motorDemands[i] = 1;
+                        }
+                        if (periodicIO.ballPresent[3]) {
+                            periodicIO.state = IndexerState.MTR_1_TO_4_OFF;
+                        }
+                        if (!periodicIO.ballPresent[2]) {
+                            periodicIO.state = IndexerState.MTR_3_TO_4_FORWARD;
+                        }
+                        break;
 
-                    case MTR_5_FORWARD:
-                    for(int i = 4; i < periodicIO.motorDemands.length; i++){
-                        periodicIO.motorDemands[i] = 1;
-                    }
-                    if(periodicIO.ballPresent[4]){
-                        periodicIO.state = IndexerState.MTR_1_TO_5_OFF;
-                    } else {
-                        enterSixAndSeven();
-                    }
-                    break;
+                    // case MTR_5_FORWARD:
+                    //     for (int i = 0; i < 4; i++) {
+                    //         periodicIO.motorDemands[i] = 0;
+                    //     }
+                    //     for (int i = 4; i < periodicIO.motorDemands.length; i++) {
+                    //         periodicIO.motorDemands[i] = 1;
+                    //     }
+                    //     if (periodicIO.ballPresent[4]) {
+                    //         periodicIO.state = IndexerState.MTR_1_TO_5_OFF;
+                    //     }
+                    //     if (!periodicIO.ballPresent[3]) {
+                    //         periodicIO.state = IndexerState.MTR_4_TO_5_FORWARD;
+                    //     }
+                    //     break;
 
-                    case MTR_1_TO_5_OFF:
-                    for(int i = 0; i < periodicIO.motorDemands.length; i++){
-                        periodicIO.motorDemands[i] = 0;
-                    } 
-                    enterSixAndSeven();
-                    break;
+                    case MTR_1_TO_4_OFF:
+                        for (int i = 0; i < periodicIO.motorDemands.length - 1; i++) {
+                            periodicIO.motorDemands[i] = 0;
+                        }
+                        if (!periodicIO.ballPresent[4]) {
+                            periodicIO.state = IndexerState.MTR_4_FORWARD;
+                        }
+                        break;
 
                     case SHOOT_STATE:
-                    periodicIO.motorDemands[0] = 1;
-                    if (!periodicIO.ballPresent[0]){
-                        periodicIO.state = IndexerState.MTR_1_TO_5_FORWARD;
-                    }
+                        periodicIO.motorDemands[0] = 1;
+                        if (!periodicIO.ballPresent[0]) {
+                            periodicIO.state = IndexerState.MTR_1_TO_4_FORWARD;
+                            periodicIO.shooterWantBall = true;
+                        }
+                        break;
+
                     case DUMP_STATE:
-                    if(!periodicIO.robotWantDump){
-                        periodicIO.state = IndexerState.MTR_1_TO_5_FORWARD;
-                    }
+                        for (int i = 0; i < periodicIO.motorDemands.length - 1; i++) {
+                            periodicIO.motorDemands[i] = -1;
+                        }
+                        if (!periodicIO.robotWantDump) {
+                            periodicIO.state = IndexerState.MTR_1_TO_4_FORWARD;
+                        }
+
+                        break;
                 }
             }
 
@@ -212,18 +239,10 @@ public class Superstructure extends Subsystem {
             @Override
             public void onStop(double timestamp) {
             }
-        }
-        )
-        ;
+        });
     }
 
-    public void enterSixAndSeven(){
-        if(periodicIO.robotWantDump){
-            periodicIO.state = IndexerState.DUMP_STATE;
-        } else if(periodicIO.shooterWantBall){
-            periodicIO.state = IndexerState.SHOOT_STATE;
-            periodicIO.shooterWantBall = false;
-        }
+    public void enterSixAndSeven() {
     }
 
     public LogData getLogger() {
@@ -235,7 +254,7 @@ public class Superstructure extends Subsystem {
      */
     @Override
     public void reset() {
-       periodicIO = new SuperStructureIO();
+        periodicIO = new SuperStructureIO();
     }
 
     /**
@@ -246,39 +265,51 @@ public class Superstructure extends Subsystem {
         SmartDashboard.putNumberArray("SuperStructure/Sensor Distances", periodicIO.sensorDistances);
         SmartDashboard.putNumberArray("SuperStructure/MotorDemand", periodicIO.motorDemands);
         SmartDashboard.putBooleanArray("SuperStructure/BallPresent", periodicIO.ballPresent);
-        SmartDashboard.putString("State", periodicIO.state.toString());
+        SmartDashboard.putString("SuperStructure/State", periodicIO.state.toString());
     }
 
-    public enum IndexerState{
-        MTR_1_TO_5_FORWARD, MTR_2_TO_5_FORWARD, MTR_3_TO_5_FORWARD, MTR_4_TO_5_FORWARD, MTR_5_FORWARD,  MTR_1_TO_5_OFF, SHOOT_STATE, DUMP_STATE;
+    public enum IndexerState {
+        DISABLED, MTR_1_TO_4_FORWARD, MTR_2_TO_4_FORWARD, MTR_3_TO_4_FORWARD, MTR_4_FORWARD, MTR_1_TO_4_OFF,
+        SHOOT_STATE, DUMP_STATE;
+
         public String toString() {
             return name().charAt(0) + name().substring(1).toLowerCase();
-        } 
+        }
     }
 
-    public void wantDump(boolean wantDump){
+    public void wantDump(boolean wantDump) {
         this.periodicIO.robotWantDump = wantDump;
     }
 
-    public void wantBall(boolean wantBall){
-        this.periodicIO.shooterWantBall = true;
+    public void wantBall(boolean wantBall) {
+        this.periodicIO.shooterWantBall = wantBall;
     }
 
-    public boolean isBallPresent(int id){
+    public boolean isBallPresent(int id) {
         return periodicIO.sensorDistances[id] != 0 && periodicIO.sensorDistances[id] <= sensorThresholds[id];
     }
 
-    public class SuperStructureIO extends PeriodicIO{
+    public void setIntaking(boolean setIntaking){
+        if(periodicIO.state == IndexerState.DISABLED){
+            periodicIO.state = IndexerState.MTR_1_TO_4_FORWARD;
+        }
+        
+        if (setIntaking) {
+            periodicIO.motorDemands[4] = 1;
+        } else {
+            periodicIO.motorDemands[4] = 0;
+        }
+    }
+
+    public class SuperStructureIO extends PeriodicIO {
         public double[] motorDemands = new double[5];
         public double[] sensorDistances = new double[5];
         public boolean[] ballPresent = new boolean[5];
-    
 
-        public IndexerState state = IndexerState.MTR_1_TO_5_FORWARD;
+        public IndexerState state = IndexerState.DISABLED;
 
         public boolean robotWantDump = false;
         public boolean shooterWantBall = false;
 
     }
-    }
-
+}

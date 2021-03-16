@@ -10,8 +10,10 @@ import frc.lib.socket.table.server.SocketTableServer;
 import java.util.*;
 
 public class JetsonAILink extends Subsystem {
+    private int SERVER_PORT = 5800;
+
     private final List<Pose2d> points = new ArrayList<>();
-    private final SocketTableServer server = new SocketTableServer();
+    private final SocketTableServer server = new SocketTableServer(SERVER_PORT);
     private final SocketTableData socketData;
     private final PoseComparator translationComparator = new PoseComparator();
 

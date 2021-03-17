@@ -9,6 +9,8 @@ import frc.lib.socket.table.server.SocketTableServer;
 
 import java.util.*;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class JetsonAILink extends Subsystem {
     private int SERVER_PORT = 5800;
 
@@ -26,6 +28,8 @@ public class JetsonAILink extends Subsystem {
     private JetsonAILink() {
         server.start();
         socketData = server.getData();
+
+        SmartDashboard.putString("JetsonAILink/Data", "");
     }
 
     /**
@@ -78,7 +82,7 @@ public class JetsonAILink extends Subsystem {
      * Outputs all logging information to the SmartDashboard
      */
     public void outputTelemetry() {
-
+        SmartDashboard.putString("JetsonAILink/Data", socketData.getString("balls", ""));
     }
 
     /**

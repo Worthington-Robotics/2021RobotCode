@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
             Drive.getInstance(),
             Shooter.getInstance(),
             Lights.getInstance(),
-            JetsonAILink.getInstance()),
+            JetsonAILink.getInstance(),
             Superstructure.getInstance()),
              true);
 

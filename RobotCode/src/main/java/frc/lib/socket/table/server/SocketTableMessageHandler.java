@@ -39,7 +39,7 @@ public class SocketTableMessageHandler implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Client connected: " + this.clientSocket.toString());
+        // System.out.println("Client connected: " + this.clientSocket.toString());
         try {
             // Create reader/write
             PrintWriter out = new PrintWriter(this.clientSocket.getOutputStream(), true);
@@ -50,7 +50,7 @@ public class SocketTableMessageHandler implements Runnable {
             in.read(input, 0, PACKET_SIZE);
             String message = new String(input);
 
-            System.out.println("Message received: " + message);
+            // System.out.println("Message received: " + message);
 
             // Parse message and generate response
             String response = null;
@@ -59,7 +59,7 @@ public class SocketTableMessageHandler implements Runnable {
             }
 
             // Send response
-            System.out.println("Sending Response: " + response);
+            // System.out.println("Sending Response: " + response);
             out.println(response);
 
         } catch (Exception ex) {

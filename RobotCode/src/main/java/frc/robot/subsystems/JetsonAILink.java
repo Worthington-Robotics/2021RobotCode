@@ -61,7 +61,7 @@ public class JetsonAILink extends Subsystem {
                         double x = Double.parseDouble(split[0]);
                         double y = Double.parseDouble(split[1]);
 
-                        points.add(new Pose2d(x, y, Rotation2d.fromDegrees(Math.atan2(y, x))));
+                        points.add(new Pose2d(-x, -y, Rotation2d.fromDegrees(Math.atan2(y, x))));
                     }
                 }
 

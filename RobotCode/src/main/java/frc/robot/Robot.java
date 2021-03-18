@@ -88,8 +88,8 @@ public class Robot extends TimedRobot {
             Drive.getInstance(),
             Shooter.getInstance(),
             Lights.getInstance(),
-            // Superstructure.getInstance(),
             JetsonAILink.getInstance()),
+            Superstructure.getInstance()),
              true);
 
         // create the master looper threads
@@ -178,7 +178,7 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         Drive.getInstance().setOpenLoop(DriveSignal.NEUTRAL);
-        Constants.WHEELS = SmartDashboard.getBoolean("inputKeyHere", Constants.WHEELS);
+        Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
         initButtons();
         enabledLooper.start();
         

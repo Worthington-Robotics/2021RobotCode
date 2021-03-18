@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.geometry.Rotation2d;
@@ -24,6 +25,7 @@ import frc.robot.Constants;
 public class Shooter extends Subsystem {
     private double[] tangent;
     private static Shooter m_Shooter = new Shooter();
+    private Servo camFlapAdj;
     private NetworkTable limelight;
     private MotorControlMode flywheelMode = MotorControlMode.RAMP_UP;
     private MotorControlMode turretMode = MotorControlMode.OPEN_LOOP;
@@ -49,6 +51,7 @@ public class Shooter extends Subsystem {
         }
         rightFlywheelFalcon = new TalonFX(Constants.SHOOTER_FLYWHEEL_RIGHT);
         leftFlywheelFalcon = new TalonFX(Constants.SHOOTER_FLYWHEEL_LEFT);
+        camFlapAdj = new Servo(Constants.CAM_PWM_CHANNEL);
         turretControl = new TalonSRX(Constants.TURRET_CONTROL);
         rightFlywheelFalcon.setInverted(true);
         leftFlywheelFalcon.setInverted(false);
@@ -237,6 +240,8 @@ public class Shooter extends Subsystem {
             turretControl.set(ControlMode.Disabled, 0);
             break;
         }
+
+        camFlapAdj.setAngle(50);
     }
 
     /**

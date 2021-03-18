@@ -22,6 +22,7 @@ import frc.lib.util.POVTrigger;
 import frc.lib.util.VersionData;
 import frc.robot.subsystems.*;
 import frc.robot.actions.driveactions.*;
+import frc.robot.actions.aiactions.BallFollowAction;
 import frc.robot.actions.climberactions.*;
 import frc.robot.actions.colorwheelactions.nextLight;
 import frc.robot.actions.shooteraction.*;
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
     private JoystickButton shiftButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton inverse = new JoystickButton(Constants.MASTER, 2);
     private DebouncedJoystickButton folder = new DebouncedJoystickButton(Constants.MASTER, 5);
-    private DebouncedJoystickButton climber = new DebouncedJoystickButton(Constants.MASTER, 6);
+    private DebouncedJoystickButton jetsonAI = new DebouncedJoystickButton(Constants.MASTER, 6);
     
 
     //Co-pilot joystick buttons
@@ -242,7 +243,7 @@ public class Robot extends TimedRobot {
         shootOne.whenPressed(Action.toCommand(new ShootBallAction()));
         intake.whileHeld(Action.toCommand(new IntakeAction()));
         folder.toggleWhenPressed(Action.toCommand(new FolderToggleAction()));
-        climber.toggleWhenPressed(Action.toCommand(new ClimberToggleAction()));
+        jetsonAI.toggleWhenPressed(Action.toCommand(new BallFollowAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));

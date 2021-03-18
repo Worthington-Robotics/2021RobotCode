@@ -55,7 +55,7 @@ public class JetsonAILink extends Subsystem {
 
                 // Un-serialize data....
                 // Will be in the format {x-coord}x{y-coord}y{x-coord}x{y-coord}y{x-coord}x{y-coord}y
-                if (!data.isEmpty()) {
+                if (data.contains("x")) {
                     for (String coord : data.split("y")) {
                         String[] split = coord.split("x");
                         double x = Double.parseDouble(split[0]);

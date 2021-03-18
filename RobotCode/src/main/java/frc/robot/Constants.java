@@ -29,7 +29,7 @@ public class Constants {
     public static final int TURRET_CONTROL = 12;
     public static final int DRIVE_FRONT_RIGHT_ID = 14;
     public static final int DRIVE_BACK_RIGHT_ID = 15;
-    public static final int CAM_PWM_CHANNEL = 0;
+    public static final int CAM_PWM_CHANNEL = 3;
 
     // TOF IDs
     public static final int ID_SUPER_TOF1 = 1;

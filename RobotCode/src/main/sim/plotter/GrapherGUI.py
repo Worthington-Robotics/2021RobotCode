@@ -18,10 +18,12 @@ borders = [0.05, 0.98, 0.05, 0.95] #L R B T
 whitelistTypes = ["Pose2D", "Twist2D", "Rotation2D", "double", "int", "float", "long", "boolean"]
 filteredHeaders = []
 
+
 window = Tk()
 filename = "Example Filepath"
 rows = []
 headers = []
+filename = ""
 headerSelector = Listbox(window, height= len(filteredHeaders), width=50, selectmode = EXTENDED)
 headerSelector.yview
 
@@ -41,6 +43,7 @@ def selectFilePath(*args):
     global filteredHeaders
     global headers
     global headerSelector
+    global filename
     filename = fd.askopenfilename(title="Select a Robot Data File", initialdir = "Users\Workstation\Documents\GitHub\2021RobotCode\RobotCode\src\main\sim", filetypes=(('Data Files', '*.csv'), ('All Files', '*.*')))
     if not os.path.isfile(filename):
         print("Specifed file could not be found")
@@ -79,6 +82,7 @@ def selectFilePath(*args):
     
     #Show Chart and allow selection of headers
     
+    headerSelector.delete(first=0, last=headerSelector.size())
     for i in range(len(filteredHeaders)):
         headerSelector.insert(END, filteredHeaders[i]) 
     headerSelector.grid(row=2, column=2)
@@ -86,10 +90,56 @@ def selectFilePath(*args):
     selectAll.grid(row=1,column=3)
 
     
-
+def remakeListfromKnownFile(*args):
+    global rows
+    global filteredHeaders
+    global headers
+    global headerSelector
+    global filename
+    if not os.path.isfile(filename):
+        print("Specifed file could not be found")
+        print(filename)
+        exit(-1)
     
+    #open the file and read it into memory
+    print("opening ", filename)
+    with open(str(filename)) as csvFile:
+        csvReader = csv.reader(csvFile,  delimiter=',')
+        rows = [row for row in csvReader]
+    if(len(rows) < 1):
+        print("File was empty")
+        exit(-3)
 
+    pathTextBox = Label(window, text=filename, fg='black', font=("Times New Roman", 11))
+    pathTextBox.grid(row=3, column=2)
+    
+    #filter the headers to find the actual values and no derivatives
+    headers = rows[0]
+    del rows[0] #remove the header row
+    filteredHeaders = [re.sub("_[0-9]","", item) for item in headers]
+    filteredHeaders = list(set(filteredHeaders))
+    filteredHeaders.remove("time_double")
+    filteredHeaders = list(filter(headerWhiteListFilter, filteredHeaders))
+    print("got headers:", filteredHeaders)
 
+    #read in optional argument for specific plot
+    if(len(sys.argv) == 3):
+        toFind = " " + sys.argv[2] 
+        if(not toFind in filteredHeaders):
+            print("Header '{0}' not found or not valid".format(toFind))
+            exit(-4)
+        else: 
+            filteredHeaders = [toFind]
+    
+    #Show Chart and allow selection of headers
+    
+    headerSelector.delete(first=0, last=headerSelector.size())
+    for i in range(len(filteredHeaders)):
+        headerSelector.insert(END, filteredHeaders[i]) 
+    headerSelector.grid(row=2, column=2)
+    selectAll = Button(window, text="Select All Commands", command=selectAllHeaders)
+    selectAll.grid(row=1,column=3)
+    
 def headerWhiteListFilter(item: str):
     global whitelistTypes
     for whitelisted in whitelistTypes:
@@ -216,11 +266,13 @@ def graph(*args):
 # pathTextBoxLabel = Label(window, text="Please Find Path to Robot Data File Here")
 pathOpenFileDialogButton = Button(window, text="Please Find Path to Robot Data File Here!", command=selectFilePath)
 # pathTextBox = Label(window, text="")
+resetlistbutton = Button(window, text="Select me before reselecting graphs to make!", command=remakeListfromKnownFile)
 graphButton = Button(window, text="Press me to Graph", command=graph)
 graphButton.bind('KeyPress-g', graph)
 
 # pathTextBoxLabel.grid(row=0, column=2)
 pathOpenFileDialogButton.grid(row=1, column=2)
+resetlistbutton.grid(row=2, column=3)
 # pathTextBox.grid(row=2, column=2)
 graphButton.grid(row=4, column=2)
 

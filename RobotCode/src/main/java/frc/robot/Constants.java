@@ -29,6 +29,7 @@ public class Constants {
     public static final int TURRET_CONTROL = 12;
     public static final int DRIVE_FRONT_RIGHT_ID = 14;
     public static final int DRIVE_BACK_RIGHT_ID = 15;
+    public static final int CAM_PWM_CHANNEL = 0;
 
     // TOF IDs
     public static final int ID_SUPER_TOF1 = 1;
@@ -105,7 +106,7 @@ public class Constants {
      */
 
     //DEBUG AND TESTING flags
-    public static boolean WHEELS = true;
+    public static boolean WHEELS = false;
     public static final boolean RAMPUP = false;
     public static final boolean ENABLE_MP_TEST_MODE = false;
     public static final double MP_TEST_SPEED = 72; //in/s

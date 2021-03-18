@@ -30,6 +30,8 @@ public class JetsonAILink extends Subsystem {
         socketData = server.getData();
 
         SmartDashboard.putString("JetsonAILink/Data", "");
+        SmartDashboard.putNumber("JetsonAILink/X", 0);
+        SmartDashboard.putNumber("JetsonAILink/Y", 0);
     }
 
     /**
@@ -52,9 +54,10 @@ public class JetsonAILink extends Subsystem {
                 String data = socketData.getString("balls", "");
 
                 // Un-serialize data....
+                // Will be in the format {x-coord}x{y-coord}y{x-coord}x{y-coord}y{x-coord}x{y-coord}y
                 if (!data.isEmpty()) {
-                    for (String point : data.split(";")) {
-                        String[] split = point.split(",");
+                    for (String coord : data.split("y")) {
+                        String[] split = coord.split("x");
                         double x = Double.parseDouble(split[0]);
                         double y = Double.parseDouble(split[1]);
 
@@ -83,6 +86,12 @@ public class JetsonAILink extends Subsystem {
      */
     public void outputTelemetry() {
         SmartDashboard.putString("JetsonAILink/Data", socketData.getString("balls", ""));
+
+        Pose2d initialPose = PoseEstimator.getInstance().getLatestFieldToVehicle().getValue();
+        Pose2d firstBallPose = getFirst().transformBy(initialPose);
+
+        SmartDashboard.putNumber("JetsonAILink/X", firstBallPose.getTranslation().x());
+        SmartDashboard.putNumber("JetsonAILink/Y", firstBallPose.getTranslation().y());
     }
 
     /**

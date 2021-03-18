@@ -243,7 +243,7 @@ public class Robot extends TimedRobot {
         shootOne.whenPressed(Action.toCommand(new ShootBallAction()));
         intake.whileHeld(Action.toCommand(new IntakeAction()));
         folder.toggleWhenPressed(Action.toCommand(new FolderToggleAction()));
-        jetsonAI.toggleWhenPressed(Action.toCommand(new BallFollowAction()));
+        jetsonAI.whenPressed(Action.toCommand(new BallFollowAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));

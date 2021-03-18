@@ -6,6 +6,7 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.JetsonAILink;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.subsystems.Superstructure;
 
 import java.util.Arrays;
 
@@ -14,17 +15,22 @@ public class BallFollowAction extends Action {
         Pose2d initialPose = PoseEstimator.getInstance().getLatestFieldToVehicle().getValue();
         Pose2d firstBallPose = JetsonAILink.getInstance().getFirst().transformBy(initialPose);
 
+        Superstructure.getInstance().setIntaking(true);
+
         Drive.getInstance().setTrajectory(
                 DriveTrajectoryGenerator.getInstance()
-                        .generateTrajectory(false, Arrays.asList(initialPose, firstBallPose), null,
-                                .55, 4, 10));
+                        .generateTrajectory(true, Arrays.asList(initialPose, firstBallPose), null,
+                                .05, 4, 10));
+        
     }
 
     @Override public void onLoop() {}
 
     @Override public boolean isFinished() {
-        return true;
+        return Drive.getInstance().isDoneWithTrajectory();
     }
 
-    @Override public void onStop() {}
+    @Override public void onStop() {
+        Superstructure.getInstance().setIntaking(false);
+    }
 }

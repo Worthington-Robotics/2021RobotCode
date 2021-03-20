@@ -53,10 +53,11 @@ public class Robot extends TimedRobot {
     private POVTrigger recenter = new POVTrigger(Constants.SECOND);
     private JoystickButton shootOne = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton turretPIDControl = new JoystickButton(Constants.SECOND, 2);
-    private JoystickButton fieldCentricTurret = new JoystickButton(Constants.SECOND, 3);
+    //private JoystickButton fieldCentricTurret = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton dump = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton limelightRPM = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton manualFlyWheel = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton camAngle1 = new JoystickButton(Constants.SECOND, 3);
     private DebouncedJoystickButton intakeUP = new DebouncedJoystickButton(Constants.SECOND, 9);
     private JoystickButton OffsetUp = new JoystickButton(Constants.SECOND, 10);
     private JoystickButton intake = new JoystickButton(Constants.SECOND, 11);
@@ -226,12 +227,12 @@ public class Robot extends TimedRobot {
         wheelTargeting.whileHeld(Action.toCommand(new TurretPIDControl()));
         wheelIntakeArm.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
     }
-        // turnLockout.whileHeld(Action.toCommand(new TurnLockout(true)));
+        camAngle1.whileHeld(Action.toCommand(new ManualCam(Constants.CAM_ANGLE_LOW)));
         DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));
         OffsetUp.whenPressed(Action.toCommand(new OffsetIncrease()));
         OffsetDown.whenPressed(Action.toCommand(new OffsetDecrease()));
         recenter.whileHeld(Action.toCommand(new Recenter(0)));
-        fieldCentricTurret.whenPressed(Action.toCommand(new FieldCentricTurret()));
+        //fieldCentricTurret.whenPressed(Action.toCommand(new FieldCentricTurret()));
         turretPIDControl.whileHeld(Action.toCommand(new TurretPIDControl()));
         dump.whileHeld(Action.toCommand(new DumpAction()));
         manualFlyWheel.whenPressed(Action.toCommand(new SetManualFlywheel()));

@@ -29,6 +29,7 @@ public class Shooter extends Subsystem {
     private NetworkTable limelight;
     private MotorControlMode flywheelMode = MotorControlMode.RAMP_UP;
     private MotorControlMode turretMode = MotorControlMode.OPEN_LOOP;
+    private MotorControlMode camFlapMode = MotorControlMode.LIMELIGHT_MODE;
     private ShooterIO periodic;
     private TalonFX rightFlywheelFalcon, leftFlywheelFalcon;
     private TalonSRX turretControl;
@@ -197,6 +198,18 @@ public class Shooter extends Subsystem {
                 } else {
                     limelight.getEntry("snapshot").setNumber(0);
                 }
+
+                switch (camFlapMode) {
+                    case LIMELIGHT_MODE: case OPEN_LOOP:
+                    if(limelightRanging() > 108)
+                        periodic.camFlapDemand = Constants.CAM_ANGLE_HIGH;
+                        else{
+                        periodic.camFlapDemand = Constants.CAM_ANGLE_LOW;
+                        }
+                        break;
+                    default:
+                        break;
+                    }
             }
 
             @Override
@@ -240,8 +253,15 @@ public class Shooter extends Subsystem {
             turretControl.set(ControlMode.Disabled, 0);
             break;
         }
-
-        camFlapAdj.setAngle(50);
+        switch (camFlapMode) {
+            case OPEN_LOOP:
+            case LIMELIGHT_MODE:
+                camFlapAdj.setAngle(periodic.camFlapDemand);
+                break;
+            default:
+                camFlapAdj.setAngle(Constants.CAM_ANGLE_HIGH);
+                break;
+            }
     }
 
     /**
@@ -267,6 +287,9 @@ public class Shooter extends Subsystem {
             SmartDashboard.putString("Shooter/Flywheel/Mode", "" + flywheelMode);
             SmartDashboard.putNumber("Shooter/Flywheel/Velocity", periodic.flywheelVelocity);
         }
+        SmartDashboard.putNumber("Shooter/Cam/Angle Current", camFlapAdj.getAngle());
+        SmartDashboard.putNumber("Shooter/Cam/Angle Demand", periodic.camFlapDemand);
+        SmartDashboard.putString("Shooter/Cam/Cam Mode", camFlapMode.toString());
         SmartDashboard.putNumber("Shooter/Flywheel/CurrOffset", periodic.FlywheelBaseRPMOffset);
         SmartDashboard.putBoolean("Shooter/Flywheel/AmpDeltaError",
                 Math.abs(periodic.AmpsL - periodic.AmpsR) > Constants.FLYWHEEL_DELTA_AMPS);
@@ -423,6 +446,12 @@ public class Shooter extends Subsystem {
         periodic.turretDemand = newDemand;
     }
 
+    public void setCamDemandOpen(double newDemand) {
+        if (camFlapMode != MotorControlMode.OPEN_LOOP)
+            camFlapMode = MotorControlMode.OPEN_LOOP;
+        periodic.camFlapDemand = newDemand;
+    }
+
     public boolean getUsingLimelight() {
         return turretMode == MotorControlMode.LIMELIGHT_MODE;
     }
@@ -502,6 +531,7 @@ public class Shooter extends Subsystem {
     }
 
     public class ShooterIO extends Subsystem.PeriodicIO {
+        public double camFlapDemand = Constants.CAM_ANGLE_HIGH;
         public double RPMGoal = 0.0;
         public double limelight_distance = 0.0;
         public double limelightPrev = 0.0;

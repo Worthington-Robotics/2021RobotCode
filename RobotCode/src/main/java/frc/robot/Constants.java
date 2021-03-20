@@ -29,7 +29,7 @@ public class Constants {
     public static final int TURRET_CONTROL = 12;
     public static final int DRIVE_FRONT_RIGHT_ID = 14;
     public static final int DRIVE_BACK_RIGHT_ID = 15;
-    public static final int CAM_PWM_CHANNEL = 3;
+    public static final int CAM_PWM_CHANNEL = 1;
 
     // TOF IDs
     public static final int ID_SUPER_TOF1 = 1;
@@ -96,6 +96,9 @@ public class Constants {
     public static final int FLYWHEEL_MAX_RPM_OFFSET = 600;
     public static final int FLYWHEEL_OFFSET_RPM_INCREMENT = 100;
     public static final double FLYWHEEL_TP100MS = 3.413;
+
+    public static final int CAM_ANGLE_HIGH = 30;
+    public static final int CAM_ANGLE_LOW = 180;
 
     //Turret Encoder Limits
     public static final int leftTurretLimit = -7400;

@@ -14,7 +14,6 @@ markerStyle = "o"
 lineSize = 1
 lineStyle = "dashed"
 borders = [0.05, 0.98, 0.05, 0.95] #L R B T
-# blacklistTypes = ["String", "char", "TimedState", "list", "double[]", "AtomicBoolean", "boolean", "Value", "ActionGroup"]
 whitelistTypes = ["Pose2D", "Twist2D", "Rotation2D", "double", "int", "float", "long", "boolean"]
 filteredHeaders = []
 

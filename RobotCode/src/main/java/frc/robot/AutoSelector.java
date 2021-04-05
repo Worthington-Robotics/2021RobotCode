@@ -90,8 +90,12 @@ public class AutoSelector {
                 return new EightBallAuto();
             case Auto2:
                 return new GalacticSearchA();
+            case Auto3:
+                return new GalacticSearchB();
             case Auto4:
                 return new GalacticSearchC();
+            case Auto5:
+                return new GalacticSearchD();
             case Auto8:
                 return new NoSkew();
             case Auto9:

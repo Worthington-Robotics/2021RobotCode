@@ -144,6 +144,22 @@ public class DriveTrajectoryGenerator {
         return generateTrajectory(false, Points, null, 1.75, 5.0, 10.0);
     }
 
+    public Trajectory getGB1(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(-3.84, 2.23, Rotation2d.fromDegrees(72)));
+        Points.add(new Pose2d(-4.79, -.3, Rotation2d.fromDegrees(67)));
+        Points.add(new Pose2d(-6, .4, Rotation2d.fromDegrees(270)));
+        return generateTrajectory(true, Points, null/*Arrays.asList(new VelocityLimitRegionConstraint(new Translation2d(-3,0), new Translation2d(0,2), .6), new VelocityLimitRegionConstraint(new Translation2d(-4.2, -3), new Translation2d(-3.5, -.4), .6))*/, .5, 3.0, 10.0);
+    }
+
+    public Trajectory getGB2(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(-6, .4, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(-8, 1, Rotation2d.fromDegrees(0)));
+        return generateTrajectory(true, Points, null, 1.75, 5.0, 10.0);
+    }
+
     public Trajectory getGC1(){
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
@@ -158,5 +174,21 @@ public class DriveTrajectoryGenerator {
         Points.add(new Pose2d(-4.62, -.7, Rotation2d.fromDegrees(80)));
         Points.add(new Pose2d(-7.55, 0, Rotation2d.fromDegrees(180)));
         return generateTrajectory(false, Points, null, 1.75, 5.0, 10.0);
+    }
+
+    public Trajectory getGD1(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(-3.4, 1.7, Rotation2d.fromDegrees(43)));
+        Points.add(new Pose2d(-4.9, .32, Rotation2d.fromDegrees(43)));
+        Points.add(new Pose2d(-6.7, 1.56, Rotation2d.fromDegrees(296)));
+        return generateTrajectory(true, Points, null /*Arrays.asList(new VelocityLimitRegionConstraint(new Translation2d(-3,0), new Translation2d(0,2), .6), new VelocityLimitRegionConstraint(new Translation2d(-4.2, -3), new Translation2d(-3.5, -.4), .6))*/, .5, 3.0, 10.0);
+    }
+
+    public Trajectory getGD2(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(-6.7, 1.56, Rotation2d.fromDegrees(296)));
+        Points.add(new Pose2d(-7.7, 2, Rotation2d.fromDegrees(330)));
+        return generateTrajectory(true, Points, null, 1.75, 5.0, 10.0);
     }
 }

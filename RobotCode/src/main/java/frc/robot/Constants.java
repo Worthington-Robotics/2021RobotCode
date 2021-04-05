@@ -72,11 +72,11 @@ public class Constants {
     */
     public static final double LIMELIGHT_HIGHT = 23;
     public static final double LIMELIGHT_PITCH = 31;
-    public static final double TURRET_MAX_SPEED = .1;
+    public static final double TURRET_MAX_SPEED = .15;
     public static final double TURRET_ANGLE_KP = .45; // SAFE .3
     public static final double TURRET_ANGLE_KI = 0.001; // SAFE .001
     public static final double TURRET_ANGLE_KD = 20; // SAFE 12
-    public static final double TURRET_OFFSET = 1; //1.25 VISION FINE TUNING 25ft
+    public static final double TURRET_OFFSET = .75; //1.25 VISION FINE TUNING 25ft
     public static final double TURRET_DEGREES_TO_TICKS = 85.26;
     public static final double TURRET_LOCKON_DELTA = .5;
 
@@ -87,18 +87,19 @@ public class Constants {
     public static double VOLTAGE_COMP_FLYWHEEL = 10;
     public static final double FLYWHEEL_DELTA_AMPS = 2.5;
 
-    public static final double FLYWHEEL_RPM_PER_IN = 5.2; //4.4
-    public static final double FLYWHEEL_BASE_RPM = 4450; //4000
-    public static final double FLYWHEEL_SPINUP_TIME = 50; //10 ms 
-    public static final double FLYWHEEL_IDLE_RPM = 5000; //RPM
+    public static final double FLYWHEEL_RPM_PER_IN = 1.9; //4.4
+    public static final double FLYWHEEL_BASE_RPM = 4500; //4000
+    public static final double FLYWHEEL_SPINUP_TIME = 100; //10 ms 
+    public static final double FLYWHEEL_IDLE_RPM = 4600; //RPM
     public static final double FLYWHEEL_MAX_RPM = 6400; //RPM
     public static final int FLYWHEEL_MIN_RPM_OFFSET = -200;
     public static final int FLYWHEEL_MAX_RPM_OFFSET = 600;
     public static final int FLYWHEEL_OFFSET_RPM_INCREMENT = 100;
     public static final double FLYWHEEL_TP100MS = 3.413;
 
-    public static final int CAM_ANGLE_HIGH = 30;
-    public static final int CAM_ANGLE_LOW = 180;
+    public static final int CAM_ANGLE_HIGH = 180;
+    public static final int CAM_ANGLE_MED = 90;
+    public static final int CAM_ANGLE_LOW = 30;
 
     //Turret Encoder Limits
     public static final int leftTurretLimit = -7400;
@@ -126,9 +127,9 @@ public class Constants {
     public static final double TRACK_SCRUB_FACTOR = 1.2;  //fudge factor for turning
 
     //Path following Constants
-    public static final double ROBOT_MAX_VELOCITY = 120.0; // in/s
-    public static final double ROBOT_MAX_ACCEL = 60.0; // in/s^2
-    public static final double PATH_FOLLOWING_LOOKAHEAD = 24;
+    public static final double ROBOT_MAX_VELOCITY = 1.5; // in/s
+    public static final double ROBOT_MAX_ACCEL = 5; // in/s^2
+    public static final double PATH_FOLLOWING_LOOKAHEAD = .6;
     public static final double DRIVETRAIN_UPDATE_RATE = LOOPER_DT;
     public static final double PATH_FOLLOWING_MAX_ACCELERATION = 60;
     public static final double ROBOT_MAX_VOLTAGE = 10.0; // V

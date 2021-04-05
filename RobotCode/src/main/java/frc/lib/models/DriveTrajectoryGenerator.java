@@ -127,4 +127,36 @@ public class DriveTrajectoryGenerator {
         Points.add(new Pose2d(7, -0.6, Rotation2d.fromDegrees(180)));
         return generateTrajectory(true, Points, null, 1.6, 4.0, 10.0);
     }
+
+    public Trajectory getGA1(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(-1.35, .45, Rotation2d.fromDegrees(330)));
+        Points.add(new Pose2d(-2.9, 1.3, Rotation2d.fromDegrees(315)));
+        Points.add(new Pose2d(-3.85, -1.8, Rotation2d.fromDegrees(90)));
+        return generateTrajectory(true, Points, Arrays.asList(new VelocityLimitRegionConstraint(new Translation2d(-3,0), new Translation2d(0,2), .6), new VelocityLimitRegionConstraint(new Translation2d(-4.2, -3), new Translation2d(-3.5, -.4), .6)), 1, 3.0, 10.0);
+    }
+
+    public Trajectory getGA2(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(-3.83, -1.8, Rotation2d.fromDegrees(90)));
+        Points.add(new Pose2d(-7.55, -.2, Rotation2d.fromDegrees(180)));
+        return generateTrajectory(false, Points, null, 1.75, 5.0, 10.0);
+    }
+
+    public Trajectory getGC1(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(-1.4, -1.2, Rotation2d.fromDegrees(45)));
+        Points.add(new Pose2d(-2.4, 1.07, Rotation2d.fromDegrees(270)));
+        Points.add(new Pose2d(-4.62, -.7, Rotation2d.fromDegrees(80)));
+        return generateTrajectory(true, Points, null /*Arrays.asList(new VelocityLimitRegionConstraint(new Translation2d(-3,0), new Translation2d(0,2), .6), new VelocityLimitRegionConstraint(new Translation2d(-4.2, -3), new Translation2d(-3.5, -.4), .6))*/, .5, 3.0, 10.0);
+    }
+
+    public Trajectory getGC2(){
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(-4.62, -.7, Rotation2d.fromDegrees(80)));
+        Points.add(new Pose2d(-7.55, 0, Rotation2d.fromDegrees(180)));
+        return generateTrajectory(false, Points, null, 1.75, 5.0, 10.0);
+    }
 }

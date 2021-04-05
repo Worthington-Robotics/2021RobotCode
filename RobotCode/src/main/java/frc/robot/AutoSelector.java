@@ -13,6 +13,10 @@ import frc.robot.autoactiongroups.*;
  */
 enum UserSelection {
     Auto1("ShootyAuto", 1),
+    Auto2("G3SG1-A", 2),
+    Auto3("G3SG1-B", 3),
+    Auto4("G3SG2-A", 4),
+    Auto5("G3SG2-B", 5),
     Auto8("BounceB", 8),
     Auto9("Ski", 9),
     Auto10("Barrel",10),
@@ -84,6 +88,10 @@ public class AutoSelector {
         switch (usrAuto) {
             case Auto1:
                 return new EightBallAuto();
+            case Auto2:
+                return new GalacticSearchA();
+            case Auto4:
+                return new GalacticSearchC();
             case Auto8:
                 return new NoSkew();
             case Auto9:

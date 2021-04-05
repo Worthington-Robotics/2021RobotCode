@@ -47,6 +47,7 @@ public class JetsonAILink extends Subsystem {
      */
     public void registerEnabledLoops(ILooper enabledLooper) {
         enabledLooper.register(new Loop() {
+            @Override public void onStart(double timestamp) {}
             @Override public void onLoop(double timestamp) {
                 points.clear();
 
@@ -60,16 +61,17 @@ public class JetsonAILink extends Subsystem {
                         String[] split = coord.split("x");
                         double x = Double.parseDouble(split[0]);
                         double y = Double.parseDouble(split[1]);
-
-                        points.add(new Pose2d(-x, -y, Rotation2d.fromDegrees(Math.atan2(y, x))));
+                        double angle = Math.atan2(-y, -x);
+                        if(angle != Double.NaN)
+                        {
+                            points.add(new Pose2d(-x, -y, Rotation2d.fromDegrees(angle)));
+                        }
                     }
                 }
 
                 // Sort list
                 points.sort(translationComparator);
             }
-
-            @Override public void onStart(double timestamp) {}
             @Override public void onStop(double timestamp) {}
         });
     }
@@ -88,7 +90,16 @@ public class JetsonAILink extends Subsystem {
         SmartDashboard.putString("JetsonAILink/Data", socketData.getString("balls", ""));
 
         Pose2d initialPose = PoseEstimator.getInstance().getLatestFieldToVehicle().getValue();
-        Pose2d firstBallPose = getFirst().transformBy(initialPose);
+        Pose2d firstBallPose;
+        if(initialPose == null)
+        {
+            initialPose = Pose2d.identity();
+            firstBallPose = Pose2d.identity();
+        }
+        else
+        {
+            firstBallPose = getFirst().transformBy(initialPose);
+        }
 
         SmartDashboard.putNumber("JetsonAILink/X", firstBallPose.getTranslation().x());
         SmartDashboard.putNumber("JetsonAILink/Y", firstBallPose.getTranslation().y());
@@ -110,7 +121,7 @@ public class JetsonAILink extends Subsystem {
 
     public Pose2d getFirst() {
         // Return default if nothing detected on action run
-        return points.isEmpty() ? new Pose2d(0, 0, Rotation2d.fromDegrees(0)) : points.get(0);
+        return points.size() == 0 ? new Pose2d(0, 0, Rotation2d.fromDegrees(0)) : points.get(0);
     }
 
     public LogData getLogger() {

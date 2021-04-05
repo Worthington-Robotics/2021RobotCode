@@ -106,6 +106,48 @@ public class JetsonAILink extends Subsystem {
     }
 
     /**
+     * Returns X Offset from center frame
+     */
+    public double xOffset() {
+        String data = socketData.getString("balls", "");
+
+        if (data.contains("x")) {
+            for (String coord : data.split("y")) {
+                String[] split = coord.split("x");
+                double x = Double.parseDouble(split[0]);
+                double y = Double.parseDouble(split[1]);
+                double angle = Math.atan2(-y, -x);
+                if(angle != Double.NaN)
+                {
+                    return x;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Returns X Offset from center frame
+     */
+    public double yOffset() {
+        String data = socketData.getString("balls", "");
+
+        if (data.contains("x")) {
+            for (String coord : data.split("y")) {
+                String[] split = coord.split("x");
+                double x = Double.parseDouble(split[0]);
+                double y = Double.parseDouble(split[1]);
+                double angle = Math.atan2(-y, -x);
+                if(angle != Double.NaN)
+                {
+                    return y;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Called to reset and configure the subsystem
      */
     public void reset() {

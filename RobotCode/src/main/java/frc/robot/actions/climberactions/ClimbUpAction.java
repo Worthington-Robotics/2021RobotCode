@@ -5,10 +5,10 @@ import frc.robot.subsystems.Climber;
 
 
 public class ClimbUpAction extends Action {
-
+    
     @Override
     public void onStart() {
-        Climber.getInstance().wantClimb(true);
+        Climber.getInstance().setFirstPiston(true);
     }
 
     @Override

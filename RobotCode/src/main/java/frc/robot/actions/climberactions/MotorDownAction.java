@@ -4,12 +4,11 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Climber;
 
 
-public class FoldAction extends Action {
-    private boolean done;
+public class MotorDownAction extends Action {
+    
     @Override
     public void onStart() {
-        Climber.getInstance().wantUnfold(false);
-        done = true;
+        Climber.getInstance().setMotorPower(-.1);
     }
 
     @Override
@@ -19,11 +18,11 @@ public class FoldAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return done;
+        return true;
     }
 
     @Override
     public void onStop() {
-        
+        Climber.getInstance().setMotorPower(0);
     }
 }

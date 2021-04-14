@@ -17,10 +17,10 @@ enum UserSelection {
     Auto3("G3SG1-B", 3),
     Auto4("G3SG2-A", 4),
     Auto5("G3SG2-B", 5),
-    Auto8("BounceB", 8),
-    Auto9("Ski", 9),
-    Auto10("Barrel",10),
-    Auto11("Bounce",11),
+    Auto6("G3SG1", 6),
+    Auto7("Ski", 7),
+    Auto8("Barrel", 8),
+    Auto9("Bounce", 9),
     Auto20("Remote Operation", 20);
 
     private String name;
@@ -96,13 +96,13 @@ public class AutoSelector {
                 return new GalacticSearchC();
             case Auto5:
                 return new GalacticSearchD();
+            case Auto6:
+                return new GalacticSearch();
+            case Auto7:
+                return new NoSkew();
             case Auto8:
-                return new NoSkew();
-            case Auto9:
-                return new NoSkew();
-            case Auto10:
                 return new Barrel();
-            case Auto11:
+            case Auto9:
                 return new BoingBoing();
             default:
                 return null;

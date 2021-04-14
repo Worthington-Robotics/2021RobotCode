@@ -6,6 +6,6 @@ import frc.lib.models.DriveTrajectoryGenerator;
 
 public class Barrel extends StateMachineDescriptor {
     public Barrel() {
-        addSequential(new DriveTra(DriveTrajectoryGenerator.getInstance().getBar(), false), 1000);
+        addSequential(new DriveTra(DriveTrajectoryGenerator.getInstance().BAR, false), 1000);
     }
 }

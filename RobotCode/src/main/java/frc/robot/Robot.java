@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import frc.lib.loops.Looper;
+import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.Action;
 import frc.lib.statemachine.StateMachine;
 import frc.lib.util.AxisAction;
@@ -86,14 +88,15 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(Arrays.asList(
             // register subsystems here
             PoseEstimator.getInstance(), 
-            Drive.getInstance(),
-            Shooter.getInstance(),
-            Lights.getInstance(),
-            JetsonAILink.getInstance(),
-            Superstructure.getInstance()),
+            Drive.getInstance()),
+            //Shooter.getInstance(),
+            //Lights.getInstance(),
+            //JetsonAILink.getInstance(),
+            //Superstructure.getInstance()),
              true);
 
         // create the master looper threads
+        DriveTrajectoryGenerator.getInstance();
         enabledLooper = new Looper();
         disabledLooper = new Looper();
 
@@ -229,14 +232,14 @@ public class Robot extends TimedRobot {
         wheelTargeting.whileHeld(Action.toCommand(new TurretPIDControl()));
         wheelIntakeArm.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
     }
-        camAngle1.whileHeld(Action.toCommand(new ManualCam(Constants.CAM_ANGLE_LOW)));
+        camAngle1.whileHeld(Action.toCommand(new ManualCam(Constants.CAM_ANGLE_MED)));
         DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));
         OffsetUp.whenPressed(Action.toCommand(new OffsetIncrease()));
         OffsetDown.whenPressed(Action.toCommand(new OffsetDecrease()));
         recenter.whileHeld(Action.toCommand(new Recenter(0)));
         //fieldCentricTurret.whenPressed(Action.toCommand(new FieldCentricTurret()));
         turretPIDControl.whileHeld(Action.toCommand(new TurretPIDControl()));
-        dump.whileHeld(Action.toCommand(new DumpAction()));
+        //dump.whileHeld(Action.toCommand(new DumpAction()));
         manualFlyWheel.whenPressed(Action.toCommand(new SetManualFlywheel()));
         inverse.whileHeld(Action.toCommand(new Inverse()));
         shiftButton.whileHeld(Action.toCommand(new Shift()));

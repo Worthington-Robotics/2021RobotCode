@@ -6,6 +6,6 @@ import frc.lib.models.DriveTrajectoryGenerator;
 
 public class NoSkew extends StateMachineDescriptor {
     public NoSkew() {
-        addSequential(new DriveTra(DriveTrajectoryGenerator.getInstance().getSki(), false), 1000);
+        addSequential(new DriveTra(DriveTrajectoryGenerator.getInstance().SKI, false), 1000);
     }
 }

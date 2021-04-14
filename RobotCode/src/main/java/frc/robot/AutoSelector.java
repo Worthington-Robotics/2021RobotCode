@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.autoactiongroups.*;
+import frc.robot.subsystems.JetsonAILink;
 
 /**
  * @author Cole Tucker This enum encompasses all user selectable autonomous
@@ -13,14 +14,10 @@ import frc.robot.autoactiongroups.*;
  */
 enum UserSelection {
     Auto1("ShootyAuto", 1),
-    Auto2("G3SG1-A", 2),
-    Auto3("G3SG1-B", 3),
-    Auto4("G3SG2-A", 4),
-    Auto5("G3SG2-B", 5),
-    Auto6("G3SG1", 6),
-    Auto7("Ski", 7),
-    Auto8("Barrel", 8),
-    Auto9("Bounce", 9),
+    Auto2("G3SG1-All", 2),
+    Auto3("Ski", 3),
+    Auto4("Barrel", 4),
+    Auto5("Bounce", 5),
     Auto20("Remote Operation", 20);
 
     private String name;
@@ -85,24 +82,28 @@ public class AutoSelector {
     public static StateMachineDescriptor autoSelect(String selection) {
         UserSelection usrAuto = getSelFromStr(selection);
         SmartDashboard.putString("Final Auto Choice", usrAuto.toString());
+        
         switch (usrAuto) {
             case Auto1:
                 return new EightBallAuto();
             case Auto2:
-                return new GalacticSearchA();
+                switch (JetsonAILink.getInstance().getAuto()) {
+                    case RED_1:
+                        return new GalacticSearchA();
+                    case RED_2:
+                        return new GalacticSearchB();
+                    case BLUE_1:
+                        return new GalacticSearchC();
+                    case BLUE_2:
+                        return new GalacticSearchD();
+                    default:
+                        return null;
+                }
             case Auto3:
-                return new GalacticSearchB();
-            case Auto4:
-                return new GalacticSearchC();
-            case Auto5:
-                return new GalacticSearchD();
-            case Auto6:
-                return new GalacticSearch();
-            case Auto7:
                 return new NoSkew();
-            case Auto8:
+            case Auto4:
                 return new Barrel();
-            case Auto9:
+            case Auto5:
                 return new BoingBoing();
             default:
                 return null;

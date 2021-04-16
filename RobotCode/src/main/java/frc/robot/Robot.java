@@ -246,7 +246,6 @@ public class Robot extends TimedRobot {
         gyrPovTrigger.whileHeld(Action.toCommand(new GyroLock()));
         shootOne.whenPressed(Action.toCommand(new ShootBallAction()));
         intake.whileHeld(Action.toCommand(new IntakeAction()));
-        folder.toggleWhenPressed(Action.toCommand(new FolderToggleAction()));
         jetsonAI.whenPressed(Action.toCommand(new BallFollowAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));

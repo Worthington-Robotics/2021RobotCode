@@ -4,11 +4,11 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Climber;
 
 
-public class UnfoldAction extends Action {
+public class ClimbUnpinedAction extends Action {
+    
     @Override
     public void onStart() {
-        Climber.getInstance().wantUnfold(true);
-        System.out.println("Climb is unfolding.");
+        Climber.getInstance().setRealease();
     }
 
     @Override

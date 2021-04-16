@@ -20,6 +20,8 @@ public class Constants {
     public static final int SHOOTER_FLYWHEEL_LEFT = 5;
     public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
 
+    public static final int SOLIDNOID = 3;
+
     public static final int ID_SUPER_DELIVERY_WHEEL = 7;
     public static final int ID_SUPER_INDEX1 = 8;
     public static final int ID_SUPER_INDEX2 = 9;

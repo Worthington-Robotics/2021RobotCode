@@ -3,26 +3,26 @@ package frc.robot.actions.climberactions;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Climber;
 
-public class FolderToggleAction extends Action {
 
+public class MotorUpAction extends Action {
+    
     @Override
     public void onStart() {
-        Climber.getInstance().wantUnfold(true);
+        Climber.getInstance().setMotorPower(.1);
     }
 
     @Override
     public void onLoop() {
-        
+
     }
 
     @Override
     public boolean isFinished() {
-        return !Climber.getInstance().canUnfold();
-
+        return true;
     }
 
     @Override
     public void onStop() {
-        Climber.getInstance().wantUnfold(false);      
+        Climber.getInstance().setMotorPower(0);
     }
 }

@@ -1,6 +1,11 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.ILooper;
@@ -11,15 +16,23 @@ import frc.robot.Constants;
 public class Climber extends Subsystem {
     private DoubleSolenoid unfoldSolenoid, climbSolenoid;
 
-    private Value unfoldIntendedState = Value.kReverse, climbIntendedState = Value.kReverse;
-    private boolean wantUnfold = false, wantClimb = false;
-    private boolean climbBoolean, unfoldBoolean;
+    private Value unfoldIntendedState = Value.kReverse, climbIntendedState = Value.kForward;
+  
+    
+
+    private double talonRealeseDemand;
+
+    private TalonFX talonRealease;
+
+
+
 
     private Climber() {
         unfoldSolenoid = new DoubleSolenoid(Constants.UNFOLD_LOW_ID, Constants.UNFOLD_HIGH_ID);
         climbSolenoid = new DoubleSolenoid(Constants.CLIMB_LOW_ID, Constants.CLIMB_HIGH_ID);
         reset();
 
+        talonRealease = new TalonFX(Constants.SOLIDNOID);
         //SmartDashboard.putNumber("turretsim", 0);
     }
 
@@ -45,22 +58,7 @@ public class Climber extends Subsystem {
 
             @Override
             public void onLoop(double timestamp) {
-                if(!Constants.DEBUG){
-                    if(canUnfold()){
-                        unfoldBoolean = wantUnfold;
-                    }
-                
-                    if(canClimb()){
-                        climbBoolean = wantClimb;
-                    }
-                    
-                } else {
-                    unfoldBoolean = wantUnfold;
-                    climbBoolean = wantClimb;
-                }
-
-                unfoldIntendedState = unfoldBoolean ? Value.kForward : Value.kReverse;
-                climbIntendedState = climbBoolean ? Value.kForward : Value.kReverse;                
+                               
             }
 
             @Override
@@ -72,63 +70,39 @@ public class Climber extends Subsystem {
         });
     }
 
+    
+    public void setFirstPiston(boolean raised) {
+        if(raised) {
+            climbIntendedState = Value.kForward;
+        }
+         else {
+            climbIntendedState = Value.kReverse;
+            }
+    }
+
+    public void setRealease() {
+        climbIntendedState = Value.kReverse;
+    }
+
+    public void setMotorPower(double d) {
+        talonRealeseDemand = d;
+    }
+
     @Override
     public void writePeriodicOutputs() {
         climbSolenoid.set(climbIntendedState);
         unfoldSolenoid.set(unfoldIntendedState);
+        talonRealease.set(ControlMode.PercentOutput, talonRealeseDemand);
     }
+
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putBoolean("Climb/Want Unfolded", wantUnfold);
-        SmartDashboard.putBoolean("Climb/Want Extended", wantClimb);
-        SmartDashboard.putBoolean("Climb/Unfolded", unfoldBoolean);
-        SmartDashboard.putBoolean("Climb/Climbed", climbBoolean);
-        SmartDashboard.putBoolean("Climb/ShooterReady", shooterReady());
-    }
-
-    public boolean canUnfold(){
-        return shooterReady();
-    }
-
-    public boolean canClimb(){
-        return unfoldBoolean;
-    }
-
-    /*private double getTurretAngle(){
-        return SmartDashboard.getNumber("turretsim", 0);
-    }*/
-
-    private boolean shooterReady(){
-        return Util.epsilonEquals(Shooter.getInstance().getShooterAngle(), 270, 25) ||
-        Util.epsilonEquals(Shooter.getInstance().getShooterAngle(), 90, 25);
-
-        /*return Util.epsilonEquals(getTurretAngle(), 270, 10) ||
-        Util.epsilonEquals(getTurretAngle(), 90, 10);*/
     }
 
     @Override
     public void reset() {
-        wantUnfold = wantClimb = false;
-        unfoldBoolean = climbBoolean = false;
         unfoldSolenoid.set(Value.kReverse);
-        climbSolenoid.set(Value.kReverse);
+        climbSolenoid.set(Value.kForward);
     }
-
-    public void wantUnfold(Boolean unfoldValue) {
-        wantUnfold = unfoldValue;
-    }
-
-    public void wantClimb(Boolean extendValue) {
-        wantClimb = extendValue;
-    }
-
-    public boolean getUnfolded() {
-        return unfoldBoolean;
-    }
-
-    public boolean getClimbed() {
-        return climbBoolean;
-    }
-
 }

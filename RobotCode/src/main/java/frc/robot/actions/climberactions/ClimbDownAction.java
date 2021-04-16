@@ -8,7 +8,7 @@ public class ClimbDownAction extends Action {
     
     @Override
     public void onStart() {
-        Climber.getInstance().wantClimb(false);
+        Climber.getInstance().setFirstPiston(false);
     }
 
     @Override

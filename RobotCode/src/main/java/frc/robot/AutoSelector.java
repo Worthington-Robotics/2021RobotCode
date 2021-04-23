@@ -18,6 +18,7 @@ enum UserSelection {
     Auto3("Ski", 3),
     Auto4("Barrel", 4),
     Auto5("Bounce", 5),
+    Auto6("Three By Three", 6),
     Auto20("Remote Operation", 20);
 
     private String name;
@@ -105,6 +106,8 @@ public class AutoSelector {
                 return new Barrel();
             case Auto5:
                 return new BoingBoing();
+            case Auto6:
+                return new ThreeByThree();
             default:
                 return null;
         }

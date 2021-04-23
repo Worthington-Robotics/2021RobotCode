@@ -55,14 +55,14 @@ public class DriveTrajectoryGenerator {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(6, 0, Rotation2d.identity()));
-        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)),1.75, 2.0, 2.0);
+        return generateTrajectory(false, Points, null, 1.75, 5.0, 10.0);
     }
 
     public Trajectory getThreeByThree() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
         Points.add(new Pose2d(3, -3, Rotation2d.fromDegrees(270)));
-        return generateTrajectory(false, Points, Arrays.asList(new CentripetalAccelerationConstraint(60)), .5, 2.0, 10.0);
+        return generateTrajectory(false, Points, null, 1.75, 5.0, 10.0);
     }
 
     public Trajectory getSnkCurve() {

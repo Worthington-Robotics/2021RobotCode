@@ -8,7 +8,7 @@ public class MotorUpAction extends Action {
     
     @Override
     public void onStart() {
-        Climber.getInstance().setMotorPower(.1);
+        Climber.getInstance().setMotorPower(1);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class MotorUpAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override

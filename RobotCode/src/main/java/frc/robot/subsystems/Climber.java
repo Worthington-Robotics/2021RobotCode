@@ -5,12 +5,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
-import frc.lib.util.Util;
 import frc.robot.Constants;
 
 public class Climber extends Subsystem {
@@ -22,7 +19,7 @@ public class Climber extends Subsystem {
 
     private double talonRealeseDemand;
 
-    private TalonFX talonRealease;
+    private TalonFX talonRealeaseR, talonRealeaseL;
 
 
 
@@ -32,7 +29,8 @@ public class Climber extends Subsystem {
         climbSolenoid = new DoubleSolenoid(Constants.CLIMB_LOW_ID, Constants.CLIMB_HIGH_ID);
         reset();
 
-        talonRealease = new TalonFX(Constants.SOLIDNOID);
+        talonRealeaseR = new TalonFX(Constants.CLIMBING_WINCHR_ID);
+        talonRealeaseL = new TalonFX(Constants.CLIMBING_WINCHL_ID);
         //SmartDashboard.putNumber("turretsim", 0);
     }
 
@@ -73,10 +71,10 @@ public class Climber extends Subsystem {
     
     public void setFirstPiston(boolean raised) {
         if(raised) {
-            climbIntendedState = Value.kForward;
+            unfoldIntendedState = Value.kForward;
         }
          else {
-            climbIntendedState = Value.kReverse;
+            unfoldIntendedState = Value.kReverse;
             }
     }
 
@@ -92,7 +90,8 @@ public class Climber extends Subsystem {
     public void writePeriodicOutputs() {
         climbSolenoid.set(climbIntendedState);
         unfoldSolenoid.set(unfoldIntendedState);
-        talonRealease.set(ControlMode.PercentOutput, talonRealeseDemand);
+        talonRealeaseR.set(ControlMode.PercentOutput, talonRealeseDemand);
+        talonRealeaseL.set(ControlMode.PercentOutput, -talonRealeseDemand);
     }
 
 

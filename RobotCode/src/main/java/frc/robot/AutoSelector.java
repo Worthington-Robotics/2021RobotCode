@@ -106,8 +106,6 @@ public class AutoSelector {
                 return new Barrel();
             case Auto5:
                 return new BoingBoing();
-            case Auto6:
-                return new ThreeByThree();
             default:
                 return null;
         }

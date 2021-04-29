@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.lib.util.HIDHelper;
 
@@ -20,7 +19,8 @@ public class Constants {
     public static final int SHOOTER_FLYWHEEL_LEFT = 5;
     public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
 
-    public static final int SOLIDNOID = 3;
+    public static final int CLIMBING_WINCHR_ID = 3;
+    public static final int CLIMBING_WINCHL_ID = 4;
 
     public static final int ID_SUPER_DELIVERY_WHEEL = 7;
     public static final int ID_SUPER_INDEX1 = 8;
@@ -44,14 +44,12 @@ public class Constants {
     public static final int TRANS_LOW_ID = 0;
     public static final int TRANS_HIGH_ID = 7;
     
-    public static final int UNFOLD_LOW_ID = 4;
-    public static final int UNFOLD_HIGH_ID = 3;
+    public static final int UNFOLD_LOW_ID = 1;
+    public static final int UNFOLD_HIGH_ID = 5;
 
-    public static final int CLIMB_LOW_ID = 2; //Do Not Change
-    public static final int CLIMB_HIGH_ID = 5; //Do Not Change
-    
-    public static final int INTAKE_LOW_ID = 6;
-    public static final int INTAKE_HIGH_ID = 1;
+    public static final int CLIMB_LOW_ID = 6; //Do Not Change
+    public static final int CLIMB_HIGH_ID = 2; //Do Not Change
+
     //Color Sensor Port
     public static final int COLOR_SENSOR_PORT = 1;
     

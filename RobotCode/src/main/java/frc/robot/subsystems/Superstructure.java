@@ -97,8 +97,6 @@ public class Superstructure extends Subsystem {
         sensors[INDEXER_THREE] = new SimTimeOfFlight(Constants.ID_SUPER_TOF4);
         sensors[INTAKE] = new SimTimeOfFlight(Constants.ID_SUPER_TOF5);
 
-        extensionArm = new DoubleSolenoid(Constants.INTAKE_HIGH_ID, Constants.INTAKE_LOW_ID);
-
         reset();
         configTalons();
 

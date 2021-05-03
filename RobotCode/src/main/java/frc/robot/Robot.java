@@ -45,15 +45,13 @@ public class Robot extends TimedRobot {
     //Master joystick buttons
     private JoystickButton gyrPovTrigger = new JoystickButton(Constants.MASTER, 10);
     //private JoystickButton turnLockout = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton DownshiftTrigger = new JoystickButton(Constants.MASTER, 12);
-    private JoystickButton shiftButton = new JoystickButton(Constants.MASTER, 1);
+    private JoystickButton DownshiftTrigger = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton inverse = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton unfolder = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton folder = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton unpin = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton climbDown = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton climbUp = new JoystickButton(Constants.MASTER, 9);
-    private DebouncedJoystickButton jetsonAI = new DebouncedJoystickButton(Constants.MASTER, 6);
     
 
     //Co-pilot joystick buttons
@@ -64,10 +62,9 @@ public class Robot extends TimedRobot {
     private JoystickButton dump = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton limelightRPM = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton manualFlyWheel = new JoystickButton(Constants.SECOND, 6);
-    private JoystickButton camAngle1 = new JoystickButton(Constants.SECOND, 3);
     private DebouncedJoystickButton intakeUP = new DebouncedJoystickButton(Constants.SECOND, 9);
     private JoystickButton OffsetUp = new JoystickButton(Constants.SECOND, 10);
-    private JoystickButton intake = new JoystickButton(Constants.SECOND, 11);
+    private JoystickButton intake = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton OffsetDown = new JoystickButton(Constants.SECOND, 12);
 
     
@@ -94,10 +91,10 @@ public class Robot extends TimedRobot {
             PoseEstimator.getInstance(), 
             Climber.getInstance(), 
             Drive.getInstance(),
-            //Shooter.getInstance(),
-            Lights.getInstance()),
+            Shooter.getInstance(),
+            Lights.getInstance(),
             //JetsonAILink.getInstance(),
-            //Superstructure.getInstance()),
+            Superstructure.getInstance()),
              true);
 
         // create the master looper threads
@@ -242,7 +239,6 @@ public class Robot extends TimedRobot {
         unfolder.whenPressed(Action.toCommand(new ClimbUpAction()));
         folder.whenPressed(Action.toCommand(new ClimbDownAction()));
         unpin.whenPressed(Action.toCommand(new ClimbUnpinedAction()));
-        camAngle1.whileHeld(Action.toCommand(new ManualCam(Constants.CAM_ANGLE_MED)));
         DownshiftTrigger.whileHeld(Action.toCommand(new DownShift()));
         OffsetUp.whenPressed(Action.toCommand(new OffsetIncrease()));
         OffsetDown.whenPressed(Action.toCommand(new OffsetDecrease()));
@@ -252,11 +248,9 @@ public class Robot extends TimedRobot {
         dump.whileHeld(Action.toCommand(new DumpAction()));
         manualFlyWheel.whenPressed(Action.toCommand(new SetManualFlywheel()));
         inverse.whileHeld(Action.toCommand(new Inverse()));
-        shiftButton.whileHeld(Action.toCommand(new Shift()));
         gyrPovTrigger.whileHeld(Action.toCommand(new GyroLock()));
         shootOne.whenPressed(Action.toCommand(new ShootBallAction()));
         intake.whileHeld(Action.toCommand(new IntakeAction()));
-        jetsonAI.whenPressed(Action.toCommand(new BallFollowAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));

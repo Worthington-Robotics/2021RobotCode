@@ -88,7 +88,7 @@ public class Constants {
     public static final double FLYWHEEL_DELTA_AMPS = 2.5;
 
     public static final double FLYWHEEL_RPM_PER_IN = 1.9; //4.4
-    public static final double FLYWHEEL_BASE_RPM = 4500; //4000
+    public static final double FLYWHEEL_BASE_RPM = 4700; //4000
     public static final double FLYWHEEL_SPINUP_TIME = 100; //10 ms 
     public static final double FLYWHEEL_IDLE_RPM = 4600; //RPM
     public static final double FLYWHEEL_MAX_RPM = 6400; //RPM

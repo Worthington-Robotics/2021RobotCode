@@ -51,6 +51,14 @@ public class DriveTrajectoryGenerator {
         return tra;
     }
 
+    public Trajectory getBallI() {
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(getPose(0,0,0)); 
+        Points.add(getPose(-4.4,0,0));
+        return generateTrajectory(true, Points, Arrays.asList(
+            new VelocityLimitRegionConstraint(new Translation2d(-5, -3.2), new Translation2d(-1.2, 2.2), .6)), 1.75, 5.0, 10.0);
+    }
+
     public Trajectory getTwoMeters() {
         List<Pose2d> Points = new ArrayList<>();
         Points.add(new Pose2d(0, 0, Rotation2d.identity()));
@@ -197,5 +205,9 @@ public class DriveTrajectoryGenerator {
         new VelocityLimitRegionConstraint(new Translation2d(-3.9, -2), new Translation2d(-3.5, 2), .7), 
         new VelocityLimitRegionConstraint(new Translation2d(-5.3, -2), new Translation2d(-4.8, 2), .7),
         new VelocityLimitRegionConstraint(new Translation2d(-6.8, -2), new Translation2d(-6.4, 2), .7)), 1.75, 4.0, 10.0);
+    }
+
+    private Pose2d getPose(double x, double y, double deg) {
+        return new Pose2d(x, y, Rotation2d.fromDegrees(deg));
     }
 }

@@ -11,6 +11,7 @@ import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.actions.driveactions.DriveTra;
 import frc.robot.actions.shooteraction.OffsetDecrease;
 import frc.robot.actions.shooteraction.OffsetIncrease;
+import frc.robot.actions.shooteraction.ToggleTurretPIDControl;
 import frc.robot.actions.shooteraction.TurretPIDControl;
 import frc.robot.actions.superaction.IntakeAction;
 import frc.robot.actions.superaction.ShootAllAction;
@@ -20,15 +21,15 @@ import frc.robot.actions.waitactions.LineCrossWait;
 public class EightBallAuto extends StateMachineDescriptor {
     public EightBallAuto() {
         // Shoot 3 while backing and tracking
-        addParallel(new Action[] {new TurretPIDControl()}, 750);
-        addParallel(new Action[] {new DriveTra(DriveTrajectoryGenerator.getInstance().getBallI()), new LineCrossWait(-1.1, false, true), new OffsetIncrease(), new OffsetIncrease()}, 3000);
-        addParallel(new Action[] {new TurretPIDControl()}, 500);
-        addParallel(new Action[] {new ShootBallAction(), new TurretPIDControl(), new IntakeAction()}, 1000);
-        addParallel(new Action[] {new ShootAllAction(), new TurretPIDControl(), new IntakeAction()}, 3000);
-        addParallel(new Action[] {new TurretPIDControl(), new IntakeAction(), new OffsetDecrease()}, 2500);
-        addParallel(new Action[] {getTraj(Arrays.asList(getPose(-4.4, 0, 0), getPose(-.5, .5, 10)), false), new TurretPIDControl(), new IntakeAction()}, 3000); // the angle should be 3.7, 30 but isnt for now
-        addParallel(new Action[] {new TurretPIDControl()}, 1000);
-        addParallel(new Action[] {new TurretPIDControl(), new ShootAllAction()}, 3000);
+        addParallel(new Action[] {new ToggleTurretPIDControl()}, 50);
+        addParallel(new Action[] {new DriveTra(DriveTrajectoryGenerator.getInstance().getBallI()), new LineCrossWait(-1.2, false, true), new OffsetIncrease(), new OffsetIncrease()}, 3000);
+        addParallel(new Action[] {new IntakeAction()}, 1000);
+        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1250);
+        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1250);
+        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1250);
+        addParallel(new Action[] {new IntakeAction(), new OffsetDecrease(), new OffsetDecrease(), new LineCrossWait(-4.2, false, true)}, 5000);
+        addParallel(new Action[] {getTraj(Arrays.asList(getPose(-4.4, 0, 0), getPose(-.5, .5, 10)), false), new IntakeAction()}, 3000); // the angle should be 3.7, 30 but isnt for now
+        addParallel(new Action[] {new ToggleTurretPIDControl(), new ShootAllAction()}, 3000);
     }
 
     private Pose2d getPose(double x, double y, double deg) {

@@ -56,7 +56,7 @@ public class DriveTrajectoryGenerator {
         Points.add(getPose(0,0,0)); 
         Points.add(getPose(-4.4,0,0));
         return generateTrajectory(true, Points, Arrays.asList(
-            new VelocityLimitRegionConstraint(new Translation2d(-5, -3.2), new Translation2d(-1.2, 2.2), .6)), 1.75, 5.0, 10.0);
+            new VelocityLimitRegionConstraint(new Translation2d(-5, -3.2), new Translation2d(-.9, 2.2), .6)), 1.75, 5.0, 10.0);
     }
 
     public Trajectory getTwoMeters() {

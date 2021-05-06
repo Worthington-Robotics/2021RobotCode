@@ -43,15 +43,15 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
     
     //Master joystick buttons
-    private JoystickButton gyrPovTrigger = new JoystickButton(Constants.MASTER, 10);
+    //private JoystickButton gyrPovTrigger = new JoystickButton(Constants.MASTER, 10);
     //private JoystickButton turnLockout = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton DownshiftTrigger = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton inverse = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton unfolder = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton folder = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton unpin = new JoystickButton(Constants.MASTER, 5);
-    private JoystickButton climbDown = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton climbUp = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton climbDown = new JoystickButton(Constants.MASTER, 8);
+    private JoystickButton climbUp = new JoystickButton(Constants.MASTER, 10);
     
 
     //Co-pilot joystick buttons
@@ -248,7 +248,6 @@ public class Robot extends TimedRobot {
         dump.whileHeld(Action.toCommand(new DumpAction()));
         manualFlyWheel.whenPressed(Action.toCommand(new SetManualFlywheel()));
         inverse.whileHeld(Action.toCommand(new Inverse()));
-        gyrPovTrigger.whileHeld(Action.toCommand(new GyroLock()));
         shootOne.whenPressed(Action.toCommand(new ShootBallAction()));
         intake.whileHeld(Action.toCommand(new IntakeAction()));
         limelightRPM.whenPressed(Action.toCommand(new softStart()));

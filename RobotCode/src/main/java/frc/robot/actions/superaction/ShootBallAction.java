@@ -4,10 +4,11 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Superstructure;
 
 public class ShootBallAction extends Action {
-    @Override public void onStart() {}
+    @Override public void onStart() {
+        Superstructure.getInstance().shootBall();
+    }
 
     @Override public void onLoop() {
-        Superstructure.getInstance().shootBall();
     }
 
     @Override public boolean isFinished() {

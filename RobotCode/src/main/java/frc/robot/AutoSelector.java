@@ -7,19 +7,13 @@ import frc.robot.subsystems.JetsonAILink;
 
 /**
  * @author Cole Tucker This enum encompasses all user selectable autonomous
- * commands.
- * <p>
- * It has two parameters, a visible name and an associated ID number
- * from 1 to n.
+ *         commands.
+ *         <p>
+ *         It has two parameters, a visible name and an associated ID number
+ *         from 1 to n.
  */
 enum UserSelection {
-    Auto1("ShootyAuto", 1),
-    Auto2("G3SG1-All", 2),
-    Auto3("Ski", 3),
-    Auto4("Barrel", 4),
-    Auto5("Bounce", 5),
-    Auto6("Three By Three", 6),
-    Auto20("Remote Operation", 20);
+    Auto1("Eight Ball", 1), Auto6("Three Ball", 6), Auto20("Tele Operation", 20);
 
     private String name;
     private int num;
@@ -71,41 +65,23 @@ public class AutoSelector {
         return UserSelection.values()[UserSelection.values().length - 1];
     }
 
-
     /**
      * This method determines the Auto mode based on the fed game data and the
      * dashboard data.
      *
      * @param selection - a string with the name of the selected autonomous.
      * @return the proper auto command to run. It should include all movements in
-     * one command
+     *         one command
      */
     public static StateMachineDescriptor autoSelect(String selection) {
         UserSelection usrAuto = getSelFromStr(selection);
         SmartDashboard.putString("Final Auto Choice", usrAuto.toString());
-        
+
         switch (usrAuto) {
             case Auto1:
                 return new EightBallAuto();
-            case Auto2:
-                switch (JetsonAILink.getInstance().getAuto()) {
-                    case RED_1:
-                        return new GalacticSearchA();
-                    case RED_2:
-                        return new GalacticSearchB();
-                    case BLUE_1:
-                        return new GalacticSearchC();
-                    case BLUE_2:
-                        return new GalacticSearchD();
-                    default:
-                        return null;
-                }
-            case Auto3:
-                return new NoSkew();
-            case Auto4:
-                return new Barrel();
-            case Auto5:
-                return new BoingBoing();
+            case Auto6:
+                return new ThreeBall();
             default:
                 return null;
         }

@@ -22,11 +22,11 @@ public class EightBallAuto extends StateMachineDescriptor {
     public EightBallAuto() {
         // Shoot 3 while backing and tracking
         addParallel(new Action[] {new ToggleTurretPIDControl()}, 50);
-        addParallel(new Action[] {new DriveTra(DriveTrajectoryGenerator.getInstance().getBallI()), new LineCrossWait(-1.2, false, true), new OffsetIncrease(), new OffsetIncrease()}, 3000);
-        addParallel(new Action[] {new IntakeAction()}, 1000);
-        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1250);
-        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1250);
-        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1250);
+        addParallel(new Action[] {new DriveTra(DriveTrajectoryGenerator.getInstance().B8P), new LineCrossWait(-.9, false, true), new OffsetIncrease(), new OffsetIncrease()}, 3000);
+        addParallel(new Action[] {new IntakeAction()}, 700);
+        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1100);
+        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1100);
+        addParallel(new Action[] {new ShootBallAction(), new IntakeAction()}, 1100);
         addParallel(new Action[] {new IntakeAction(), new OffsetDecrease(), new OffsetDecrease(), new LineCrossWait(-4.2, false, true)}, 5000);
         addParallel(new Action[] {getTraj(Arrays.asList(getPose(-4.4, 0, 0), getPose(-.5, .5, 10)), false), new IntakeAction()}, 3000); // the angle should be 3.7, 30 but isnt for now
         addParallel(new Action[] {new ToggleTurretPIDControl(), new ShootAllAction()}, 3000);

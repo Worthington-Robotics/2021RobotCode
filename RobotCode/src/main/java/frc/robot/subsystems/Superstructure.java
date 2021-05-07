@@ -62,7 +62,7 @@ public class Superstructure extends Subsystem {
     public static double[] threshold = {
         75, // BLACK_WHEEL
         60, // INDEXER_ONE
-        60, // INDEXER_TWO
+        75, // INDEXER_TWO
         75, // INDEXER_THREE
         75 // INTAKE
     };

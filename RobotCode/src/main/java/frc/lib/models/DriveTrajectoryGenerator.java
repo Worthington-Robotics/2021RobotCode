@@ -21,6 +21,7 @@ public class DriveTrajectoryGenerator {
     public Trajectory GSE;
     public Trajectory SKI;
     public Trajectory BAR;
+    public Trajectory B8P;
     private final DriveMotionPlanner DMP;
     private DriveTrajectoryGenerator() {
         DMP           = new DriveMotionPlanner();
@@ -30,6 +31,7 @@ public class DriveTrajectoryGenerator {
         GSE = getGD1();
         SKI = getSki();
         BAR = getBar();
+        B8P = getBallI();
     }
 
     public static DriveTrajectoryGenerator getInstance() {
@@ -56,7 +58,14 @@ public class DriveTrajectoryGenerator {
         Points.add(getPose(0,0,0)); 
         Points.add(getPose(-4.4,0,0));
         return generateTrajectory(true, Points, Arrays.asList(
-            new VelocityLimitRegionConstraint(new Translation2d(-5, -3.2), new Translation2d(-.9, 2.2), .6)), 1.75, 5.0, 10.0);
+            new VelocityLimitRegionConstraint(new Translation2d(-5, -3.2), new Translation2d(-.9, 2.2), .5)), 1.75, 5.0, 10.0);
+    }
+
+    public Trajectory GiveEmAnInch() {
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(0, 0, Rotation2d.identity()));
+        Points.add(new Pose2d(-.5, 0, Rotation2d.identity()));
+        return generateTrajectory(true, Points, null, .5, 3.0, 10.0);
     }
 
     public Trajectory getTwoMeters() {

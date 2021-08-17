@@ -8,7 +8,7 @@ public class MotorDownAction extends Action {
     
     @Override
     public void onStart() {
-        Climber.getInstance().setMotorPower(-1);
+        Climber.getInstance().setMotorPower(-.7);
     }
 
     @Override

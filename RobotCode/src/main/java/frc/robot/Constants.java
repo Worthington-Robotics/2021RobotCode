@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.lib.util.HIDHelper;
 
 public class Constants {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = true;    
+    public static final boolean DEMO = true;
+
 
     /**
      * device ID declarations ---------------------------------
@@ -60,6 +62,7 @@ public class Constants {
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
     public static final Joystick WHEEL = new Joystick(2);
+    public static final Joystick TEST = new Joystick(3);
     public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0, 0.65, -1, 0.4, 2); 
     //The reason for these negative signs on the Y-axis
     // is because the sticks we use are designed for plane sims where pulling back on the stick sends you up
@@ -88,7 +91,7 @@ public class Constants {
     public static final double FLYWHEEL_DELTA_AMPS = 2.5;
 
     public static final double FLYWHEEL_RPM_PER_IN = 4.4; //4.4
-    public static final double FLYWHEEL_BASE_RPM = 4000; //4000
+    public static final double FLYWHEEL_BASE_RPM = 3700; //4000
     public static final double FLYWHEEL_SPINUP_TIME = 75; //10 ms 
     public static final double FLYWHEEL_IDLE_RPM = 4600; //RPM
     public static final double FLYWHEEL_MAX_RPM = 6400; //RPM

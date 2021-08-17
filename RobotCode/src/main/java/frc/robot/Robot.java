@@ -50,8 +50,8 @@ public class Robot extends TimedRobot {
     private JoystickButton unfolder = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton folder = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton unpin = new JoystickButton(Constants.MASTER, 5);
-    private JoystickButton climbDown = new JoystickButton(Constants.MASTER, 8);
-    private JoystickButton climbUp = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton climbDown = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton climbUp = new JoystickButton(Constants.MASTER, 8);
     
 
     //Co-pilot joystick buttons
@@ -80,6 +80,13 @@ public class Robot extends TimedRobot {
     private JoystickButton wheelTargeting = new JoystickButton(Constants.WHEEL, 10);
     private JoystickButton wheelIntakeArm = new JoystickButton(Constants.WHEEL, 8);
 
+    //Test and Demo Buttons
+    private JoystickButton testTurretButton = new JoystickButton(Constants.TEST, 1);
+    private JoystickButton testIntake = new JoystickButton(Constants.TEST, 3);
+    private JoystickButton testShoot = new JoystickButton(Constants.TEST, 4);
+    private JoystickButton testFlywheelRanging = new JoystickButton(Constants.TEST, 5);
+    private JoystickButton testFlywheelDisable = new JoystickButton(Constants.TEST, 6);
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -88,12 +95,9 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         manager = new SubsystemManager(Arrays.asList(
             // register subsystems here
-            PoseEstimator.getInstance(), 
-            Climber.getInstance(), 
-            Drive.getInstance(),
+            PoseEstimator.getInstance(),
             Shooter.getInstance(),
             Lights.getInstance(),
-            //JetsonAILink.getInstance(),
             Superstructure.getInstance()),
              true);
 
@@ -134,7 +138,7 @@ public class Robot extends TimedRobot {
 
         StateMachine.getInstance().assertStop();
         Superstructure.getInstance().setInit();
-        Shooter.getInstance().setRampUp();
+            Shooter.getInstance().disable();
 
         disabledLooper.start();
     }
@@ -184,7 +188,7 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         Drive.getInstance().setOpenLoop(DriveSignal.NEUTRAL);
-        Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
+        //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
         initButtons();
         enabledLooper.start();
         
@@ -253,6 +257,13 @@ public class Robot extends TimedRobot {
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));
+
+        //TEST AND DEMO
+        testTurretButton.whileHeld(Action.toCommand(new TurretPIDControl()));
+        testFlywheelRanging.whenPressed(Action.toCommand(new softStart()));
+        testFlywheelDisable.whenPressed(Action.toCommand(new SetManualFlywheel()));
+        testIntake.whileHeld(Action.toCommand(new IntakeAction()));
+        testShoot.whenPressed(Action.toCommand(new ShootBallAction()));
         VersionData.WriteBuildInfoToDashboard();
 
     }

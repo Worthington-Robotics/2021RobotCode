@@ -12,7 +12,7 @@ markerStyle = "o"
 lineSize = 1
 lineStyle = "dashed"
 borders = [0.05, 0.98, 0.05, 0.95] #L R B T
-blacklistTypes = ["String", "char", "TimedState", "list", "double[]", "AtomicBoolean", "boolean", "Value", "ActionGroup"]
+blacklistTypes = ["String", "char", "TimedState", "list", "double[]", "AtomicBoolean", "Value", "ActionGroup"]
 
 def headerBlacklistFilter(item: str):
     for blackListed in blacklistTypes:

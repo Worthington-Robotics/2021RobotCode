@@ -80,8 +80,6 @@ public class AutoSelector {
         switch (usrAuto) {
             case Auto1:
                 return new EightBallAuto();
-            case Auto6:
-                return new ThreeBall();
             default:
                 return null;
         }

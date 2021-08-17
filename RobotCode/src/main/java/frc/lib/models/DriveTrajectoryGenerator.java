@@ -22,6 +22,7 @@ public class DriveTrajectoryGenerator {
     public Trajectory SKI;
     public Trajectory BAR;
     public Trajectory B8P;
+    public Trajectory B9P;
     private final DriveMotionPlanner DMP;
     private DriveTrajectoryGenerator() {
         DMP           = new DriveMotionPlanner();
@@ -32,6 +33,7 @@ public class DriveTrajectoryGenerator {
         SKI = getSki();
         BAR = getBar();
         B8P = getBallI();
+        B9P = getBallII();
     }
 
     public static DriveTrajectoryGenerator getInstance() {
@@ -51,6 +53,14 @@ public class DriveTrajectoryGenerator {
                 else
                 {tra = DMP.generateRevTrajectory(waypoints, constraints, 0.0, 0.0, max_vel, max_accel, max_voltage);}
         return tra;
+    }
+
+    public Trajectory getBallII() {
+        List<Pose2d> Points = new ArrayList<>();
+        Points.add(new Pose2d(-4.4, 0, Rotation2d.identity())); 
+        Points.add(new Pose2d(-.5, .5, Rotation2d.fromDegrees(10)));
+        return generateTrajectory(false, Points,
+            null, 1, 5.0, 10.0);
     }
 
     public Trajectory getBallI() {

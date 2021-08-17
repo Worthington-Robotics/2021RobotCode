@@ -27,7 +27,7 @@ public class Shooter extends Subsystem {
     private static Shooter m_Shooter = new Shooter();
     private Servo camFlapAdj;
     private NetworkTable limelight;
-    private MotorControlMode flywheelMode = MotorControlMode.RAMP_UP;
+    private MotorControlMode flywheelMode = MotorControlMode.DISABLED;
     private MotorControlMode turretMode = MotorControlMode.OPEN_LOOP;
     private MotorControlMode camFlapMode = MotorControlMode.LIMELIGHT_MODE;
     private ShooterIO periodic;
@@ -81,7 +81,7 @@ public class Shooter extends Subsystem {
         }
         periodic.limelightPrev = periodic.limelight_distance;
         periodic.limelight_distance = limelightRanging();
-        periodic.limelightDelta = (periodic.limelightDelta + periodic.limelight_distance - periodic.limelightPrev)/2;
+        periodic.limelightDelta = (periodic.limelightDelta + periodic.limelight_distance - periodic.limelightPrev) / 2;
         periodic.turretEncoder = turretControl.getSelectedSensorPosition();
         periodic.flywheelVelocity = leftFlywheelFalcon.getSelectedSensorVelocity();
         periodic.operatorInput = Constants.SECOND.getPOV();
@@ -89,7 +89,10 @@ public class Shooter extends Subsystem {
         periodic.AmpsL = leftFlywheelFalcon.getSupplyCurrent();
         periodic.AmpsR = rightFlywheelFalcon.getSupplyCurrent();
         // Makes all values positive with -1 being 0 and 1 being 1
+        if(!Constants.DEMO)
         periodic.operatorFlywheelInput = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
+        else
+        periodic.operatorFlywheelInput = HIDHelper.getAxisMapped(Constants.TEST.getRawAxis(3), .2, 0);
         periodic.targetX = tx.getDouble(0.0) + Constants.TURRET_OFFSET;
         periodic.targetV = tv.getDouble(0.0);
         periodic.targetY = ty.getDouble(0.0);
@@ -110,88 +113,84 @@ public class Shooter extends Subsystem {
             @Override
             public void onLoop(double timestamp) {
                 periodic.turretAngle = Rotation2d.fromDegrees(ticksToDegrees(periodic.turretEncoder));
-                /*if (periodic.targetV == 1) {
-                    turretMode = MotorControlMode.LIMELIGHT_MODE;
-                }
-*/
+                /*
+                 * if (periodic.targetV == 1) { turretMode = MotorControlMode.LIMELIGHT_MODE; }
+                 */
                 switch (flywheelMode) {
-                case OPEN_LOOP:
-                    periodic.flywheelDemand = periodic.operatorFlywheelInput;
-                    if(!Constants.WHEELS)
-                    {
-                    periodic.flywheelRPMDemand = periodic.operatorFlywheelInput * Constants.FLYWHEEL_MAX_RPM;
-                    }
-                    else
-                    {
-                        periodic.flywheelDemand = 0;
-                        periodic.flywheelRPMDemand = periodic.flywheelDemand;
-                    }
-                    break;
-                case PID_MODE:
-                    periodic.flywheelRPMDemand = periodic.operatorFlywheelInput * Constants.FLYWHEEL_MAX_RPM;
-                    periodic.flywheelDemand = RPMToTicksPer100ms(periodic.flywheelRPMDemand);
-                    break;
-                case RAMP_UP:
-                    if (Util.epsilonEquals(periodic.flywheelRPM, Constants.FLYWHEEL_IDLE_RPM, 100)) {
-                        setLimelightRPM();
-                    } else {
-                        periodic.flywheelRPMDemand = Math.min(
-                                periodic.flywheelRPMDemand
-                                        + (Constants.FLYWHEEL_IDLE_RPM / (Constants.FLYWHEEL_SPINUP_TIME)),
-                                Constants.FLYWHEEL_IDLE_RPM + 200);
-                        periodic.flywheelRPMDemand = Math.min(periodic.flywheelRPMDemand, Constants.FLYWHEEL_MAX_RPM);
+                    case OPEN_LOOP:
+                        periodic.flywheelDemand = periodic.operatorFlywheelInput;
+                        if (!Constants.WHEELS) {
+                            periodic.flywheelRPMDemand = periodic.operatorFlywheelInput * Constants.FLYWHEEL_MAX_RPM;
+                        } else {
+                            periodic.flywheelDemand = 0;
+                            periodic.flywheelRPMDemand = periodic.flywheelDemand;
+                        }
+                        break;
+                    case PID_MODE:
+                        periodic.flywheelRPMDemand = periodic.operatorFlywheelInput * Constants.FLYWHEEL_MAX_RPM;
                         periodic.flywheelDemand = RPMToTicksPer100ms(periodic.flywheelRPMDemand);
-                    }
-                    break;
-                case LIMELIGHT_MODE:
-                    if (periodic.limelight_distance > 60 && periodic.limelight_distance < 700) {
-                        periodic.RPMGoal = (limelightRanging() * Constants.FLYWHEEL_RPM_PER_IN)
-                        + Constants.FLYWHEEL_BASE_RPM + periodic.FlywheelBaseRPMOffset;
-                        periodic.flywheelRPMDemand = Math.min(periodic.RPMGoal,
-                                Constants.FLYWHEEL_MAX_RPM);
-                        periodic.flywheelRPMDemand = Math.max(
-                                periodic.flywheelRPMDemand,
-                                Constants.FLYWHEEL_IDLE_RPM + periodic.FlywheelBaseRPMOffset);
-                    } else {
-                        periodic.flywheelRPMDemand = Constants.FLYWHEEL_IDLE_RPM + periodic.FlywheelBaseRPMOffset;
-                    }
-                    periodic.flywheelDemand = RPMToTicksPer100ms(periodic.flywheelRPMDemand);
-                    break;
-                default:
-                    leftFlywheelFalcon.set(ControlMode.Disabled, 0);
-                    break;
+                        break;
+                    case RAMP_UP:
+                        if (Util.epsilonEquals(periodic.flywheelRPM, Constants.FLYWHEEL_IDLE_RPM, 100)) {
+                            setLimelightRPM();
+                        } else {
+                            periodic.flywheelRPMDemand = Math.min(
+                                    periodic.flywheelRPMDemand
+                                            + (Constants.FLYWHEEL_IDLE_RPM / (Constants.FLYWHEEL_SPINUP_TIME)),
+                                    Constants.FLYWHEEL_IDLE_RPM + 200);
+                            periodic.flywheelRPMDemand = Math.min(periodic.flywheelRPMDemand,
+                                    Constants.FLYWHEEL_MAX_RPM);
+                            periodic.flywheelDemand = RPMToTicksPer100ms(periodic.flywheelRPMDemand);
+                        }
+                        break;
+                    case LIMELIGHT_MODE:
+                        if (periodic.limelight_distance > 60 && periodic.limelight_distance < 700) {
+                            periodic.RPMGoal = (limelightRanging() * Constants.FLYWHEEL_RPM_PER_IN)
+                                    + Constants.FLYWHEEL_BASE_RPM + periodic.FlywheelBaseRPMOffset;
+                            periodic.flywheelRPMDemand = Math.min(periodic.RPMGoal, Constants.FLYWHEEL_MAX_RPM);
+                            periodic.flywheelRPMDemand = Math.max(periodic.flywheelRPMDemand,
+                                    Constants.FLYWHEEL_IDLE_RPM + periodic.FlywheelBaseRPMOffset);
+                        } else {
+                            periodic.flywheelRPMDemand = Constants.FLYWHEEL_IDLE_RPM + periodic.FlywheelBaseRPMOffset;
+                        }
+                        periodic.flywheelDemand = RPMToTicksPer100ms(periodic.flywheelRPMDemand);
+                        break;
+                    default:
+                        periodic.flywheelDemand = 0;
+                        break;
                 }
                 switch (turretMode) {
-                case OPEN_LOOP:
-                    if (periodic.operatorInput == 90 && !(periodic.turretEncoder > Constants.rightTurretLimit)) {
-                        periodic.turretDemand = Constants.TURRET_MAX_SPEED;
-                    } else if (periodic.operatorInput == 270 && !(periodic.turretEncoder < Constants.leftTurretLimit)) {
-                        periodic.turretDemand = -Constants.TURRET_MAX_SPEED;
-                    } else {
-                        periodic.turretDemand = 0;
-                    }
-                    break;
-                case PID_MODE:
-                    if (periodic.turretEncoder < Constants.leftTurretLimit
-                            || periodic.turretEncoder > Constants.rightTurretLimit)
-                        turretMode = MotorControlMode.DISABLED;
-                    periodic.turretDemand = -1 * degreesToTicks(Drive.getInstance().getHeading().getDegrees());
-                    if (periodic.turretDemand <= Constants.leftTurretLimit) {
-                        periodic.turretDemand = Constants.leftTurretLimit;
-                    }
-                    if (periodic.turretDemand > Constants.rightTurretLimit) {
-                        periodic.turretDemand = Constants.rightTurretLimit;
-                    }
-                    break;
-                case LIMELIGHT_MODE:
-                    if (periodic.turretEncoder < Constants.leftTurretLimit
-                            || periodic.turretEncoder > Constants.rightTurretLimit)
-                        turretMode = MotorControlMode.DISABLED;
-                    periodic.turretDemand = limelightGoalAngle();
-                    break;
-                default:
-                    turretControl.set(ControlMode.Disabled, 0);
-                    break;
+                    case OPEN_LOOP:
+                        if (periodic.operatorInput == 90 && !(periodic.turretEncoder > Constants.rightTurretLimit)) {
+                            periodic.turretDemand = Constants.TURRET_MAX_SPEED;
+                        } else if (periodic.operatorInput == 270
+                                && !(periodic.turretEncoder < Constants.leftTurretLimit)) {
+                            periodic.turretDemand = -Constants.TURRET_MAX_SPEED;
+                        } else {
+                            periodic.turretDemand = 0;
+                        }
+                        break;
+                    case PID_MODE:
+                        if (periodic.turretEncoder < Constants.leftTurretLimit
+                                || periodic.turretEncoder > Constants.rightTurretLimit)
+                            turretMode = MotorControlMode.DISABLED;
+                        periodic.turretDemand = -1 * degreesToTicks(Drive.getInstance().getHeading().getDegrees());
+                        if (periodic.turretDemand <= Constants.leftTurretLimit) {
+                            periodic.turretDemand = Constants.leftTurretLimit;
+                        }
+                        if (periodic.turretDemand > Constants.rightTurretLimit) {
+                            periodic.turretDemand = Constants.rightTurretLimit;
+                        }
+                        break;
+                    case LIMELIGHT_MODE:
+                        if (periodic.turretEncoder < Constants.leftTurretLimit
+                                || periodic.turretEncoder > Constants.rightTurretLimit)
+                            turretMode = MotorControlMode.DISABLED;
+                        periodic.turretDemand = limelightGoalAngle();
+                        break;
+                    default:
+                        turretControl.set(ControlMode.Disabled, 0);
+                        break;
                 }
                 if (periodic.targetV == 1) {
                     limelight.getEntry("snapshot").setNumber(1);
@@ -200,19 +199,19 @@ public class Shooter extends Subsystem {
                 }
 
                 switch (camFlapMode) {
-                    case LIMELIGHT_MODE: case OPEN_LOOP:
-                    if(limelightRanging() > 180)
-                        periodic.camFlapDemand = Constants.CAM_ANGLE_LOW;
-                        else if(limelightRanging() <= 180 && limelightRanging() > 108){
-                        periodic.camFlapDemand = Constants.CAM_ANGLE_MED;
-                        }
-                        else{
-                        periodic.camFlapDemand = Constants.CAM_ANGLE_HIGH;
+                    case LIMELIGHT_MODE:
+                    case OPEN_LOOP:
+                        if (limelightRanging() > 180)
+                            periodic.camFlapDemand = Constants.CAM_ANGLE_LOW;
+                        else if (limelightRanging() <= 180 && limelightRanging() > 108) {
+                            periodic.camFlapDemand = Constants.CAM_ANGLE_MED;
+                        } else {
+                            periodic.camFlapDemand = Constants.CAM_ANGLE_HIGH;
                         }
                         break;
                     default:
                         break;
-                    }
+                }
             }
 
             @Override
@@ -230,31 +229,32 @@ public class Shooter extends Subsystem {
     public void writePeriodicOutputs() {
 
         switch (flywheelMode) {
-        case OPEN_LOOP:
-            leftFlywheelFalcon.set(ControlMode.PercentOutput, periodic.flywheelDemand);
-            break;
-        case PID_MODE:
-        case LIMELIGHT_MODE:
-        case RAMP_UP:
-            leftFlywheelFalcon.set(ControlMode.Velocity, periodic.flywheelDemand);
-            break;
-        default:
-            leftFlywheelFalcon.set(ControlMode.Disabled, 0);
-            break;
+            case OPEN_LOOP:
+                leftFlywheelFalcon.set(ControlMode.PercentOutput, periodic.flywheelDemand);
+                break;
+            case PID_MODE:
+            case LIMELIGHT_MODE:
+            case RAMP_UP:
+                leftFlywheelFalcon.set(ControlMode.Velocity, periodic.flywheelDemand);
+                break;
+            default:
+                leftFlywheelFalcon.set(ControlMode.Disabled, 0);
+                break;
         }
         switch (turretMode) {
-        case OPEN_LOOP:
-            turretControl.set(ControlMode.PercentOutput, periodic.turretDemand);
-            break;
-        case PID_MODE:case LIMELIGHT_MODE:
-            turretControl.set(ControlMode.Position, periodic.turretDemand);
-            break;
-        case RECENTER_MODE:
-            turretControl.set(ControlMode.Position, periodic.turretDemand);
-            break;
-        default:
-            turretControl.set(ControlMode.Disabled, 0);
-            break;
+            case OPEN_LOOP:
+                turretControl.set(ControlMode.PercentOutput, periodic.turretDemand);
+                break;
+            case PID_MODE:
+            case LIMELIGHT_MODE:
+                turretControl.set(ControlMode.Position, periodic.turretDemand);
+                break;
+            case RECENTER_MODE:
+                turretControl.set(ControlMode.Position, periodic.turretDemand);
+                break;
+            default:
+                turretControl.set(ControlMode.Disabled, 0);
+                break;
         }
         switch (camFlapMode) {
             case OPEN_LOOP:
@@ -264,7 +264,7 @@ public class Shooter extends Subsystem {
             default:
                 camFlapAdj.setAngle(Constants.CAM_ANGLE_HIGH);
                 break;
-            }
+        }
     }
 
     /**
@@ -352,7 +352,11 @@ public class Shooter extends Subsystem {
 
     public void disable() {
         turretMode = MotorControlMode.OPEN_LOOP;
-        flywheelMode = MotorControlMode.RAMP_UP;
+        if (!Constants.DEMO) {
+            flywheelMode = MotorControlMode.RAMP_UP;
+        } else {
+            flywheelMode = MotorControlMode.DISABLED;
+        }
     }
 
     /**
@@ -508,7 +512,8 @@ public class Shooter extends Subsystem {
         if (periodic.targetV == 0.0) {
             return 0.0;
         }
-        return (98.5 - Constants.LIMELIGHT_HIGHT) / limeTan((Math.toRadians(Constants.LIMELIGHT_PITCH + periodic.targetY)));
+        return (98.5 - Constants.LIMELIGHT_HIGHT)
+                / limeTan((Math.toRadians(Constants.LIMELIGHT_PITCH + periodic.targetY)));
     }
 
     public double limelightGoalAngle() {
@@ -527,10 +532,9 @@ public class Shooter extends Subsystem {
         return goal;
     }
 
-    public double limeTan(double angle)
-    {
+    public double limeTan(double angle) {
         double angle2 = angle * angle;
-        return (angle * (1 - angle2/6)) / (1 - (angle2 * (1 - angle2/12) / 2));
+        return (angle * (1 - angle2 / 6)) / (1 - (angle2 * (1 - angle2 / 12) / 2));
     }
 
     public class ShooterIO extends Subsystem.PeriodicIO {

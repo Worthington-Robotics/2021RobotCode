@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -31,6 +32,8 @@ public class Climber extends Subsystem {
 
         talonRealeaseR = new TalonFX(Constants.CLIMBING_WINCHR_ID);
         talonRealeaseL = new TalonFX(Constants.CLIMBING_WINCHL_ID);
+        talonRealeaseR.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 20, 100));
+        talonRealeaseL.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 20, 100));
         //SmartDashboard.putNumber("turretsim", 0);
     }
 
@@ -90,8 +93,8 @@ public class Climber extends Subsystem {
     public void writePeriodicOutputs() {
         climbSolenoid.set(climbIntendedState);
         unfoldSolenoid.set(unfoldIntendedState);
-        talonRealeaseR.set(ControlMode.PercentOutput, talonRealeseDemand);
-        talonRealeaseL.set(ControlMode.PercentOutput, -talonRealeseDemand);
+        talonRealeaseR.set(ControlMode.PercentOutput, -talonRealeseDemand);
+        talonRealeaseL.set(ControlMode.PercentOutput, talonRealeseDemand);
     }
 
 

@@ -72,12 +72,11 @@ public class Robot extends TimedRobot {
     private AxisAction reverse = new AxisAction(Constants.WHEEL, 3, .5, false);
     private AxisAction nextLight = new AxisAction(Constants.WHEEL, 2, .8, false);
     private JoystickButton flywheelManual = new JoystickButton(Constants.WHEEL, 1);
+    private JoystickButton shiftUp = new JoystickButton(Constants.WHEEL, 5);
+    private JoystickButton shiftDown = new JoystickButton(Constants.WHEEL, 6);
     private JoystickButton gyroLock = new JoystickButton(Constants.WHEEL, 2);
     private JoystickButton shootAll = new JoystickButton(Constants.WHEEL, 3);
     private JoystickButton wheelIntake = new JoystickButton(Constants.WHEEL, 4);
-    private JoystickButton shiftUp = new JoystickButton(Constants.WHEEL, 5);
-    private JoystickButton shiftDown = new JoystickButton(Constants.WHEEL, 6);
-    private JoystickButton turretLock = new JoystickButton(Constants.WHEEL, 7);
     private JoystickButton wheelTargeting = new JoystickButton(Constants.WHEEL, 10);
     private JoystickButton wheelIntakeArm = new JoystickButton(Constants.WHEEL, 8);
 
@@ -185,7 +184,7 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         Drive.getInstance().setOpenLoop(DriveSignal.NEUTRAL);
-        //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
+        Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
         initButtons();
         enabledLooper.start();
         
@@ -234,7 +233,6 @@ public class Robot extends TimedRobot {
         flywheelManual.whenPressed(Action.toCommand(new SetManualFlywheel()));
         wheelTargeting.whileHeld(Action.toCommand(new TurretPIDControl()));
         wheelIntakeArm.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
-        turretLock.whileHeld(Action.toCommand(new TurretPIDControl()));
     }
         climbDown.whileHeld(Action.toCommand(new MotorDownAction()));
         climbUp.whileHeld(Action.toCommand(new MotorUpAction()));

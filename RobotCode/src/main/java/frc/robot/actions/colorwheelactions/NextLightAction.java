@@ -3,7 +3,7 @@ package frc.robot.actions.colorwheelactions;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Lights;
 
-public class nextLight extends Action {
+public class NextLightAction extends Action {
     /**
      * code to run on action start
      */

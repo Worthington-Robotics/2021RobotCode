@@ -26,7 +26,7 @@ import frc.robot.subsystems.*;
 import frc.robot.actions.driveactions.*;
 import frc.robot.actions.aiactions.BallFollowAction;
 import frc.robot.actions.climberactions.*;
-import frc.robot.actions.colorwheelactions.nextLight;
+import frc.robot.actions.colorwheelactions.NextLightAction;
 import frc.robot.actions.shooteraction.*;
 import frc.robot.actions.superaction.*;
 import frc.robot.actions.waitactions.SoutAction;
@@ -230,7 +230,7 @@ public class Robot extends TimedRobot {
         shootAll.whileHeld(Action.toCommand(new ShootAllAction()));
         wheelIntake.whileHeld(Action.toCommand(new IntakeAction()));
         gyroLock.whileHeld(Action.toCommand(new GyroLock()));
-        nextLight.whenPressed(Action.toCommand(new nextLight()));
+        nextLight.whenPressed(Action.toCommand(new NextLightAction()));
         flywheelManual.whenPressed(Action.toCommand(new SetManualFlywheel()));
         wheelTargeting.whileHeld(Action.toCommand(new TurretPIDControl()));
         wheelIntakeArm.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
@@ -254,7 +254,7 @@ public class Robot extends TimedRobot {
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));
-        nextLightButton.whenPressed(Action.toCommand(new nextLight()));
+        nextLightButton.whenPressed(Action.toCommand(new NextLightAction()));
         VersionData.WriteBuildInfoToDashboard();
 
     }

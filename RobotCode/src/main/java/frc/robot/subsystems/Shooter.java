@@ -113,7 +113,7 @@ public class Shooter extends Subsystem {
                 /*if (periodic.targetV == 1) {
                     turretMode = MotorControlMode.LIMELIGHT_MODE;
                 }
-*/
+                */
                 switch (flywheelMode) {
                 case OPEN_LOOP:
                     periodic.flywheelDemand = periodic.operatorFlywheelInput;
@@ -201,13 +201,14 @@ public class Shooter extends Subsystem {
 
                 switch (camFlapMode) {
                     case LIMELIGHT_MODE: case OPEN_LOOP:
-                    if(limelightRanging() > 180)
-                        periodic.camFlapDemand = Constants.CAM_ANGLE_LOW;
-                        else if(limelightRanging() <= 180 && limelightRanging() > 108){
-                        periodic.camFlapDemand = Constants.CAM_ANGLE_MED;
+                        if(limelightRanging() > 180) {
+                            periodic.camFlapDemand = Constants.CAM_ANGLE_LOW;
                         }
-                        else{
-                        periodic.camFlapDemand = Constants.CAM_ANGLE_HIGH;
+                        else if (limelightRanging() <= 180 && limelightRanging() > 108){
+                            periodic.camFlapDemand = Constants.CAM_ANGLE_MED;
+                        }
+                        else {
+                            periodic.camFlapDemand = Constants.CAM_ANGLE_HIGH;
                         }
                         break;
                     default:

@@ -10,13 +10,15 @@ import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 
 public class Lights extends Subsystem {
+    private final double RAINBOW_BREATHE_SPEED = 2;
+
     private AddressableLED mled;
     private AddressableLEDBuffer mLEDBuffer;
     private int numberOfBalls;
     private boolean targeted, targeting, enabled, RobotConnectedToFMS;
     private Color allianceColor;
     private int state = 0;
-    private lightModes currentLightMode = lightModes.rainbow;
+    private LightMode currentLightMode = LightMode.RAINBOW;
     private Color testColor;
     private double rainbowint = 0;
     private int lightMode = 0;
@@ -54,27 +56,23 @@ public class Lights extends Subsystem {
         }
 
         if(lightMode == 1) {
-            currentLightMode = lightModes.battery;
+            currentLightMode = LightMode.BATTERY;
         } else if(lightMode == 2){
-            currentLightMode = lightModes.temp;
+            currentLightMode = LightMode.TEMPERATURE;
         } else {
                
             if (enabled) {
                 if (targeting) {
-                    currentLightMode = lightModes.targeting;
+                    currentLightMode = LightMode.TARGETING;
                 } else {
-                    if (numberOfBalls == 5 || numberOfBalls == 0 || numberOfBalls == -1) {
-                        currentLightMode = lightModes.rainbow;
-                    } else {
-                        currentLightMode = lightModes.indexNum;
-                    }
+                    currentLightMode = LightMode.RAINBOW;
                 }
             } else {
                 if (RobotConnectedToFMS) {
-                    currentLightMode = lightModes.allianceColor;
+                    currentLightMode = LightMode.ALLIANCE_COLOR;
                     
                 } else {
-                    currentLightMode = lightModes.rainbow;
+                    currentLightMode = LightMode.RAINBOW_BREATHE;
                 }
             } 
         }
@@ -84,11 +82,12 @@ public class Lights extends Subsystem {
 
         //Assigning the  LEDs
         switch (currentLightMode) {
-            case Testing:
+            case TESTING: {
                 for (int i = 0; i < (int)(mLEDBuffer.getLength() * (state / 7)); i++) {
-                mLEDBuffer.setLED(i, testColor);
+                    mLEDBuffer.setLED(i, testColor);
+                }
             }
-            case targeting:
+            case TARGETING: {
                 if (targeted) {
                     for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                         mLEDBuffer.setRGB(i, 0, 150, 0);
@@ -100,7 +99,8 @@ public class Lights extends Subsystem {
                 }
                 // System.out.println("Lights Set");
                 break;
-            case indexNum:
+            }
+            case INDEX_NUM: {
                 if (numberOfBalls >= 0 && numberOfBalls <= 4) {
                     for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                         mLEDBuffer.setLED(i, Color.kBlack);
@@ -115,20 +115,23 @@ public class Lights extends Subsystem {
                 }
                 // System.out.println("Lights Set");
                 break;
-            case allianceColor:
+            }
+            case ALLIANCE_COLOR: {
                 for (int i = 0; i < mLEDBuffer.getLength(); i++) {
                     mLEDBuffer.setLED(i, allianceColor);
                 }
                 // System.out.println("Lights Set");
                 break;
-            case rainbow:
+            }
+            case RAINBOW: {
                 int ledlen = mLEDBuffer.getLength();
                 for (int i = 0; i < (ledlen); i ++) {
                     mLEDBuffer.setHSV((i + (int)(rainbowint)) % ledlen, i * ((180 / ledlen)), 255, 200);
                 }
                 rainbowint += Math.abs(Drive.getInstance().getLinearVelocity()*.7);
                 break;
-            case battery:
+            }
+            case BATTERY: {
                 for (int i = 0; i < Math.min(mLEDBuffer.getLength(), (mLEDBuffer.getLength() * ((RobotController.getBatteryVoltage()-10)/3))); i++) {
                     mLEDBuffer.setHSV(i, (int)(70 * ((RobotController.getBatteryVoltage()-10)/3) + 165) % 180, 255, 200);
                 }
@@ -136,7 +139,8 @@ public class Lights extends Subsystem {
                     mLEDBuffer.setLED(i, new Color(0,0,0));
                 }  
                 break;
-            case temp:
+            }
+            case TEMPERATURE: {
                 for (int i = 0; i < Math.min(mLEDBuffer.getLength(), (mLEDBuffer.getLength() * ((Drive.getInstance().getTemperature()-30)/40))); i++) {
                     mLEDBuffer.setHSV(i, (int)(90 + 110 * ((Drive.getInstance().getTemperature()-30)/40)) % 180, 255, 200);
                 }
@@ -144,14 +148,25 @@ public class Lights extends Subsystem {
                     mLEDBuffer.setLED(i, new Color(0,0,0));
                 }
 
-                break;                
-            default:
+                break;
+            }
+            case RAINBOW_BREATHE: {
+                int ledlen = mLEDBuffer.getLength();
+                for (int i = 0; i < (ledlen); i ++) {
+                    mLEDBuffer.setHSV((i + (int)(rainbowint)) % ledlen, i * ((180 / ledlen)), 255, 200);
+                }
+                rainbowint += Math.abs(RAINBOW_BREATHE_SPEED*.7); // Rainbow changing constant
+
+                break;
+            }   
+            default: {
                 for (var i = 0; i < mLEDBuffer.getLength(); i++) {
                     mLEDBuffer.setLED(i, Color.kPurple);
                 }
                 // System.out.println("Lights Set");
                 break;
             }
+        }
     }
 
     public void nextLight() {
@@ -167,7 +182,7 @@ public class Lights extends Subsystem {
     public void testLights(int state)
     {
         this.state = state;
-        currentLightMode = lightModes.Testing;
+        currentLightMode = LightMode.TESTING;
     }
 
     @Override
@@ -176,7 +191,7 @@ public class Lights extends Subsystem {
         mled.setLength(mLEDBuffer.getLength());
         mled.setData(mLEDBuffer);
         mled.start();
-        currentLightMode = lightModes.allianceColor;
+        currentLightMode = LightMode.ALLIANCE_COLOR;
 
     }
 
@@ -187,8 +202,8 @@ public class Lights extends Subsystem {
         SmartDashboard.putNumber("Lights/LightNum", lightMode);
     }
 
-    enum lightModes {
-        targeting, indexNum, allianceColor, rainbow, Testing, battery, temp;
+    enum LightMode {
+        TARGETING, INDEX_NUM, ALLIANCE_COLOR, RAINBOW, RAINBOW_BREATHE, TESTING, BATTERY, TEMPERATURE;
     }
 
 }

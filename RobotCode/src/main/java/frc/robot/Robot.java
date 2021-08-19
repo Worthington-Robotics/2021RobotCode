@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     private JoystickButton unpin = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton climbDown = new JoystickButton(Constants.MASTER, 8);
     private JoystickButton climbUp = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton nextLightButton = new JoystickButton(Constants.MASTER, 11);
     
 
     //Co-pilot joystick buttons
@@ -253,6 +254,7 @@ public class Robot extends TimedRobot {
         limelightRPM.whenPressed(Action.toCommand(new softStart()));
         intakeUP.toggleWhenPressed(Action.toCommand(new ToggleIntake()));
         shootOne.whileActive(Action.toCommand(new ShootAllAction()));
+        nextLightButton.whenPressed(Action.toCommand(new nextLight()));
         VersionData.WriteBuildInfoToDashboard();
 
     }

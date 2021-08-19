@@ -74,7 +74,7 @@ public class Lights extends Subsystem {
                     currentLightMode = lightModes.allianceColor;
                     
                 } else {
-                    currentLightMode = lightModes.targeting;
+                    currentLightMode = lightModes.rainbow;
                 }
             } 
         }
